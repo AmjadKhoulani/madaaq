@@ -3,7 +3,10 @@
         Options -MultiViews -Indexes
     </IfModule>
 
+    DirectoryIndex index.php
     RewriteEngine On
+    RewriteBase /
+    # For MAMP subdirectory usage, change to: RewriteBase /Madaa/
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
