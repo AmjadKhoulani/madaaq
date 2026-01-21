@@ -72,7 +72,7 @@
                         </button>
                         <div class="dropdown-menu absolute right-0 w-64 glass rounded-xl shadow-xl py-2 mt-1">
                             <a href="{{ route('hotspot.profiles.index') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-indigo-50 transition text-gray-700">
-                                <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
+                                <svg class="w-4 h-4 text-indigo-500" style="width: 1rem; height: 1rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
                                 هوت سبوت
                             </a>
                             <a href="{{ route('hotspot.vouchers.index') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-indigo-50 transition text-gray-700">
