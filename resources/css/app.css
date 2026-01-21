@@ -1,8 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
     * {
@@ -31,9 +29,9 @@
     }
 
     .bg-grid-pattern {
-        background-image: 
-            linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
+        background-image:
+            linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
         background-size: 40px 40px;
     }
 
@@ -42,7 +40,7 @@
         transform: translateY(30px);
         transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
     }
-    
+
     .reveal.active {
         opacity: 1;
         transform: translateY(0);
@@ -53,6 +51,21 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+    }
+
+    /* Dropdown Styles */
+    .dropdown-menu {
+        visibility: hidden;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 50;
+    }
+
+    .dropdown:hover .dropdown-menu {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -66,16 +79,38 @@
     border-color: rgba(255, 255, 255, 0.05);
 }
 
-.dark-mode .text-slate-900 { color: #f8fafc !important; }
-.dark-mode .text-slate-700 { color: #cbd5e1 !important; }
-.dark-mode .text-slate-600 { color: #94a3b8 !important; }
-.dark-mode .text-slate-500 { color: #64748b !important; }
-.dark-mode .bg-white { background-color: #1e293b !important; }
-.dark-mode .bg-slate-50 { background-color: #0f172a !important; }
+.dark-mode .text-slate-900 {
+    color: #f8fafc !important;
+}
+
+.dark-mode .text-slate-700 {
+    color: #cbd5e1 !important;
+}
+
+.dark-mode .text-slate-600 {
+    color: #94a3b8 !important;
+}
+
+.dark-mode .text-slate-500 {
+    color: #64748b !important;
+}
+
+.dark-mode .bg-white {
+    background-color: #1e293b !important;
+}
+
+.dark-mode .bg-slate-50 {
+    background-color: #0f172a !important;
+}
 
 @keyframes move {
-    from { transform: translate(0, 0) scale(1); }
-    to { transform: translate(20px, -20px) scale(1.1); }
+    from {
+        transform: translate(0, 0) scale(1);
+    }
+
+    to {
+        transform: translate(20px, -20px) scale(1.1);
+    }
 }
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
