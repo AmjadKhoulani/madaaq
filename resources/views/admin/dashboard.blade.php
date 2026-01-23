@@ -16,9 +16,7 @@
                     +${{ number_format($stats['monthly_revenue']) }} هذا الشهر
                 </div>
             </div>
-            <div class="absolute bottom-4 left-4 p-2 bg-green-500/10 rounded-lg text-green-600">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            </div>
+
         </div>
 
         <!-- Active Tenants -->
@@ -29,9 +27,7 @@
                 <div class="text-3xl font-bold text-gray-900 mb-1">{{ $stats['active_tenants'] }}</div>
                 <div class="text-xs text-gray-500">من أصل {{ $stats['total_tenants'] }} مسجل</div>
             </div>
-             <div class="absolute bottom-4 left-4 p-2 bg-indigo-500/10 rounded-lg text-indigo-600">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-            </div>
+
         </div>
 
          <!-- Active Subscriptions -->
@@ -42,9 +38,7 @@
                 <div class="text-3xl font-bold text-gray-900 mb-1">{{ $stats['active_subscriptions'] }}</div>
                 <div class="text-xs text-purple-600 font-medium">باقات Pro / Basic</div>
             </div>
-             <div class="absolute bottom-4 left-4 p-2 bg-purple-500/10 rounded-lg text-purple-600">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            </div>
+
         </div>
 
         <!-- Total End Users -->
@@ -55,9 +49,7 @@
                 <div class="text-3xl font-bold text-gray-900 mb-1">{{ number_format($stats['total_clients']) }}</div>
                 <div class="text-xs text-gray-500">مستخدم نهائي (Clients)</div>
             </div>
-             <div class="absolute bottom-4 left-4 p-2 bg-cyan-500/10 rounded-lg text-cyan-600">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-            </div>
+
         </div>
     </div>
 
