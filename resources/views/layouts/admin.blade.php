@@ -23,6 +23,9 @@
         ::-webkit-scrollbar-track { background: #1f2937; }
         ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+
+        /* Safety rule for icons */
+        img, svg { max-width: 100%; height: auto; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased font-inter" x-data="{ sidebarOpen: true }">

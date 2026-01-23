@@ -7,7 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Rubik', sans-serif; }</style>
+    <style>
+        body { font-family: 'Rubik', sans-serif; }
+        /* Safety rule for icons */
+        img, svg { max-width: 100%; height: auto; }
+    </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
     <nav class="bg-white shadow-sm border-b border-gray-100">
