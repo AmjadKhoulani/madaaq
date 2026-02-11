@@ -25,7 +25,7 @@
         ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
 
         /* Safety rule for icons */
-        img, svg { max-width: 100%; height: auto; }
+        img { max-width: 100%; height: auto; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased font-inter" x-data="{ sidebarOpen: true }">

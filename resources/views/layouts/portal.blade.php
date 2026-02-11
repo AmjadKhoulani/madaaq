@@ -10,7 +10,7 @@
     <style>
         body { font-family: 'Rubik', sans-serif; }
         /* Safety rule for icons */
-        img, svg { max-width: 100%; height: auto; }
+        img { max-width: 100%; height: auto; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">

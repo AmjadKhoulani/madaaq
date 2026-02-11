@@ -11,9 +11,8 @@
         font-family: 'Tajawal', sans-serif;
     }
 
-    /* Safety rule for SVGs to prevent giant icons if Tailwind fails */
-    img,
-    svg {
+    /* Keep media responsive without overriding icon SVG sizing */
+    img {
         max-width: 100%;
         height: auto;
     }
