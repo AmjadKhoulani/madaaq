@@ -11,6 +11,14 @@
         body { font-family: 'Rubik', sans-serif; }
         /* Safety rule for icons */
         img { max-width: 100%; height: auto; }
+
+        /* Fallback sizes if Tailwind CSS fails to load */
+        .w-3 { width: 0.75rem; } .h-3 { height: 0.75rem; }
+        .w-4 { width: 1rem; } .h-4 { height: 1rem; }
+        .w-5 { width: 1.25rem; } .h-5 { height: 1.25rem; }
+        .w-6 { width: 1.5rem; } .h-6 { height: 1.5rem; }
+        .w-7 { width: 1.75rem; } .h-7 { height: 1.75rem; }
+        .w-8 { width: 2rem; } .h-8 { height: 2rem; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
