@@ -75,9 +75,9 @@
                 
                 <!-- Action Buttons -->
                 <div class="mt-6 flex justify-end gap-3 pt-4 border-t border-gray-50">
-                    <button @click="$dispatch('open-modal', 'edit-source-modal-{{ $source->id }}')" class="text-indigo-600 hover:text-indigo-800 font-bold text-sm bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded-lg transition">
+                    <a href="{{ route('network.internet-sources.edit', $source->id) }}" class="text-indigo-600 hover:text-indigo-800 font-bold text-sm bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded-lg transition">
                         تعديل
-                    </button>
+                    </a>
                     <form action="{{ route('network.internet-sources.destroy', $source->id) }}" method="POST" class="inline-block bg-rose-50 hover:bg-rose-100 rounded-lg px-2" onsubmit="return confirm('هل أنت متأكد من حذف هذا المصدر؟');">
                         @csrf
                         @method('DELETE')
@@ -88,66 +88,6 @@
                 </div>
             </div>
             
-            <!-- Edit Modal -->
-            <x-modal name="edit-source-modal-{{ $source->id }}" title="تعديل المصدر: {{ $source->name }}">
-                <form action="{{ route('network.internet-sources.update', $source->id) }}" method="POST" class="p-6">
-                    @csrf
-                    @method('PUT')
-                    
-                    <div class="space-y-6">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">اسم المصدر</label>
-                            <input type="text" name="name" value="{{ $source->name }}" required class="w-full rounded-xl border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 font-bold">
-                        </div>
-                        
-                        <div class="grid grid-cols-2 gap-6">
-                            <div>
-                                <select name="type" required class="w-full rounded-xl border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50">
-                                    <option value="fiber" {{ $source->type == 'fiber' ? 'selected' : '' }}>Fiber Optic</option>
-                                    <option value="starlink" {{ $source->type == 'starlink' ? 'selected' : '' }}>Starlink</option>
-                                    <option value="microwave" {{ $source->type == 'microwave' ? 'selected' : '' }}>Microwave Link</option>
-                                    <option value="4g" {{ $source->type == '4g' ? 'selected' : '' }}>4G / LTE</option>
-                                    <option value="other" {{ $source->type == 'other' ? 'selected' : '' }}>Other</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-2">نوع الوصل (Connection)</label>
-                                <select name="connection_type" class="w-full rounded-xl border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50">
-                                    <option value="">غير محدد</option>
-                                    <option value="fiber" {{ $source->connection_type == 'fiber' ? 'selected' : '' }}>فايبر (Fiber)</option>
-                                    <option value="cable" {{ $source->connection_type == 'cable' ? 'selected' : '' }}>كابل (Cable)</option>
-                                    <option value="wireless" {{ $source->connection_type == 'wireless' ? 'selected' : '' }}>لاسلكي (Wireless)</option>
-                                </select>
-                            </div>
-                        </div>
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-2">الحالة</label>
-                                <select name="status" required class="w-full rounded-xl border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50">
-                                    <option value="online" {{ $source->status == 'online' ? 'selected' : '' }}>متصل</option>
-                                    <option value="offline" {{ $source->status == 'offline' ? 'selected' : '' }}>منقطع</option>
-                                    <option value="maintenance" {{ $source->status == 'maintenance' ? 'selected' : '' }}>صيانة</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-2">السعة (Capacity)</label>
-                                <input type="text" name="capacity" value="{{ $source->capacity }}" class="w-full rounded-xl border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 dir-ltr text-right" placeholder="100 Mbps">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-2">Gateway IP</label>
-                                <input type="text" name="ip_gateway" value="{{ $source->ip_gateway }}" placeholder="192.168.1.1" class="w-full rounded-xl border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 font-mono text-sm dir-ltr">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-8 flex justify-end gap-3 pt-4 border-t border-gray-100">
-                        <button type="button" @click="$dispatch('close-modal', 'edit-source-modal-{{ $source->id }}')" class="px-6 py-2.5 text-gray-700 hover:bg-gray-100 rounded-xl font-bold transition">إلغاء</button>
-                        <button type="submit" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg transition transform hover:scale-105">حفظ التعديلات</button>
-                    </div>
-                </form>
-            </x-modal>
         </div>
         @endforeach
 

@@ -38,6 +38,11 @@ class InternetSourceController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    public function edit(InternetSource $internetSource)
+    {
+        return view('network.internet_sources.edit', compact('internetSource'));
+    }
+
     public function update(Request $request, InternetSource $internetSource)
     {
         $validated = $request->validate([
