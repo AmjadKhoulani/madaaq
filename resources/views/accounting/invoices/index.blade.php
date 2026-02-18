@@ -17,35 +17,35 @@
     <!-- Quick Stats -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <!-- Total Revenue -->
-        <div class="glass p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between">
             <div class="text-gray-500 text-sm font-medium mb-1">إجمالي الإيرادات</div>
             <div class="text-3xl font-bold text-emerald-600 tracking-tight">@money($stats['total_revenue'])</div>
         </div>
         
         <!-- Unpaid Amount -->
-        <div class="glass p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between">
             <div class="text-gray-500 text-sm font-medium mb-1">المستحقات (غير مدفوعة)</div>
             <div class="text-3xl font-bold text-rose-600 tracking-tight">@money($stats['unpaid_amount'])</div>
         </div>
 
         <!-- Paid Count -->
-        <div class="glass p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between bg-gradient-to-br from-white to-gray-50">
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between">
             <div class="text-gray-500 text-sm font-medium mb-1">فواتير مدفوعة</div>
-            <div class="text-3xl font-bold text-gray-800">{{ $stats['paid_count'] }}</div>
+            <div class="text-3xl font-bold text-gray-900">{{ $stats['paid_count'] }}</div>
         </div>
 
         <!-- Unpaid Count -->
-        <div class="glass p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between bg-gradient-to-br from-white to-gray-50">
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between">
             <div class="text-gray-500 text-sm font-medium mb-1">فواتير مستحقة</div>
-            <div class="text-3xl font-bold text-gray-800">{{ $stats['unpaid_count'] }}</div>
+            <div class="text-3xl font-bold text-gray-900">{{ $stats['unpaid_count'] }}</div>
         </div>
     </div>
 
     <!-- Filters -->
-    <div class="glass p-4 rounded-2xl shadow-sm border border-gray-100">
+    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
         <form action="{{ route('accounting.invoices.index') }}" method="GET" class="flex gap-4 w-full">
             <div class="relative flex-1">
-                <select name="status" class="w-full pl-4 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-700 appearance-none">
+                <select name="status" class="w-full pl-4 pr-10 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700 appearance-none">
                     <option value="all">جميع الحالات</option>
                     <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>مدفوعة</option>
                     <option value="unpaid" {{ request('status') == 'unpaid' ? 'selected' : '' }}>غير مدفوعة</option>
@@ -54,17 +54,17 @@
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </div>
             </div>
-            <button type="submit" class="px-6 py-2.5 bg-gray-800 hover:bg-gray-900 text-white font-medium rounded-xl transition-colors shadow-md">
+            <button type="submit" class="px-6 py-2.5 bg-gray-900 hover:bg-gray-800 text-white font-bold rounded-lg transition-colors shadow-sm">
                 تصفية النتائج
             </button>
         </form>
     </div>
 
     <!-- Invoices Table -->
-    <div class="glass shadow-lg rounded-2xl overflow-hidden border border-gray-100">
+    <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200">
         <div class="overflow-x-auto">
             <table class="w-full text-right">
-                <thead class="bg-gray-50/50">
+                <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">رقم الفاتورة</th>
                         <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">العميل</th>
@@ -74,17 +74,17 @@
                         <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">الإجراءات</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white/60 divide-y divide-gray-100 backdrop-blur-sm">
+                <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($invoices as $invoice)
-                    <tr class="hover:bg-indigo-50/30 transition duration-200">
+                    <tr class="hover:bg-gray-50 transition duration-200">
                         <td class="px-6 py-4 font-mono font-medium text-gray-600">{{ $invoice->invoice_number }}</td>
                         <td class="px-6 py-4">
                             <div class="font-bold text-gray-900">{{ $invoice->client->name ?? 'عميل محذوف' }}</div>
                         </td>
-                        <td class="px-6 py-4 font-bold text-gray-800">@money($invoice->amount)</td>
+                        <td class="px-6 py-4 font-bold text-gray-900">@money($invoice->amount)</td>
                         <td class="px-6 py-4 text-sm text-gray-500">{{ $invoice->due_date->format('Y-m-d') }}</td>
                         <td class="px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold {{ $invoice->status == 'paid' ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-red-100 text-red-700 border border-red-200' }}">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium {{ $invoice->status == 'paid' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200' }}">
                                 {{ $invoice->status == 'paid' ? 'مدفوعة' : 'غير مدفوعة' }}
                             </span>
                         </td>
@@ -110,7 +110,7 @@
             </table>
         </div>
         
-        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/30">
+        <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
             {{ $invoices->links() }}
         </div>
     </div>

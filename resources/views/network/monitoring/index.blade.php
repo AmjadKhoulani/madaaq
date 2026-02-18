@@ -25,10 +25,10 @@
                 <input type="checkbox" x-model="autoRefresh" class="rounded text-purple-600">
                 <span>تحديث تلقائي</span>
             </label>
-            <a href="{{ route('network.discovery.index') }}" class="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold rounded-xl transition flex items-center gap-2">
+            <a href="{{ route('network.discovery.index') }}" class="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold rounded-lg transition flex items-center gap-2">
                 📡 استكشاف الأجهزة
             </a>
-            <button onclick="window.location.reload()" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold rounded-xl shadow-lg transition">
+            <button onclick="window.location.reload()" class="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white font-bold rounded-lg shadow-sm transition">
                 🔄 تحديث
             </button>
         </div>
@@ -36,9 +36,9 @@
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div class="glass rounded-2xl p-6 shadow-lg border border-white/30">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
                 </div>
                 <div>
@@ -48,9 +48,9 @@
             </div>
         </div>
 
-        <div class="glass rounded-2xl p-6 shadow-lg border border-white/30">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                <div class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
                 <div>
@@ -60,9 +60,9 @@
             </div>
         </div>
 
-        <div class="glass rounded-2xl p-6 shadow-lg border border-white/30">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
                 <div>
@@ -72,9 +72,9 @@
             </div>
         </div>
 
-        <div class="glass rounded-2xl p-6 shadow-lg border border-white/30">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                <div class="w-12 h-12 bg-orange-50 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                 </div>
                 <div>
@@ -86,11 +86,11 @@
     </div>
 
     <!-- Devices Grid -->
-    <div class="glass rounded-2xl shadow-lg border border-white/30 p-6">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 class="text-lg font-bold text-gray-900 mb-4">حالة الأجهزة</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach($devices as $device)
-                <div class="p-4 rounded-xl border-2 transition {{ 
+                <div class="p-4 rounded-lg border transition {{ 
                     $device['status'] === 'online' ? 'bg-green-50 border-green-200' : 
                     ($device['status'] === 'offline' ? 'bg-red-50 border-red-200' : 
                     ($device['status'] === 'warning' ? 'bg-orange-50 border-orange-200' : 'bg-gray-50 border-gray-200'))
@@ -110,8 +110,8 @@
                             </p>
                         </div>
                         <span class="px-2 py-1 rounded-full text-xs font-bold {{ 
-                            $device['status'] === 'online' ? 'bg-green-200 text-green-800' : 
-                            ($device['status'] === 'offline' ? 'bg-red-200 text-red-800' : 'bg-orange-200 text-orange-800')
+                            $device['status'] === 'online' ? 'bg-green-100 text-green-700' : 
+                            ($device['status'] === 'offline' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700')
                         }}">
                             {{ $device['status'] === 'online' ? 'متصل' : ($device['status'] === 'offline' ? 'معطل' : 'بطيء') }}
                         </span>
@@ -140,7 +140,7 @@
 
     <!-- Active Alerts -->
     @if($activeAlerts->count() > 0)
-    <div class="glass rounded-2xl shadow-lg border border-white/30 p-6">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-bold text-gray-900">🚨 التنبيهات النشطة</h3>
             <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-bold">{{ $activeAlerts->count() }} تنبيه</span>
@@ -174,7 +174,7 @@
     @endif
 
     <!-- Alert History -->
-    <div class="glass rounded-2xl shadow-lg border border-white/30 p-6">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 class="text-lg font-bold text-gray-900 mb-4">📜 سجل التنبيهات (آخر 24 ساعة)</h3>
         <div class="space-y-2">
             @forelse($recentAlerts as $alert)
