@@ -226,14 +226,17 @@ class MikroTikServerController extends Controller
 }
 
 # 4. API Service
-/ip service set api disabled=no port={$server->api_port}
+/ip service set api disabled=no port={$server->api_port} address=""
 
 # 5. User Management
 :if ([:len [/user group find name=madaaq]] = 0) do={
     /user group add name=madaaq policy=ftp,read,write,test,api
 }
 /user remove [find comment="madaaq"]
-/user add name={$apiUser} password={$apiPass} address={$serverVpnIp}/32 comment=madaaq group=madaaq
+/user add name={$apiUser} password={$apiPass} comment=madaaq group=madaaq
+
+# 6. Firewall (Optional but recommended for VPN)
+/ip firewall filter add chain=input action=accept protocol=tcp dst-port={$server->api_port} src-address=201.10.0.0/16 comment="Allow Madaaq API over VPN" place-before=0
 
 # 6. Cleanup & Sync Agent
 /system scheduler remove [find name~"madaaq-sync"]
