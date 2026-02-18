@@ -2,6 +2,11 @@
 
 @import "tailwindcss";
 
+/* Force Rebuild 2 */
+.force-rebuild {
+    content: '2';
+}
+
 @layer base {
     * {
         font-family: 'Tajawal', sans-serif;
