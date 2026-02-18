@@ -798,6 +798,59 @@ class MikroTikService
                 $reachable = true;
                 $receivedPackets++;
                 // Convert 10ms to 10
+        return ['reachable' => $reachable, 'latency' => $receivedPackets > 0 ? round($totalLatency / $receivedPackets, 2) : null];
+    }
+
+    public function getActiveSessions($type = 'all')
+    {
+        $this->connect();
+        $sessions = [];
+
+        if ($type === 'all' || $type === 'pppoe') {
+            $pppoe = $this->client->query(new Query('/ppp/active/print'))->read();
+            foreach ($pppoe as $item) {
+                $sessions[] = [
+                    'id' => $item['.id'],
+                    'name' => $item['name'] ?? 'Unknown',
+                    'service' => $item['service'] ?? 'pppoe',
+                    'caller_id' => $item['caller-id'] ?? '',
+                    'address' => $item['address'] ?? '',
+                    'uptime' => $item['uptime'] ?? '',
+                    'type' => 'pppoe'
+                ];
+            }
+        }
+
+        if ($type === 'all' || $type === 'hotspot') {
+            $hotspot = $this->client->query(new Query('/ip/hotspot/active/print'))->read();
+            foreach ($hotspot as $item) {
+                $sessions[] = [
+                    'id' => $item['.id'],
+                    'user' => $item['user'] ?? 'Unknown',
+                    'name' => $item['user'] ?? 'Unknown', // Normalize name
+                    'address' => $item['address'] ?? '',
+                    'mac_address' => $item['mac-address'] ?? '',
+                    'uptime' => $item['uptime'] ?? '',
+                    'type' => 'hotspot'
+                ];
+            }
+        }
+
+        return $sessions;
+    }
+
+    public function disconnectSession($sessionId, $type)
+    {
+        $this->connect();
+        
+        if ($type === 'pppoe') {
+            $query = (new Query('/ppp/active/remove'))->equal('.id', $sessionId);
+        } else {
+            $query = (new Query('/ip/hotspot/active/remove'))->equal('.id', $sessionId);
+        }
+
+        return $this->client->query($query)->read();
+    }
                 $totalLatency += (int) preg_replace('/[^0-9]/', '', $packet['time']);
             }
         }
