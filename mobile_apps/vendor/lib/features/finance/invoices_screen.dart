@@ -11,6 +11,7 @@ class InvoicesScreen extends StatefulWidget {
 
 class _InvoicesScreenState extends State<InvoicesScreen> {
   final List<dynamic> _invoices = [];
+  String _currency = '';
   bool _isLoading = true;
   int _page = 1;
   bool _hasMore = true;
@@ -36,10 +37,11 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
     try {
       final response = await ApiClient.dio.get('/finance/invoices', queryParameters: {'page': _page});
       final data = response.data['data'] as List;
-      final meta = response.data; // pagination meta usually at root for Laravel paginate()
+      final meta = response.data; 
       
       setState(() {
         _invoices.addAll(data);
+        _currency = response.data['currency'] ?? '';
         _page++;
         _isLoading = false;
         // Check if last page
@@ -82,7 +84,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text('${invoice['total']} د.أ', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Text('${invoice['total']} $_currency', style: const TextStyle(fontWeight: FontWeight.bold)),
                         Text('#${invoice['invoice_number']}', style: const TextStyle(fontSize: 12, color: Colors.grey)),
                       ],
                     ),

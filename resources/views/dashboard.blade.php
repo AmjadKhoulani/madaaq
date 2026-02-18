@@ -319,7 +319,7 @@ new Chart(revenueCtx, {
                 beginAtZero: true,
                 ticks: {
                     callback: function(value) {
-                        return '{{ $currency }}' + value;
+                        return '{{ \App\Models\Setting::getValue('currency', 'SAR') }} ' + value;
                     }
                 }
             }

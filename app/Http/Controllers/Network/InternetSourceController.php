@@ -32,7 +32,7 @@ class InternetSourceController extends Controller
 
         InternetSource::create($validated);
 
-        return redirect()->back()->with('success', 'تم إضافة مصدر الإنترنت بنجاح');
+        return redirect()->route('network.internet-sources.index')->with('success', 'تم إضافة مصدر الإنترنت بنجاح');
     }
 
     /**
@@ -56,7 +56,7 @@ class InternetSourceController extends Controller
 
         $internetSource->update($validated);
 
-        return redirect()->back()->with('success', 'تم تحديث البيانات بنجاح');
+        return redirect()->route('network.internet-sources.index')->with('success', 'تم تحديث البيانات بنجاح');
     }
 
     /**
@@ -65,6 +65,6 @@ class InternetSourceController extends Controller
     public function destroy(InternetSource $internetSource)
     {
         $internetSource->delete();
-        return redirect()->back()->with('success', 'تم حذف المصدر بنجاح');
+        return redirect()->route('network.internet-sources.index')->with('success', 'تم حذف المصدر بنجاح');
     }
 }

@@ -87,28 +87,35 @@ class MikroTikService
         }
 
         try {
+            // Determine host (Prioritize WireGuard VPN IP)
+            $host = $this->router->ip;
+            if ($this->router->wireguard_enabled && !empty($this->router->wireguard_ip)) {
+                $host = $this->router->wireguard_ip;
+                Log::debug("Using WireGuard VPN IP for connection: {$host}", ['router_id' => $this->router->id]);
+            }
+
             // Decrypt password
-            // Note: In real app, ensure app key matches/exists.
             $password = "";
             try {
                 $password = Crypt::decryptString($this->router->password_encrypted);
             } catch (Exception $e) {
-                // Should handle error or maybe it's not encrypted yet for testing?
-                // Assuming it is encrypted.
                 throw new Exception("Could not decrypt router password: ". $e->getMessage());
             }
 
             $config = new Config([
-                'host' => $this->router->ip,
+                'host' => $host,
                 'user' => $this->router->username,
                 'pass' => $password,
                 'port' => (int) $this->router->api_port,
+                'timeout' => 5, // Shorter timeout for faster failover
             ]);
 
             $this->client = new Client($config);
         } catch (Exception $e) {
-            Log::error("MikroTik Connection Failed: " . $e->getMessage(), ['router_id' => $this->router->id]);
-            throw new Exception("Connection to router failed: " . $e->getMessage());
+            // If VPN failed and we weren't already trying the public IP, try a fallback?
+            // For now, log the specific host that failed.
+            Log::error("MikroTik Connection Failed to {$host}: " . $e->getMessage(), ['router_id' => $this->router->id]);
+            throw new Exception("Connection to router failed ({$host}): " . $e->getMessage());
         }
     }
 
@@ -1159,6 +1166,30 @@ class MikroTikService
             // RouterOS client throws ConnectException or general Exception.
             throw $e;
         }
+    }
+
+    public function deletePPPoEUser($username)
+    {
+        $this->connect();
+        $findQuery = (new Query('/ppp/secret/print'))->where('name', $username);
+        $user = $this->client->query($findQuery)->read();
+        if (!empty($user)) {
+            $query = (new Query('/ppp/secret/remove'))->equal('.id', $user[0]['.id']);
+            return $this->client->query($query)->read();
+        }
+        return null;
+    }
+
+    public function deleteHotspotUser($username)
+    {
+        $this->connect();
+        $findQuery = (new Query('/ip/hotspot/user/print'))->where('name', $username);
+        $user = $this->client->query($findQuery)->read();
+        if (!empty($user)) {
+            $query = (new Query('/ip/hotspot/user/remove'))->equal('.id', $user[0]['.id']);
+            return $this->client->query($query)->read();
+        }
+        return null;
     }
 }
 

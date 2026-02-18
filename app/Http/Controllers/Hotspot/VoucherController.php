@@ -80,13 +80,13 @@ class VoucherController extends Controller
         $service = new MikroTikService($server);
         
         $createdClients = [];
+        $failedSync = 0;
         $batchId = Str::uuid();
 
         try {
             DB::beginTransaction();
 
             for ($i = 0; $i < $request->quantity; $i++) {
-                // Generate Unique Username
                 $username = ($request->prefix ?? '') . Str::upper(Str::random($request->length));
                 while(Client::where('username', $username)->exists()) {
                     $username = ($request->prefix ?? '') . Str::upper(Str::random($request->length));
@@ -98,19 +98,10 @@ class VoucherController extends Controller
                 try {
                      $service->createHotspotUser($username, $password, $package->name ?? 'default');
                 } catch (\Exception $e) {
-                    \Log::error("Failed to create user $username on MikroTik: " . $e->getMessage());
+                    $failedSync++;
+                    \Log::warning("Failed to create user $username on MikroTik: " . $e->getMessage());
                 }
 
-                // 2. Create in DB
-                // Note: 'router_id' in Client table might specifically refer to tower routers. 
-                // If Clients are now associated with Servers, we need a 'mikrotik_server_id' column or map it.
-                // However, usually Hotspot users are on the main gateway (Server). 
-                // Let's check Schema. If 'router_id' is foreign key to 'routers', we might have an issue if we pass a Server ID if they are different tables.
-                // Let's assume for now we might need to store it differently or the migration allowed nullable.
-                // Wait, if Client has 'router_id' linked to 'routers' table, putting a 'mikrotik_server_id' there will fail FK constraints.
-                // Converting logic: The user wants "Server".
-                // Does Client model have 'mikrotik_server_id'?
-                
                 $client = Client::create([
                     'tenant_id' => auth()->user()->tenant_id ?? 1,
                     'mikrotik_server_id' => $server->id,
@@ -128,11 +119,15 @@ class VoucherController extends Controller
 
             DB::commit();
             
-            // Store batch ID in session for convenience
             session(['last_batch_id' => $batchId]);
 
-            return redirect()->route('hotspot.vouchers.print_batch', ['batch' => $batchId])
-                ->with('success', "تم توليد {$request->quantity} كرت بنجاح وتمت المزامنة مع المايكروتك! 🖨️");
+            if ($failedSync > 0) {
+                session()->flash('warning', "تم توليد {$request->quantity} كرت، ولكن تعذر مزامنة {$failedSync} منها مع السيرفر حالياً.");
+            } else {
+                session()->flash('success', "تم توليد {$request->quantity} كرت بجاح وتمت المزامنة الفورية! 🚀");
+            }
+
+            return redirect()->route('hotspot.vouchers.print_batch', ['batch' => $batchId]);
 
         } catch (\Exception $e) {
             DB::rollBack();

@@ -160,6 +160,26 @@
         </div>
     </div>
 
+    <!-- Capital Assets Section -->
+    <h2 class="text-lg font-bold text-gray-800 mt-8 mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+        الأصول الرأسمالية (Capital Assets)
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Structure Costs -->
+        <div class="glass p-5 rounded-2xl border-l-4 border-indigo-500 relative overflow-hidden group">
+            <div class="absolute -right-6 -top-6 w-24 h-24 bg-indigo-500/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+            <div class="relative">
+                <div class="text-slate-500 dark:text-slate-400 text-sm mb-1 font-medium">قيمة البنية التحتية (الهيكل)</div>
+                <div class="text-3xl font-bold text-indigo-700 mt-1">@money($totalStructureCost)</div>
+                <div class="text-xs text-indigo-500 mt-2 font-medium flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                    استثمار ثابت في الأبراج
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Charts Row 1 -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Main Revenue Chart -->

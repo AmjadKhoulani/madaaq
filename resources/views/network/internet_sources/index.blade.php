@@ -3,16 +3,19 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex justify-between items-center">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">مصادر الإنترنت</h1>
-            <p class="text-gray-500 mt-1">إدارة خطوط الإنترنت المغذية للشبكة (Fiber, Starlink)</p>
+        <div class="flex items-center gap-4">
+            <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+            </div>
+            <div>
+                <h1 class="text-3xl font-black text-slate-900 tracking-tight" style="font-family: 'Cairo', sans-serif;">مصادر الإنترنت</h1>
+                <p class="text-slate-500 font-medium" style="font-family: 'Cairo', sans-serif;">إدارة خطوط الإنترنت المغذية للشبكة (Fiber, Starlink)</p>
+            </div>
         </div>
-        <button @click="$dispatch('open-modal', 'create-source-modal')" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg transition transform hover:scale-105">
+        <button @click="$dispatch('open-modal', 'create-source-modal')" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-black rounded-xl shadow-xl shadow-indigo-100 transition-all transform hover:scale-105 active:scale-95" style="font-family: 'Cairo', sans-serif;">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
             إضافة مصدر جديد
         </button>
-    </div>
 
     @if(session('success'))
     <div class="bg-emerald-50 border-r-4 border-emerald-500 text-emerald-700 p-4 rounded-lg shadow-sm flex items-center gap-3">
@@ -41,7 +44,7 @@
                             @endif
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-gray-900 leading-tight">{{ $source->name }}</h3>
+                            <h3 class="text-xl font-black text-slate-900 leading-tight" style="font-family: 'Cairo', sans-serif;">{{ $source->name }}</h3>
                             <div class="flex gap-1">
                                 <span class="text-xs font-bold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded uppercase tracking-wider">{{ $source->type }}</span>
                                 @if($source->connection_type)
@@ -55,10 +58,22 @@
                 <div class="space-y-4">
                     <div class="flex justify-between items-center p-3 bg-gray-50/50 rounded-xl">
                         <span class="text-gray-500 font-medium text-sm">الحالة</span>
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold {{ $source->status === 'online' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700' }}">
-                            <span class="w-2 h-2 rounded-full ml-1.5 {{ $source->status === 'online' ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500' }}"></span>
-                            {{ $source->status === 'online' ? 'متصل' : 'منقطع' }}
-                        </span>
+                        @if($source->status === 'online')
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-700">
+                                <span class="w-2 h-2 rounded-full ml-1.5 bg-emerald-500 animate-pulse"></span>
+                                متصل
+                            </span>
+                        @elseif($source->status === 'maintenance')
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-orange-100 text-orange-700">
+                                <span class="w-2 h-2 rounded-full ml-1.5 bg-orange-500"></span>
+                                صيانة
+                            </span>
+                        @else
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-100 text-rose-700">
+                                <span class="w-2 h-2 rounded-full ml-1.5 bg-rose-500"></span>
+                                منقطع
+                            </span>
+                        @endif
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
@@ -117,16 +132,16 @@
                 <!-- Source Name -->
                 <div class="space-y-2">
                     <label class="block text-sm font-bold text-gray-700">اسم المصدر</label>
-                    <div class="relative">
-                        <input type="text" name="name" 
-                               placeholder="مثال: الخط الرئيسي Fiber 1" 
-                               required 
-                               class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold placeholder-gray-400 bg-gray-50/50 focus:bg-white text-gray-800">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 px-6 flex items-center pointer-events-none text-slate-400 group-focus-within:text-indigo-500 transition-colors">
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zM5 10a1 1 0 112 0 1 1 0 01-2 0zm4 0a1 1 0 112 0 1 1 0 01-2 0zm4 0a1 1 0 112 0 1 1 0 01-2 0z" clip-rule="evenodd" />
                             </svg>
                         </div>
+                        <input type="text" name="name" 
+                               placeholder="مثال: الخط الرئيسي Fiber 1" 
+                               required 
+                               class="w-full px-4 pl-16 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold placeholder-gray-400 bg-gray-50/50 focus:bg-white text-gray-800">
                     </div>
                 </div>
                 
@@ -134,16 +149,19 @@
                     <!-- Type Selection -->
                     <div class="space-y-2">
                         <label class="block text-sm font-bold text-gray-700">النوع</label>
-                        <div class="relative">
-                            <select name="type" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 bg-gray-50/50 focus:bg-white transition-all appearance-none font-semibold text-gray-700">
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 px-6 flex items-center pointer-events-none text-slate-400 group-focus-within:text-indigo-500 transition-colors">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                            <select name="type" required class="w-full px-4 pl-16 pr-12 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 bg-gray-50/50 focus:bg-white transition-all appearance-none font-semibold text-gray-700">
                                 <option value="fiber">🌐 Fiber Optic</option>
                                 <option value="starlink">📡 Starlink</option>
                                 <option value="microwave">📶 Microwave Link</option>
                                 <option value="4g">📱 4G / LTE</option>
                                 <option value="other">🔌 Other</option>
                             </select>
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none text-slate-400">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
                             </div>
                         </div>
                     </div>
@@ -151,15 +169,18 @@
                     <!-- Connection Type Selection -->
                     <div class="space-y-2">
                         <label class="block text-sm font-bold text-gray-700">نوع الوصل (Connection)</label>
-                        <div class="relative">
-                            <select name="connection_type" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 bg-gray-50/50 focus:bg-white transition-all appearance-none font-semibold text-gray-700">
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 px-6 flex items-center pointer-events-none text-slate-400 group-focus-within:text-indigo-500 transition-colors">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                            <select name="connection_type" class="w-full px-4 pl-16 pr-12 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 bg-gray-50/50 focus:bg-white transition-all appearance-none font-semibold text-gray-700">
                                 <option value="">غير محدد</option>
                                 <option value="fiber">فايبر (Fiber)</option>
                                 <option value="cable">كابل (Cable)</option>
                                 <option value="wireless">لاسلكي (Wireless)</option>
                             </select>
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none text-slate-400">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
                             </div>
                         </div>
                     </div>
@@ -167,14 +188,17 @@
                     <!-- Status Selection -->
                     <div class="space-y-2">
                         <label class="block text-sm font-bold text-gray-700">الحالة</label>
-                        <div class="relative">
-                            <select name="status" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 bg-gray-50/50 focus:bg-white transition-all appearance-none font-semibold text-gray-700">
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 px-6 flex items-center pointer-events-none text-slate-400 group-focus-within:text-indigo-500 transition-colors">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                            <select name="status" required class="w-full px-4 pl-16 pr-12 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 bg-gray-50/50 focus:bg-white transition-all appearance-none font-semibold text-gray-700">
                                 <option value="online">✅ متصل (Online)</option>
                                 <option value="offline">❌ منقطع (Offline)</option>
                                 <option value="maintenance">🛠️ صيانة (Maintenance)</option>
                             </select>
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none text-slate-400">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
                             </div>
                         </div>
                     </div>
@@ -184,16 +208,23 @@
                     <!-- Capacity -->
                     <div class="space-y-2">
                         <label class="block text-sm font-bold text-gray-700">السعة (Capacity)</label>
-                        <div class="relative">
-                            <input type="text" name="capacity" placeholder="100 Mbps" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-mono text-sm dir-ltr text-right bg-gray-50/50 focus:bg-white">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 font-bold text-xs">Mbps</div>
+                            <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-indigo-500 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                            </div>
+                            <input type="text" name="capacity" placeholder="100 Mbps" class="w-full px-4 pl-14 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-mono text-sm dir-ltr text-right bg-gray-50/50 focus:bg-white">
                         </div>
                     </div>
 
                     <!-- Gateway IP -->
-                    <div class="space-y-2">
+                        <div class="space-y-2">
                         <label class="block text-sm font-bold text-gray-700">Gateway IP</label>
-                        <input type="text" name="ip_gateway" placeholder="192.168.1.1" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-mono text-sm dir-ltr bg-gray-50/50 focus:bg-white">
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-indigo-500 transition-colors">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" /></svg>
+                            </div>
+                            <input type="text" name="ip_gateway" placeholder="192.168.1.1" class="w-full px-4 pl-14 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-mono text-sm dir-ltr bg-gray-50/50 focus:bg-white">
+                        </div>
                     </div>
                 </div>
             </div>

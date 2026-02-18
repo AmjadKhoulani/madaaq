@@ -62,8 +62,10 @@ class UserController extends Controller
         try {
             $profileName = $package->name ?? 'default';
             $service->createHotspotUser($validated['username'], $validated['password'], $profileName); 
+            session()->flash('success', 'تم إنشاء مستخدم الهوتسبوت بنجاح على السيرفر وقاعدة البيانات.');
         } catch (\Exception $e) {
-            \Log::error("MikroTik Hotspot User Creation Failed: " . $e->getMessage());
+            \Log::warning("MikroTik Hotspot User Creation Failed: " . $e->getMessage());
+            session()->flash('warning', 'تم حفظ المستخدم في قاعدة البيانات، ولكن تعذر التواصل مع السيرفر: ' . $e->getMessage());
         }
 
         \App\Models\Client::create([

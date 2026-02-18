@@ -24,7 +24,67 @@
     </div>
     @endif
 
-    <!-- Table -->
+    <!-- Servers Section -->
+    @if($servers->count() > 0)
+    <div class="mb-8">
+        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <svg class="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
+            سيرفرات الإدارة (MikroTik Servers)
+        </h3>
+        <div class="glass shadow-lg rounded-2xl overflow-hidden border border-indigo-100">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-indigo-50/50">
+                        <tr>
+                            <th class="px-6 py-4 text-right text-xs font-bold text-indigo-800 uppercase tracking-wider">اسم السيرفر</th>
+                            <th class="px-6 py-4 text-right text-xs font-bold text-indigo-800 uppercase tracking-wider">عنوان IP</th>
+                            <th class="px-6 py-4 text-right text-xs font-bold text-indigo-800 uppercase tracking-wider">الحالة</th>
+                            <th class="px-6 py-4 text-right text-xs font-bold text-indigo-800 uppercase tracking-wider">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white/60 divide-y divide-gray-200 backdrop-blur-sm">
+                        @foreach($servers as $server)
+                        <tr class="hover:bg-indigo-50/50 transition duration-200">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-gray-900">{{ $server->name }}</div>
+                                        <div class="text-xs text-indigo-500">v{{ $server->version ?? 'Unknown' }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="font-mono text-sm bg-gray-100 px-2 py-1 rounded text-gray-700">{{ $server->ip }}</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 text-xs font-bold rounded-full bg-green-100 text-green-700">متصل ✅</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <div class="flex items-center gap-3">
+                                    <a href="{{ route('servers.show', $server->id) }}" class="text-indigo-600 hover:text-indigo-900 font-bold hover:underline">لوحة التحكم</a>
+                                    <form action="{{ route('servers.destroy', $server->id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد؟')" class="inline">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="text-red-500 hover:text-red-700">حذف</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Routers List -->
+    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <svg class="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
+        أجهزة الشبكة (Routers & APs)
+    </h3>
     <div class="glass shadow-lg rounded-2xl overflow-hidden border border-gray-100">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
@@ -43,7 +103,7 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md">
-                                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
+                                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
                                 </div>
                                 <div>
                                     <div class="font-bold text-gray-900">{{ $router->name }}</div>
@@ -61,8 +121,6 @@
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200">راوتر</span>
                             @elseif($router->device_type === 'access_point')
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-100 text-purple-800 border border-purple-200">نقطة وصول</span>
-                            @elseif($router->device_type === 'server')
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-gray-100 text-gray-800 border border-gray-200">سيرفر</span>
                             @else
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-pink-100 text-pink-800 border border-pink-200">محطة بث</span>
                             @endif
@@ -84,34 +142,17 @@
                                 @endphp
                                 
                                 @if($isMikroTik || !$router->deviceModel)
-                                    <a href="{{ route('routers.webfig', $router->id) }}" target="_blank" class="text-emerald-500 hover:text-emerald-700 font-bold hover:underline transition flex items-center gap-1" title="وصول آمن (يفتح عن بعد عبر الوكيل)">
-                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                                        WebFig (Secure)
+                                    <a href="{{ route('routers.webfig', $router->id) }}" target="_blank" class="text-emerald-500 hover:text-emerald-700 font-bold hover:underline transition flex items-center gap-1" title="وصول آمن">
+                                        WebFig
                                     </a>
                                 @endif
 
-                                @if(isset($router->is_server_model) && $router->is_server_model)
-                                    <a href="{{ route('servers.show', $router->id) }}" class="text-blue-600 hover:text-blue-900 font-bold hover:underline transition">
-                                        إدارة
-                                    </a>
-                                    <form action="{{ route('servers.destroy', $router->id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف هذا السيرفر؟')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-500 hover:text-red-700 font-bold hover:underline transition">حذف</button>
-                                    </form>
-                                @else
-                                    <a href="{{ route('routers.edit', $router->id) }}" class="text-yellow-600 hover:text-yellow-900 font-bold hover:underline transition">
-                                        تعديل
-                                    </a>
-                                    <button onclick="showScript({{ $router->id }})" class="text-indigo-600 hover:text-indigo-900 font-bold hover:underline transition">
-                                        سكريبت
-                                    </button>
-                                    <form action="{{ route('routers.destroy', $router->id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف هذا الجهاز؟')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-500 hover:text-red-700 font-bold hover:underline transition">حذف</button>
-                                    </form>
-                                @endif
+                                <a href="{{ route('routers.edit', $router->id) }}" class="text-yellow-600 hover:text-yellow-900 font-bold hover:underline transition">تعديل</a>
+                                <button onclick="showScript({{ $router->id }})" class="text-indigo-600 hover:text-indigo-900 font-bold hover:underline transition">سكريبت</button>
+                                <form action="{{ route('routers.destroy', $router->id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف هذا الجهاز؟')" class="inline">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="text-red-500 hover:text-red-700 font-bold hover:underline transition">حذف</button>
+                                </form>
                             </div>
                         </td>
                     </tr>

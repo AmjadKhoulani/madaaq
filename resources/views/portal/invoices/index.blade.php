@@ -33,7 +33,7 @@
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4 font-mono text-gray-900 font-bold">#{{ $invoice->id }}</td>
                             <td class="px-6 py-4 text-gray-600">{{ $invoice->created_at->format('Y-m-d') }}</td>
-                            <td class="px-6 py-4 font-bold text-gray-900">{{ number_format($invoice->amount, 2) }} ر.س</td>
+                            <td class="px-6 py-4 font-bold text-gray-900">{{ number_format($invoice->amount, 2) }} {{ \App\Models\Setting::getValue('currency', 'ر.س') }}</td>
                             <td class="px-6 py-4">
                                 <span class="px-3 py-1 rounded-full text-xs font-bold 
                                     {{ $invoice->status == 'paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }}">

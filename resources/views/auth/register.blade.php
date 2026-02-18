@@ -48,7 +48,7 @@
 
                 <div>
                     <label for="domain" class="block text-sm font-medium text-gray-700 mb-1">معرف النطاق (Subdomain)</label>
-                    <div class="ltr flex items-center">
+                    <div class="ltr flex items-center" dir="ltr">
                         <span class="p-3 bg-gray-100 border border-r-0 border-gray-300 rounded-l-lg text-gray-500 text-sm">.madaaq.com</span>
                         <input id="domain" name="domain" type="text" required class="appearance-none block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-r-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-left" placeholder="domain">
                     </div>
@@ -71,34 +71,8 @@
                             <option value="+963" selected>🇸🇾 +963</option>
                             <option value="+966">🇸🇦 +966</option>
                             <option value="+971">🇦🇪 +971</option>
-                            <option value="+965">🇰🇼 +965</option>
-                            <option value="+973">🇧🇭 +973</option>
-                            <option value="+974">🇶🇦 +974</option>
-                            <option value="+968">🇴🇲 +968</option>
                             <option value="+20">🇪🇬 +20</option>
-                            <option value="+962">🇯🇴 +962</option>
-                            <option value="+964">🇮🇶 +964</option>
-                            <option value="+970">🇵🇸 +970</option>
-                            <option value="+961">🇱🇧 +961</option>
-                            <option value="+212">🇲🇦 +212</option>
-                            <option value="+213">🇩🇿 +213</option>
-                            <option value="+216">🇹🇳 +216</option>
-                            <option value="+218">🇱🇾 +218</option>
-                            <option value="+249">🇸🇩 +249</option>
-                            <option value="+967">🇾🇪 +967</option>
                             <option value="+90">🇹🇷 +90</option>
-                            <option value="+1">🇺🇸/🇨🇦 +1</option>
-                            <option value="+44">🇬🇧 +44</option>
-                            <option value="+49">🇩🇪 +49</option>
-                            <option value="+33">🇫🇷 +33</option>
-                            <option value="+39">🇮🇹 +39</option>
-                            <option value="+34">🇪🇸 +34</option>
-                            <option value="+91">🇮🇳 +91</option>
-                            <option value="+92">🇵🇰 +92</option>
-                            <option value="+880">🇧🇩 +880</option>
-                            <option value="+63">🇵🇭 +63</option>
-                            <option value="+60">🇲🇾 +60</option>
-                            <option value="+62">🇮🇩 +62</option>
                         </select>
                         <input id="phone" name="phone" type="tel" required class="appearance-none relative block w-full px-3 py-3 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="5xxxxxxxx">
                     </div>
@@ -141,7 +115,7 @@
                     </a>
                 </p>
                 <p class="mt-2 text-sm text-gray-500">
-                    <a href="{{ route('home') }}" class="hover:underline">العودة للرئيسية</a>
+                    <a href="/" class="hover:underline">العودة للرئيسية</a>
                 </p>
             </div>
         </form>

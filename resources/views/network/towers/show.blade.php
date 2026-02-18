@@ -238,14 +238,14 @@
                 {{-- Devices (Sectors/Antennas) --}}
                 <div>
                      <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-xl font-bold text-gray-900">أجهزة البث (Sectors/Omnis) ({{ $tower->devices->count() }})</h3>
+                        <h3 class="text-xl font-bold text-gray-900">أجهزة البث (Sectors/Omnis) ({{ $tower->broadcast_devices->count() }})</h3>
                         <button @click="$dispatch('open-device-modal')" type="button" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition text-sm flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                             إضافة جهاز بث
                         </button>
                     </div>
                     <div class="grid grid-cols-1 gap-6">
-                        @forelse($tower->devices as $device)
+                        @forelse($tower->broadcast_devices as $device)
                         <div class="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition">
                             <!-- Device Header -->
                             <div class="p-5 flex items-start justify-between bg-gray-50 border-b border-gray-100">
@@ -264,21 +264,36 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase tracking-wider">{{ $device->mode }}</span>
-                                    <!-- Edit Button -->
-                                    <button type="button" onclick="alert('تحت التطوير')" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition" title="تعديل">
-                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                    </button>
-                                    <!-- Delete Button -->
-                                    <form action="{{ route('network.towers.devices.destroy', [$tower, $device]) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف هذا الجهاز؟')" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition" title="حذف">
-                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                        </button>
-                                    </form>
-                                </div>
+                                    <!-- Actions -->
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase tracking-wider">{{ $device->mode }}</span>
+                                        
+                                        @if($device instanceof \App\Models\Router)
+                                            <!-- Router Actions -->
+                                            <a href="{{ route('routers.edit', $device->id) }}" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition" title="تعديل">
+                                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            </a>
+                                            <form action="{{ route('routers.destroy', $device->id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف هذا الجهاز؟')" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition" title="حذف">
+                                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                </button>
+                                            </form>
+                                        @else
+                                            <!-- TowerDevice Actions -->
+                                            <button type="button" onclick="alert('تحت التطوير')" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition" title="تعديل">
+                                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            </button>
+                                            <form action="{{ route('network.towers.devices.destroy', [$tower, $device]) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف هذا الجهاز؟')" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition" title="حذف">
+                                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </div>
                             </div>
                             
                             <!-- Device Details -->
@@ -303,7 +318,7 @@
                             <div class="bg-gray-50 p-4">
                                 <div class="flex items-center justify-between mb-3">
                                     <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider">الشبكات (SSIDs) التابعة لهذا الجهاز</h4>
-                                    <button @click="$dispatch('open-ssid-modal', { deviceId: {{ $device->id }}, deviceName: '{{ $device->name }}' })" type="button" class="text-xs bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg font-medium transition  flex items-center gap-1">
+                                    <button @click="$dispatch('open-ssid-modal', { deviceId: {{ $device->id }}, deviceName: '{{ $device->name }}', deviceType: '{{ $device instanceof \App\Models\Router ? 'router' : 'tower_device' }}' })" type="button" class="text-xs bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg font-medium transition  flex items-center gap-1">
                                         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                         إضافة SSID
                                     </button>
@@ -311,19 +326,44 @@
                                 @if($device->ssids->count() > 0)
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         @foreach($device->ssids as $ssid)
-                                        <div class="flex items-start gap-3 p-3 bg-white border border-gray-200 rounded-lg">
-                                            <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center shrink-0">
-                                                <svg class="w-4 h-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-15.857 21.213 0"/></svg>
-                                            </div>
-                                            <div>
-                                                <p class="font-bold text-gray-900 text-sm">{{ $ssid->ssid_name }}</p>
-                                                <div class="flex items-center gap-2 mt-1">
-                                                    <span class="text-xs text-gray-500">{{ $ssid->frequency }}GHz</span>
-                                                    <span class="text-[10px] px-1.5 py-0.5 rounded {{ $ssid->is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
-                                                        {{ $ssid->is_active ? 'Active' : 'Inactive' }}
-                                                    </span>
+                                        <div class="flex items-start justify-between gap-3 p-3 bg-white border border-gray-200 rounded-lg group">
+                                            <div class="flex items-start gap-3">
+                                                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center shrink-0">
+                                                    <svg class="w-4 h-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-15.857 21.213 0"/></svg>
+                                                </div>
+                                                <div>
+                                                    <p class="font-bold text-gray-900 text-sm">{{ $ssid->ssid_name }}</p>
+                                                    <div class="flex items-center gap-2 mt-1">
+                                                        <span class="text-xs text-gray-500">{{ $ssid->frequency }}</span>
+                                                        <span class="text-[10px] px-1.5 py-0.5 rounded {{ $ssid->is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                                            {{ $ssid->is_active ? 'Active' : 'Inactive' }}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            {{-- Edit/Delete buttons — only for real TowerSSID records --}}
+                                            @if(isset($ssid->id))
+                                            <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition shrink-0">
+                                                <button type="button"
+                                                    @click="$dispatch('open-edit-ssid-modal', {
+                                                        ssidId: {{ $ssid->id }},
+                                                        ssidName: '{{ $ssid->ssid_name }}',
+                                                        frequency: '{{ $ssid->frequency }}',
+                                                        isActive: {{ $ssid->is_active ? 'true' : 'false' }},
+                                                        notes: '{{ $ssid->notes ?? '' }}'
+                                                    })"
+                                                    class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition" title="تعديل">
+                                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                                </button>
+                                                <form action="{{ route('network.towers.ssids.destroy', [$tower, $ssid->id]) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف هذه الشبكة؟')" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition" title="حذف">
+                                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                            @endif
                                         </div>
                                         @endforeach
                                     </div>
@@ -667,12 +707,12 @@
          style="display: none;">
         <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
             <div x-show="open" x-transition.opacity class="fixed inset-0 transition-opacity" aria-hidden="true">
-                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                <div class="absolute inset-0 bg-gray-500 opacity-50"></div>
             </div>
 
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-            <div x-show="open" x-transition.scale class="inline-block align-bottom bg-white rounded-lg text-right overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl w-full">
+            <div x-show="open" x-transition.scale class="relative z-10 inline-block align-bottom bg-white rounded-lg text-right overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl w-full">
                 <form action="{{ route('network.towers.devices.store', $tower) }}" method="POST">
                     @csrf
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -782,23 +822,24 @@
     </div>
 
     {{-- SSID Creation Modal --}}
-    <div x-data="{ open: false, deviceId: null, deviceName: '' }" 
-         @open-ssid-modal.window="open = true; deviceId = $event.detail.deviceId; deviceName = $event.detail.deviceName" 
+    <div x-data="{ open: false, deviceId: null, deviceName: '', deviceType: '' }" 
+         @open-ssid-modal.window="open = true; deviceId = $event.detail.deviceId; deviceName = $event.detail.deviceName; deviceType = $event.detail.deviceType" 
          @keydown.escape.window="open = false"
          x-show="open" 
          class="fixed inset-0 z-50 overflow-y-auto" 
          style="display: none;">
         <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
             <div x-show="open" x-transition.opacity class="fixed inset-0 transition-opacity" aria-hidden="true">
-                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                <div class="absolute inset-0 bg-gray-500 opacity-50"></div>
             </div>
 
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-            <div x-show="open" x-transition.scale class="inline-block align-bottom bg-white rounded-lg text-right overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full">
+            <div x-show="open" x-transition.scale class="relative z-10 inline-block align-bottom bg-white rounded-lg text-right overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full">
                 <form action="{{ route('network.towers.ssids.store', $tower) }}" method="POST">
                     @csrf
                     <input type="hidden" name="tower_device_id" x-bind:value="deviceId">
+                    <input type="hidden" name="device_type" x-bind:value="deviceType">
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <div class="mb-4">
                             <h3 class="text-lg leading-6 font-medium text-gray-900">إضافة شبكة (SSID) جديدة</h3>
@@ -813,9 +854,9 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">التردد *</label>
                                     <select name="frequency" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                                        <option value="5">5 GHz</option>
-                                        <option value="2.4">2.4 GHz</option>
-                                        <option value="60">60 GHz</option>
+                                        <option value="5GHz">5 GHz</option>
+                                        <option value="2.4GHz">2.4 GHz</option>
+                                        <option value="Both">Both</option>
                                     </select>
                                 </div>
                                 <div>
@@ -828,7 +869,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">ملاحظات</label>
-                                <textarea name="note" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
+                                <textarea name="notes" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
                             </div>
                         </div>
                     </div>
@@ -844,5 +885,69 @@
             </div>
         </div>
     </div>
+
+    {{-- Edit SSID Modal --}}
+    <div x-data="{ open: false, ssidId: null, ssidName: '', frequency: '', isActive: true, notes: '' }"
+         @open-edit-ssid-modal.window="open = true; ssidId = $event.detail.ssidId; ssidName = $event.detail.ssidName; frequency = $event.detail.frequency; isActive = $event.detail.isActive; notes = $event.detail.notes"
+         @keydown.escape.window="open = false"
+         x-show="open"
+         class="fixed inset-0 z-50 overflow-y-auto"
+         style="display: none;">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div x-show="open" x-transition.opacity class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-50"></div>
+            </div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div x-show="open" x-transition.scale class="relative z-10 inline-block align-bottom bg-white rounded-lg text-right overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full">
+                <form :action="'{{ url('MadaaQ/public/network/towers/' . $tower->id . '/ssids') }}/' + ssidId" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="mb-4">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">تعديل شبكة (SSID)</h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">اسم الشبكة (SSID) *</label>
+                                <input type="text" name="ssid_name" required x-model="ssidName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">التردد *</label>
+                                    <select name="frequency" required x-model="frequency" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                                        <option value="5GHz">5 GHz</option>
+                                        <option value="2.4GHz">2.4 GHz</option>
+                                        <option value="Both">Both</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">الحالة</label>
+                                    <select name="is_active" x-model="isActive" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                                        <option value="1">فعال</option>
+                                        <option value="0">غير فعال</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">ملاحظات</label>
+                                <textarea name="notes" rows="2" x-model="notes" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            حفظ التعديلات
+                        </button>
+                        <button type="button" @click="open = false" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
 @endsection

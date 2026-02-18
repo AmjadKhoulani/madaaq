@@ -271,4 +271,49 @@ class TowerController extends Controller
         $tower->delete();
         return redirect()->route('network.towers.index')->with('success', 'تم حذف البرج بنجاح');
     }
+
+    public function storeSsid(Request $request, Tower $tower)
+    {
+        \Log::info('storeSsid request:', $request->all());
+
+        $validated = $request->validate([
+            'tower_device_id' => 'required', // Can be numeric ID for TowerDevice or Router ID
+            'device_type' => 'nullable|string|in:router,tower_device', // New field
+            'ssid_name' => 'required|string|max:255',
+            'frequency' => 'required|in:2.4,5,60',
+            'is_active' => 'nullable|boolean',
+            'notes' => 'nullable|string',
+        ]);
+
+        $deviceId = $validated['tower_device_id'];
+        $deviceType = $validated['device_type'] ?? 'tower_device'; // Default to legacy if not present
+        
+        if ($deviceType === 'tower_device') {
+             // It's a TowerDevice
+            $device = \App\Models\TowerDevice::find($deviceId);
+            if ($device) {
+                \App\Models\TowerSSID::create([
+                    'tower_id' => $tower->id,
+                    'tower_device_id' => $device->id,
+                    'ssid_name' => $validated['ssid_name'],
+                    'frequency' => $validated['frequency'],
+                    'is_active' => $request->boolean('is_active', true),
+                    'notes' => $validated['notes'],
+                ]);
+            }
+        } else {
+            // It's a Router (Sector/Omni/AP)
+            $router = \App\Models\Router::find($deviceId);
+            if ($router) {
+                // Update Router SSID and potentially Frequency if column exists, 
+                // otherwise just SSID for now as per current schema.
+                // Note: Router model only has 'ssid' column currently.
+                $router->update([
+                    'ssid' => $validated['ssid_name'],
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'تم إضافة الشبكة بنجاح');
+    }
 }

@@ -162,6 +162,31 @@ class Tower extends Model
         return $this->belongsTo(Router::class, 'receiver_router_id');
     }
 
+    public function getBroadcastDevicesAttribute() 
+    {
+        // Get existing TowerDevices
+        $towerDevices = $this->devices;
+
+        // Get Routers that are APs or Base Stations linked to this tower
+        $routers = $this->routers()
+            ->whereIn('device_type', ['access_point', 'base_station'])
+            ->get()
+            ->map(function ($router) {
+                // Map Router attributes to match TowerDevice structure (duck typing for view)
+                $router->mode = $router->device_type === 'access_point' ? 'ap' : 'station'; // Approximate mapping
+                $router->frequency = $router->frequency ?? '-'; // Router might not have frequency column yet
+                
+                // If antenna_type is set, use it to refine display if needed, or just append to name
+                if ($router->antenna_type) {
+                    $router->mode = ucfirst($router->antenna_type);
+                }
+
+                return $router;
+            });
+
+        return $towerDevices->concat($routers);
+    }
+
     // New Attribute for Total Equipment Cost
     public function getTotalEquipmentCostAttribute() 
     {

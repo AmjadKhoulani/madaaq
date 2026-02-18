@@ -20,7 +20,11 @@ class FinanceController extends Controller
 
         $invoices = $query->paginate(20);
 
-        return response()->json($invoices);
+        
+        $data = $invoices->toArray();
+        $data['currency'] = \App\Models\Setting::getValue('currency', 'SAR');
+
+        return response()->json($data);
     }
 
     public function show($id)
@@ -29,6 +33,11 @@ class FinanceController extends Controller
             ->with(['client', 'items'])
             ->findOrFail($id);
 
-        return response()->json($invoice);
+        return response()->json([
+            'invoice' => $invoice, // Wrap existing user to avoid breaking if mobile expects root? 
+            // Wait, previous code returned json($invoice). If mobile expects fields at root, I should merge.
+            ...$invoice->toArray(),
+            'currency' => \App\Models\Setting::getValue('currency', 'SAR')
+        ]);
     }
 }

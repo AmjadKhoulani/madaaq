@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6" x-data="routerForm()">
+<div class="max-w-4xl mx-auto space-y-6" x-data="routerForm({{ isset($preSelectedModel) ? json_encode($preSelectedModel) : 'null' }})">
     <!-- Header -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <h2 class="text-2xl font-bold text-gray-800">إضافة جهاز جديد</h2>
@@ -56,66 +56,108 @@
                 <input type="hidden" name="model_id" :value="selectedDevice ? selectedDevice.id : ''">
                 
                 <!-- Autocomplete Dropdown -->
-                <div x-show="showDevices && devices.length > 0" 
-                     x-cloak
-                     class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-xl max-h-96 overflow-y-auto">
-                    <template x-for="device in devices" :key="device.id">
-                        <div @click="selectDevice(device)" 
-                             class="flex items-center gap-4 p-4 hover:bg-indigo-50 cursor-pointer transition border-b border-gray-100 last:border-0">
+            <div x-show="showDevices && devices.length > 0" 
+                 x-cloak
+                 class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-xl max-h-96 overflow-y-auto">
+                <template x-for="device in devices" :key="device.id">
+                    <div @click="selectDevice(device)" 
+                         class="flex flex-col items-center p-6 hover:bg-indigo-50 cursor-pointer transition border-b border-gray-100 last:border-0 text-center group">
+                        <div class="w-24 h-24 flex items-center justify-center bg-white rounded-xl border border-gray-200 p-2 mb-4 shadow-sm group-hover:border-indigo-300 transition-colors">
                             <img :src="device.image_url" 
                                  :alt="device.model_name"
-                                 class="w-16 h-16 object-contain rounded border border-gray-200 bg-white p-1"
+                                 class="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-110"
                                  onerror="this.src='https://via.placeholder.com/64?text=Device'">
-                            <div class="flex-1">
-                                <p class="font-bold text-gray-900" x-text="device.manufacturer + ' ' + device.model_name"></p>
-                                <div class="flex items-center gap-2 mt-1">
-                                    <span class="text-xs px-2 py-1 rounded-full" 
-                                          :class="device.device_type === 'router' ? 'bg-blue-100 text-blue-700' : device.device_type === 'access_point' ? 'bg-green-100 text-green-700' : 'bg-purple-100 text-purple-700'"
-                                          x-text="device.device_type === 'router' ? '📡 راوتر' : device.device_type === 'access_point' ? '📶 نقطة وصول' : '🗼 محطة بث'"></span>
-                                    <span class="text-xs text-gray-500" x-text="device.frequency"></span>
-                                </div>
+                        </div>
+                        <div class="w-full">
+                            <p class="font-bold text-gray-900 text-base" x-text="device.manufacturer + ' ' + device.model_name" dir="ltr"></p>
+                            <div class="flex items-center justify-center gap-2 mt-2">
+                                <span class="text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest" 
+                                      :class="device.device_type === 'router' ? 'bg-blue-100 text-blue-700' : device.device_type === 'access_point' ? 'bg-green-100 text-green-700' : 'bg-purple-100 text-purple-700'"
+                                      x-text="device.device_type === 'router' ? '📡 راوتر' : device.device_type === 'access_point' ? '📶 نقطة وصول' : '🗼 محطة بث'"></span>
+                                <span class="text-[10px] font-bold text-gray-400" x-text="device.frequency"></span>
                             </div>
                         </div>
-                    </template>
-                </div>
-                
-                <!-- Selected Device Preview -->
-                <div x-show="selectedDevice" 
-                     x-cloak
-                     class="mt-3 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-xl flex items-center gap-4">
+                    </div>
+                </template>
+            </div>
+            
+            <!-- Selected Device Preview -->
+            <div x-show="selectedDevice" 
+                 x-cloak
+                 class="mt-4 p-5 bg-gradient-to-br from-indigo-50 to-purple-50/30 border border-indigo-100 rounded-2xl flex items-center gap-6 shadow-sm transition-all duration-300">
+                <div class="w-28 h-28 flex-shrink-0 bg-white rounded-2xl border border-indigo-200 p-3 shadow-inner flex items-center justify-center">
                     <img :src="selectedDevice?.image_url"
                          :alt="selectedDevice?.model_name"
-                         class="w-20 h-20 object-contain rounded-lg border-2 border-indigo-300 bg-white p-2 shadow-sm"
+                         class="max-h-full max-w-full object-contain"
                          onerror="this.src='https://via.placeholder.com/80?text=Device'">
-                    <div class="flex-1">
-                        <p class="font-bold text-indigo-900 text-lg" x-text="selectedDevice?.manufacturer"></p>
-                        <p class="font-semibold text-gray-700" x-text="selectedDevice?.model_name"></p>
-                        <div class="flex items-center gap-2 mt-1">
-                            <span class="text-xs px-2 py-1 rounded-full bg-indigo-100 text-indigo-700" 
-                                  x-text="selectedDevice?.device_type === 'router' ? '📡 راوتر' : selectedDevice?.device_type === 'access_point' ? '📶 نقطة وصول' : '🗼 محطة بث'"></span>
-                            <span class="text-xs text-gray-600" x-text="selectedDevice?.frequency"></span>
-                        </div>
-                    </div>
-                    <button type="button" @click="selectedDevice = null; deviceQuery = ''" class="text-red-500 hover:text-red-700 p-2">
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                    </button>
                 </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mb-1">الجهاز المختار</p>
+                    <p class="font-bold text-gray-900 text-lg truncate" x-text="selectedDevice?.manufacturer + ' ' + selectedDevice?.model_name" dir="ltr"></p>
+                    <div class="flex items-center gap-3 mt-2">
+                        <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-indigo-100 text-indigo-700" 
+                              x-text="selectedDevice?.device_type === 'router' ? '📡 راوتر' : selectedDevice?.device_type === 'access_point' ? '📶 نقطة وصول' : '🗼 محطة بث'"></span>
+                        <span class="text-[10px] font-bold text-gray-500" x-text="selectedDevice?.frequency"></span>
+                    </div>
+                </div>
+                <button type="button" @click="selectedDevice = null; deviceQuery = ''" class="w-10 h-10 flex items-center justify-center rounded-full bg-white text-red-500 hover:bg-red-50 transition-colors shadow-sm border border-red-100">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">اسم الجهاز <span class="text-red-500">*</span></label>
-                    <input type="text" name="name" x-model="routerName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                    <input type="text" name="name" x-model="routerName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required dir="ltr" style="text-align: left;">
                 </div>
 
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">نوع الجهاز <span class="text-red-500">*</span></label>
                     <select name="device_type" x-model="deviceType" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
                         <option value="router">راوتر</option>
+                        <option value="switch">سويتش - Switch</option>
                         <option value="access_point">نقطة وصول - Access Point</option>
                         <option value="base_station">محطة بث - Base Station</option>
-                        <option value="server">سيرفر - Server</option>
                     </select>
+                </div>
+
+                <div x-show="deviceType === 'access_point' || deviceType === 'base_station'" x-transition class="md:col-span-2 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                    <label class="block text-gray-700 font-semibold mb-2">نوع الأنتينا (Antenna Type) <span class="text-red-500">*</span></label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="antenna_type" value="sector" class="w-5 h-5 text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                            <span class="text-gray-900 font-medium">Sector (سيكتور)</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="antenna_type" value="omni" class="w-5 h-5 text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                            <span class="text-gray-900 font-medium">Omni (أومني)</span>
+                        </label>
+                         <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="antenna_type" value="dish" class="w-5 h-5 text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                            <span class="text-gray-900 font-medium">Dish (طبق)</span>
+                        </label>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">تحديد نوع الأنتينا يساعد في عرض الجهاز في قائمة أجهزة البث في صفحة البرج.</p>
+                </div>
+
+                <div x-show="deviceType === 'access_point' || deviceType === 'base_station'" x-transition class="md:col-span-2 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                    <label class="block text-gray-700 font-semibold mb-2">نوع الأنتينا (Antenna Type) <span class="text-red-500">*</span></label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="antenna_type" value="sector" class="w-5 h-5 text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                            <span class="text-gray-900 font-medium">Sector (سيكتور)</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="antenna_type" value="omni" class="w-5 h-5 text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                            <span class="text-gray-900 font-medium">Omni (أومني)</span>
+                        </label>
+                         <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="antenna_type" value="dish" class="w-5 h-5 text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                            <span class="text-gray-900 font-medium">Dish (طبق)</span>
+                        </label>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">تحديد نوع الأنتينا يساعد في عرض الجهاز في قائمة أجهزة البث في صفحة البرج.</p>
                 </div>
 
 
@@ -191,7 +233,7 @@
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">سعر الجهاز (تكلفة)</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">{{ $currency }}</span>
                         <input type="number" step="0.01" name="price" class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="0.00">
                     </div>
                 </div>
@@ -244,7 +286,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-function routerForm() {
+function routerForm(initialModel = null) {
     return {
         routerName: '',
         deviceType: 'router',
@@ -321,6 +363,10 @@ function routerForm() {
         },
         
         init() {
+            if (initialModel) {
+                this.selectDevice(initialModel);
+            }
+
             // Initialize map
             this.map = L.map('locationMap').setView([24.7136, 46.6753], 6);
             
@@ -367,7 +413,7 @@ function routerForm() {
                 let color = '#3b82f6';
                 if (this.deviceType === 'access_point') color = '#8b5cf6';
                 if (this.deviceType === 'base_station') color = '#ec4899';
-                if (this.deviceType === 'server') color = '#6b7280';
+                if (this.deviceType === 'switch') color = '#14b8a6'; // Teal for Switch
                 
                 // Draw sector if azimuth and beam width are specified
                 if (this.azimuth !== '' && this.beamWidth !== '' && this.beamWidth > 0 && this.beamWidth < 360) {

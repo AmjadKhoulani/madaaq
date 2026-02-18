@@ -105,13 +105,17 @@ class ReportController extends Controller
             ->limit(5)
             ->get();
 
+        // E. Assets (Structure Costs)
+        $totalStructureCost = \App\Models\Tower::sum('structure_cost');
+
         return view('accounting.reports.index', compact(
             'thisMonthRevenue', 'thisYearRevenue', 
             'thisMonthExpenses', 'thisYearExpenses', 'thisYearProfit',
             'totalDebts',
             'revenueData', 'expensesData', 'profitData', 'months',
             'revenuePieData', 'expenseBreakdown',
-            'topTowers'
+            'topTowers',
+            'totalStructureCost'
         ));
     }
 }

@@ -19,7 +19,8 @@ class MikroTikServerController extends Controller
     {
         $internetSources = \App\Models\InternetSource::all();
         $towers = Tower::where('tenant_id', auth()->user()->tenant_id ?? 1)->get();
-        return view('servers.create', compact('internetSources', 'towers'));
+        $products = \App\Models\DeviceModel::where('manufacturer', 'MikroTik')->get();
+        return view('servers.create', compact('internetSources', 'towers', 'products'));
     }
 
     public function store(Request $request)
@@ -35,6 +36,7 @@ class MikroTikServerController extends Controller
                 'uplink_notes' => 'nullable|string',
                 'lat' => 'nullable|numeric',
                 'lng' => 'nullable|numeric',
+                'model_id' => 'nullable|exists:device_models,id',
                 // Inputs below are optional now
                 'ip' => 'nullable|ip',
                 'api_port' => 'nullable|integer',
@@ -126,6 +128,7 @@ class MikroTikServerController extends Controller
                 'uplink_notes' => 'nullable|string',
                 'lat' => 'nullable|numeric',
                 'lng' => 'nullable|numeric',
+                'model_id' => 'nullable|exists:device_models,id',
                 'ip' => 'nullable|ip',
                 'api_port' => 'nullable|integer',
                 'username' => 'nullable|string',
@@ -171,12 +174,10 @@ class MikroTikServerController extends Controller
         // Configuration
         $serverDomain = '129.224.207.246'; // Correct Public IP
         $wireguardPort = env('WIREGUARD_PORT', 51820);
-        $serverPublicKey = trim(env('WIREGUARD_PUBLIC_KEY'), '"'); // Strip quotes
+        $serverPublicKey = trim(env('WIREGUARD_PUBLIC_KEY', ''), '"'); // Strip quotes
         
-        // Validate key exists
-        if (empty($serverPublicKey)) {
-            throw new \Exception('WIREGUARD_PUBLIC_KEY not configured in .env file');
-        }
+        // Warning for missing configuration
+        $configWarning = empty($serverPublicKey) ? "# WARNING: WIREGUARD_PUBLIC_KEY not configured in .env\n" : "";
         
         // VPN IP for this router (In real app, this should be stored/managed)
         // Using a hash of ID to generate a pseudo-unique IP in 201.10.x.x range for demo
@@ -208,56 +209,31 @@ class MikroTikServerController extends Controller
         }
 
         $script = <<<SCRIPT
-# -----------------------------------------------
-# MadaaQ Auto-Configuration Script (Pull Mode)
-# -----------------------------------------------
-
-# 1. Reset/Configure WireGuard for MadaaQ
-# Remove conflicting interfaces to avoid issues
+{$configWarning}
 /interface wireguard remove [find name=madaaqip]
-
 /interface wireguard
 add listen-port={$wireguardPort} mtu=1420 name=madaaqip private-key="{$server->wireguard_private_key}"
-
 /interface wireguard peers
 add allowed-address={$serverVpnIp}/32 endpoint-address={$serverDomain} endpoint-port={$wireguardPort} interface=madaaqip name=madaaq-server persistent-keepalive=25s public-key="{$serverPublicKey}"
-
-# 2. IP Address
 /ip address remove [find interface=madaaqip]
 /ip address
 add address={$vpnIp}/16 interface=madaaqip network=201.10.0.0
-
-# 3. Enable API (Optional in pull mode, but good for diagnostics)
 /ip service
 set api disabled=no port={$server->api_port}
-
-# 4. Create User (For diagnostics)
 /user group add name=madaaq policy=ftp,read,write,test,api
 /user remove [find comment="madaaq"]
 /user add name={$apiUser} password={$apiPass} address={$serverVpnIp}/32 comment=madaaq group=madaaq
-
-# 5. Cleanup Old/Conflicting Schedulers & Scripts
 /system scheduler remove [find name=command]
 /system scheduler remove [find name=command-hotspot+]
 /system scheduler remove [find name=comand-hotspot+]
 /system scheduler remove [find name=madaaq-sync-scheduler]
 /system script remove [find name=command]
 /system script remove [find name=madaaq-sync-script]
-
-# 6. Create Sync Script (The "Pull" Mechanism)
 /system script
-add name=madaaq-sync-script source="
-/tool fetch http-method=post keep-result=yes url={$syncUrl} dst-path=madaaq_sync.rsc
-:delay 2s
-/import madaaq_sync.rsc
-/file remove madaaq_sync.rsc
-"
-
-# 7. Create Scheduler to run the script every 15 seconds
+add name=madaaq-sync-script source="/tool fetch http-method=post keep-result=yes url={$syncUrl} dst-path=madaaq_sync.rsc; :delay 2s; /import madaaq_sync.rsc; /file remove madaaq_sync.rsc"
 /system scheduler
-add interval=15s name=madaaq-sync-scheduler on-event="/system script run madaaq-sync-script" start-time=startup
-
-:log info "✅ Madaaq Setup completed! Polling enabled."
+add interval=2m name=madaaq-sync-scheduler on-event="/system script run madaaq-sync-script" start-time=startup
+:log info "✅ Madaaq Persistent Agent Enabled"
 SCRIPT;
 
         return response()->json([

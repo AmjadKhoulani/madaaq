@@ -45,7 +45,7 @@
         @csrf
         
         <!-- Model Selection -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6" x-data="modelSelector()">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6" x-data="modelSelector({{ $products->map(fn($p) => ['id' => $p->id, 'name' => $p->model_name, 'image' => $p->image_url, 'price' => $p->max_throughput, 'description' => $p->description])->toJson() }}, {{ old('model_id') ?? 'null' }})">
             <h3 class="text-lg font-bold text-gray-800 mb-2">معلومات الجهاز</h3>
             <p class="text-gray-500 text-sm mb-6">اختر من القائمة أدناه أو ابحث عن جهازك إذا لم تجده ضمن القائمة</p>
             
@@ -78,7 +78,7 @@
                                  class="w-12 h-12 object-contain bg-white rounded border border-gray-200 p-1"
                                  onerror="this.src='https://placehold.co/150x100?text=Device'">
                             <div>
-                                <p class="font-bold text-gray-800 text-sm" x-text="device.manufacturer + ' ' + device.model_name"></p>
+                                <p class="font-bold text-gray-800 text-sm" x-text="device.manufacturer + ' ' + device.model_name" dir="ltr" style="text-align: left;"></p>
                                 <p class="text-xs text-blue-600" x-text="device.device_type"></p>
                             </div>
                         </div>
@@ -88,69 +88,76 @@
 
             <!-- Quick Selection Grid -->
             <div x-show="!deviceQuery || devices.length === 0" class="mb-6">
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">أجهزة شائعة (اختر سريعاً)</p>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <template x-for="model in models" :key="model.name">
-                        <div @click="selectQuickModel(model)" 
-                             class="cursor-pointer border rounded-xl p-4 transition-all duration-200 hover:shadow-md text-center group bg-white relative"
-                             :class="selectedModel === model.name ? 'border-blue-500 ring-2 ring-blue-200 bg-blue-50' : 'border-gray-200 hover:border-blue-300'">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 text-center">كتالوج منتجات MikroTik (اختر جهازاً)</p>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                    <template x-for="product in products" :key="product.id">
+                        <div @click="selectProduct(product)" 
+                             class="cursor-pointer border rounded-2xl p-6 transition-all duration-300 hover:shadow-xl text-center group bg-white relative overflow-hidden flex flex-col items-center justify-center"
+                             :class="selectedModelId === product.id ? 'border-blue-500 ring-4 ring-blue-50 bg-blue-50' : 'border-gray-100 hover:border-blue-400'">
                             
                             <!-- Checkmark for selected -->
-                            <div x-show="selectedModel === model.name" class="absolute top-2 right-2 text-blue-500">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                            <div x-show="selectedModelId === product.id" class="absolute top-3 right-3 text-blue-600 z-10">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
                             </div>
 
-                            <div class="h-24 flex items-center justify-center mb-2">
-                                <img :src="model.image" :alt="model.name" class="max-h-full max-w-full object-contain mix-blend-multiply" onerror="this.src='https://placehold.co/150x100?text=No+Image'">
+                            <div class="h-32 w-32 flex items-center justify-center mb-4 p-2 bg-white rounded-xl shadow-inner-sm">
+                                <img :src="product.image_url" :alt="product.model_name" class="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-110" onerror="this.src='https://placehold.co/150x100?text=No+Image'">
                             </div>
-                            <p class="text-sm font-bold text-gray-800 leading-tight" x-text="model.shortName"></p>
-                            <p class="text-[10px] text-gray-500 mt-1" x-text="model.name"></p>
+
+                            <div class="space-y-1 w-full text-center">
+                                <h4 class="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2" x-text="product.model_name" dir="ltr"></h4>
+                            </div>
+
+                            <!-- Hover Tooltip/Overlay -->
+                            <div class="absolute inset-0 bg-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                         </div>
                     </template>
                 </div>
             </div>
 
             <!-- Selected Device Preview / Name Input -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                <div>
-                    <label class="block text-gray-700 font-semibold mb-2">اسم السيرفر <span class="text-red-500">*</span></label>
-                    <input type="text" name="name" x-model="serverName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="مثال: MikroTik CCR1009" required>
-                    <p class="text-xs text-gray-500 mt-2">يمكنك تعديل الاسم المقترح إذا رغبت.</p>
+            <input type="hidden" name="model_id" :value="selectedModelId">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">اسم السيرفر <span class="text-red-500">*</span></label>
+                        <input type="text" name="name" x-model="serverName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 font-medium" placeholder="مثال: MikroTik CCR1009" required dir="ltr" style="text-align: left;">
+                        <p class="text-[10px] text-gray-500 mt-2">يمكنك تعديل الاسم المقترح إذا رغبت.</p>
+                    </div>
                 </div>
 
                 <!-- Preview Image -->
-                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 flex items-center gap-4" x-show="previewImage">
-                    <img :src="previewImage" class="w-20 h-20 object-contain bg-white rounded-lg border border-gray-200 p-1">
-                    <div>
-                        <p class="text-sm font-semibold text-gray-700">الجهاز المختار</p>
-                        <p class="text-xs text-gray-500" x-text="serverName.replace('MikroTik ', '')"></p>
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50/30 rounded-2xl p-4 border border-blue-100 flex items-center gap-6 shadow-sm transition-all duration-300" x-show="previewImage" x-transition>
+                    <div class="w-24 h-24 flex-shrink-0 bg-white rounded-xl border border-blue-200 p-2 shadow-inner">
+                        <img :src="previewImage" class="w-full h-full object-contain">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-1">الجهاز المختار</p>
+                        <p class="text-sm font-bold text-gray-900 truncate" x-text="serverName.replace('MikroTik ', '')" dir="ltr"></p>
                     </div>
                 </div>
             </div>
         </div>
 
         <script>
-        function modelSelector() {
+        function modelSelector(initialProducts, initialModelId = null) {
             return {
-                selectedModel: '',
+                selectedModelId: initialModelId,
                 serverName: '{{ old('name') }}',
                 deviceQuery: '',
                 previewImage: '',
                 devices: [],
                 showDevices: false,
-                
-                models: [
-                    { name: 'CCR1072-1G-8S+', shortName: 'CCR1072', image: 'https://cdn.mikrotik.com/web-assets/rb_images/1055_tm.webp' },
-                    { name: 'CCR1036-8G-2S+', shortName: 'CCR1036', image: 'https://cdn.mikrotik.com/web-assets/rb_images/1738_tm.webp' },
-                    { name: 'CCR2116-12G-4S+', shortName: 'CCR2116', image: 'https://cdn.mikrotik.com/web-assets/rb_images/2115_tm.webp' },
-                    // { name: 'CCR2004-1G-12S+2XS', shortName: 'CCR2004', image: 'https://cdn.mikrotik.com/web-assets/rb_images/1935_tm.webp' },
-                    { name: 'CCR1009-7G-1C-1S+', shortName: 'CCR1009', image: 'https://cdn.mikrotik.com/web-assets/rb_images/1228_tm.webp' },
-                    { name: 'RB1100AHx4', shortName: 'RB1100', image: 'https://cdn.mikrotik.com/web-assets/rb_images/1228_tm.webp' },
-                    { name: 'RB4011iGS+RM', shortName: 'RB4011', image: 'https://cdn.mikrotik.com/web-assets/rb_images/2065_tm.webp' },
-                    // { name: 'RB3011UiAS-RM', shortName: 'RB3011', image: 'https://cdn.mikrotik.com/web-assets/rb_images/1407_tm.webp' },
-                    { name: 'RB5009UG+S+IN', shortName: 'RB5009', image: 'https://cdn.mikrotik.com/web-assets/rb_images/2065_tm.webp' },
-                    { name: 'CHR (Cloud Hosted)', shortName: 'CHR', image: 'https://cdn-icons-png.flaticon.com/512/2885/2885417.png' }
-                ],
+                products: initialProducts || [],
+
+                init() {
+                    if (this.selectedModelId) {
+                        const product = this.products.find(p => p.id == this.selectedModelId);
+                        if (product) {
+                            this.previewImage = product.image_url;
+                        }
+                    }
+                },
 
                 async searchDevices() {
                     if (this.deviceQuery.length < 2) {
@@ -158,7 +165,6 @@
                         this.showDevices = false;
                         return;
                     }
-                    // Use existing public or internal API
                     try {
                         const response = await fetch(`{{ route('api.devices.search') }}?q=${this.deviceQuery}`);
                         this.devices = await response.json();
@@ -171,16 +177,16 @@
                 selectDevice(device) {
                     this.serverName = 'MikroTik ' + device.model_name;
                     this.previewImage = device.image_url;
-                    this.deviceQuery = device.model_name; // Show clean name in search
-                    this.selectedModel = ''; // Deselect quick items
+                    this.deviceQuery = device.model_name;
+                    this.selectedModelId = device.id;
                     this.showDevices = false;
                 },
 
-                selectQuickModel(model) {
-                    this.selectedModel = model.name;
-                    this.serverName = 'MikroTik ' + model.name;
-                    this.previewImage = model.image;
-                    this.deviceQuery = ''; // Clear search
+                selectProduct(product) {
+                    this.selectedModelId = product.id;
+                    this.serverName = product.manufacturer + ' ' + product.model_name;
+                    this.previewImage = product.image_url;
+                    this.deviceQuery = '';
                 }
             }
         }

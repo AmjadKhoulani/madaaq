@@ -22,6 +22,7 @@ class _AddClientScreenState extends State<AddClientScreen> {
   
   List<dynamic> _hotspotPackages = [];
   List<dynamic> _pppoePackages = [];
+  String _currency = '';
   bool _isLoadingPackages = true;
   bool _isSubmitting = false;
 
@@ -38,12 +39,11 @@ class _AddClientScreenState extends State<AddClientScreen> {
       
       if (mounted) {
         setState(() {
-          _hotspotPackages = hotspotRes.data;
-          _pppoePackages = pppoeRes.data; // Confirm structure if it's list or {data: list}
-          // Based on previous checks, Broadband ProfileController returns just the list or paginate?
-          // Let's assume list as per my ProfileController impl assumption which was minimal.
-          // Wait, Api Resource defaults usually wrap in data if using Resource classes, but I returned raw query result or paginate.
-          // Let's handle both just in case.
+          // Both now return {data: [], currency: ''}
+          _hotspotPackages = hotspotRes.data['data'] as List;
+          _pppoePackages = pppoeRes.data['data'] as List; 
+          _currency = hotspotRes.data['currency'] ?? 'SR';
+          
           _isLoadingPackages = false;
         });
       }
@@ -134,7 +134,7 @@ class _AddClientScreenState extends State<AddClientScreen> {
                       // So it is a List.
                       return DropdownMenuItem(
                         value: pkg['id'].toString(),
-                        child: Text('${pkg['name']} (${pkg['price']} د.أ)'),
+                        child: Text('${pkg['name']} (${pkg['price']} $_currency)'),
                       );
                     }).toList(),
                     onChanged: (val) => setState(() => _selectedPackageId = val),

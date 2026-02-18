@@ -105,6 +105,9 @@ class HotspotController extends Controller
     public function packages()
     {
         $packages = Package::where('type', 'hotspot')->get();
-        return response()->json($packages);
+        return response()->json([
+            'data' => $packages,
+            'currency' => \App\Models\Setting::getValue('currency', 'SAR')
+        ]);
     }
 }

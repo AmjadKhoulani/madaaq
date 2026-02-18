@@ -10,6 +10,7 @@ class ProfilesScreen extends StatefulWidget {
 
 class _ProfilesScreenState extends State<ProfilesScreen> {
   List<dynamic> _profiles = [];
+  String _currency = '';
   bool _isLoading = true;
 
   @override
@@ -23,7 +24,8 @@ class _ProfilesScreenState extends State<ProfilesScreen> {
     try {
       final response = await ApiClient.dio.get('/broadband/profiles');
       setState(() {
-        _profiles = response.data as List;
+        _profiles = response.data['data'] as List;
+        _currency = response.data['currency'] ?? '';
         _isLoading = false;
       });
     } catch (e) {
@@ -48,7 +50,7 @@ class _ProfilesScreenState extends State<ProfilesScreen> {
                   leading: const Icon(Icons.speed, color: Colors.blueAccent),
                   title: Text(profile['name']),
                   subtitle: Text('${profile['speed_down']}M/${profile['speed_up']}M'),
-                  trailing: Text('${profile['price']}د.أ'),
+                  trailing: Text('${profile['price']} $_currency'),
                 ),
               );
             },

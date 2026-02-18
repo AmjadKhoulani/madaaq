@@ -67,7 +67,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
               margin: const EdgeInsets.only(bottom: 8),
               child: ListTile(
                 title: Text(item['description'] ?? 'Item'),
-                trailing: Text('${item['total']} د.أ'),
+                trailing: Text('${item['total']} ${_invoice!['currency'] ?? ''}'),
                 subtitle: Text('الكمية: ${item['quantity']} | السعر: ${item['unit_price']}'),
               ),
             )),
@@ -108,7 +108,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text('المجموع الكلي', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-          Text('${_invoice!['total']} د.أ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Theme.of(context).primaryColor)),
+          Text('${_invoice!['total']} ${_invoice!['currency'] ?? ''}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Theme.of(context).primaryColor)),
         ],
       ),
     );

@@ -32,11 +32,42 @@ class Router extends Model
         'is_reachable',
         'last_ping_at',
         'status', // Added price field
+        'antenna_type',
     ];
 
     protected $hidden = [
         'password_encrypted',
     ];
+
+    protected $appends = ['ssids'];
+
+    public function getSsidsAttribute()
+    {
+        // Get TowerSSID records linked to this router
+        $towerSsids = \App\Models\TowerSSID::where('router_id', $this->id)->get();
+        
+        $ssids = collect();
+
+        // Add TowerSSID records
+        foreach ($towerSsids as $ts) {
+            $ssids->push((object)[
+                'ssid_name' => $ts->ssid_name,
+                'frequency' => $ts->frequency,
+                'is_active' => $ts->is_active,
+            ]);
+        }
+
+        // Also add the legacy single ssid field if set and no TowerSSID records exist
+        if ($ssids->isEmpty() && $this->attributes['ssid'] ?? null) {
+            $ssids->push((object)[
+                'ssid_name' => $this->attributes['ssid'],
+                'frequency' => '5GHz',
+                'is_active' => true,
+            ]);
+        }
+
+        return $ssids;
+    }
 
     public function tower()
     {

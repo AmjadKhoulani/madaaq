@@ -59,7 +59,8 @@ class ReportController extends Controller
             'charts' => [
                 'revenue' => $revenueChart,
                 'clients' => $clientGrowth
-            ]
+            ],
+            'currency' => \App\Models\Setting::getValue('currency', 'SAR')
         ]);
     }
 }

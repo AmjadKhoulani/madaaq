@@ -37,6 +37,9 @@ class BroadbandController extends Controller
     public function profiles(Request $request)
     {
         $profiles = Package::where('type', 'pppoe')->get();
-        return response()->json($profiles);
+        return response()->json([
+            'data' => $profiles,
+            'currency' => \App\Models\Setting::getValue('currency', 'SAR')
+        ]);
     }
 }

@@ -26,7 +26,7 @@
                 <h3 class="text-xl font-bold text-gray-900">{{ $package->name }}</h3>
                 <div class="flex items-baseline mt-2">
                     <span class="text-3xl font-extrabold text-blue-600">{{ number_format($package->price, 0) }}</span>
-                    <span class="text-gray-500 mr-1">ر.س / شهر</span>
+                    <span class="text-gray-500 mr-1">{{ \App\Models\Setting::getValue('currency', 'ر.س') }} / شهر</span>
                 </div>
             </div>
 

@@ -123,10 +123,29 @@
                     <label class="block text-gray-700 font-semibold mb-2">نوع الجهاز <span class="text-red-500">*</span></label>
                     <select name="device_type" x-model="deviceType" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
                         <option value="router">راوتر</option>
+                        <option value="switch">سويتش - Switch</option>
                         <option value="access_point">نقطة وصول - Access Point</option>
                         <option value="base_station">محطة بث - Base Station</option>
-                        <option value="server">سيرفر - Server</option>
                     </select>
+                </div>
+
+                 <div x-show="deviceType === 'access_point' || deviceType === 'base_station'" x-transition class="md:col-span-2 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                    <label class="block text-gray-700 font-semibold mb-2">نوع الأنتينا (Antenna Type) <span class="text-red-500">*</span></label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="antenna_type" value="sector" {{ $router->antenna_type === 'sector' ? 'checked' : '' }} class="w-5 h-5 text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                            <span class="text-gray-900 font-medium">Sector (سيكتور)</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="antenna_type" value="omni" {{ $router->antenna_type === 'omni' ? 'checked' : '' }} class="w-5 h-5 text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                            <span class="text-gray-900 font-medium">Omni (أومني)</span>
+                        </label>
+                         <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="antenna_type" value="dish" {{ $router->antenna_type === 'dish' ? 'checked' : '' }} class="w-5 h-5 text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                            <span class="text-gray-900 font-medium">Dish (طبق)</span>
+                        </label>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">تحديد نوع الأنتينا يساعد في عرض الجهاز في قائمة أجهزة البث في صفحة البرج.</p>
                 </div>
 
                 <div>
@@ -196,7 +215,7 @@
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">سعر الجهاز (تكلفة)</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">{{ $currency }}</span>
                         <input type="number" step="0.01" name="price" value="{{ old('price', $router->price) }}" class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="0.00">
                     </div>
                 </div>
@@ -356,7 +375,7 @@ function routerForm() {
                 let color = '#3b82f6';
                 if (this.deviceType === 'access_point') color = '#8b5cf6';
                 if (this.deviceType === 'base_station') color = '#ec4899';
-                if (this.deviceType === 'server') color = '#6b7280';
+                if (this.deviceType === 'switch') color = '#14b8a6'; // Teal for Switch
                 
                 // Draw sector logic same as create
                 if (this.azimuth !== '' && this.beamWidth !== '' && this.beamWidth > 0 && this.beamWidth < 360) {

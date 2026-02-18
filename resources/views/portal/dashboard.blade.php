@@ -76,7 +76,7 @@
                 <p class="text-gray-500 text-xs font-semibold uppercase">سعر التجديد</p>
                 <h3 class="text-xl font-bold text-gray-900 font-mono">
                     {{ number_format($client->price ?? $client->package->price ?? 0, 2) }}
-                    <span class="text-sm text-gray-400 font-normal">ر.س</span>
+                    <span class="text-sm text-gray-400 font-normal">{{ \App\Models\Setting::getValue('currency', 'ر.س') }}</span>
                 </h3>
                 <p class="text-xs text-green-600 mt-1">شهرياً</p>
             </div>

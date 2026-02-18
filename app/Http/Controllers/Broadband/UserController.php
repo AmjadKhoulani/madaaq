@@ -82,21 +82,18 @@ class UserController extends Controller
 
         // Create on MikroTik
         $service = new MikroTikService($router);
+        $routerResponse = null;
+        $routerError = null;
+
         try {
-            // Check connection first? Service connect() does it.
-            // Create PPPoE Secret
-            // Profile name should match Package name usually, or we pass it if we sync profiles. 
-            // For now assuming existing profile 'default' or we need to create profile on router too.
-            // Simplified: User enters profile or we use package name. Defaults to 'default' if not set.
-            // Wait, MikroTikService::createPPPoEUser takes profile as 3rd arg.
-            
-            // Note: In a real scenario, we should ensure the Profile exists on the Router.
-            // For MVP, we will use 'default' or assume the user configured it manually on router.
-            // Or better, use the Package Name and hope it exists or fallback.
-            $service->createPPPoEUser($validated['username'], $validated['password'], 'default'); 
-            
+            // Profile name should match Package name usually
+            $profileName = $package->name ?? 'default';
+            $routerResponse = $service->createPPPoEUser($validated['username'], $validated['password'], $profileName); 
+            session()->flash('success', 'تم إنشاء المستخدم بنجاح على السيرفر وقاعدة البيانات.');
         } catch (\Exception $e) {
-            return back()->withErrors(['router_error' => 'Failed to add user to MikroTik: ' . $e->getMessage()])->withInput();
+            $routerError = $e->getMessage();
+            Log::warning("MikroTik PPPoE Creation failed for {$validated['username']}: " . $routerError);
+            session()->flash('warning', 'تم حفظ المستخدم في قاعدة البيانات، ولكن تعذر إنشاؤه على السيرفر حالياً: ' . $routerError);
         }
 
         // Save to DB

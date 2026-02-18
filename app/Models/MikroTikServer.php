@@ -38,6 +38,7 @@ class MikroTikServer extends Model
         'setup_script_generated',
         'setup_completed',
         'internet_source_id',
+        'model_id',
     ];
 
     protected $casts = [
@@ -52,6 +53,11 @@ class MikroTikServer extends Model
         'password_encrypted',
         'wireguard_private_key',
     ];
+
+    public function deviceModel()
+    {
+        return $this->belongsTo(DeviceModel::class, 'model_id');
+    }
 
     public function internetSource()
     {
@@ -88,7 +94,7 @@ class MikroTikServer extends Model
 
     public function backups()
     {
-        return $this->hasMany(ServerBackup::class);
+        return $this->hasMany(ServerBackup::class, 'mikrotik_server_id');
     }
 
     public function getStatusBadgeAttribute()

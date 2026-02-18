@@ -2,6 +2,7 @@
 
 @push('styles')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@19.2.16/build/css/intlTelInput.css">
 <style>
     #map { height: 400px; width: 100%; border-radius: 0.75rem; z-index: 1; }
 </style>
@@ -105,6 +106,21 @@
               }"
               x-init="initMap()">
             @csrf
+            
+            {{-- Show Validation Errors --}}
+            @if($errors->any())
+            <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+                <div class="flex items-center gap-2 mb-2">
+                    <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <h4 class="font-bold text-red-800 text-sm">يرجى تصحيح الأخطاء التالية:</h4>
+                </div>
+                <ul class="list-disc list-inside text-sm text-red-700 space-y-1">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
             
             <!-- Section 1: Connection & Account Details -->
             <div>
@@ -383,9 +399,49 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-2">الاسم الكامل</label>
                         <input type="text" name="name" value="{{ old('name') }}" class="block w-full py-3 px-4 border-gray-300 rounded-xl focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white" required>
                     </div>
-                    <div>
+                    <div x-data="{ 
+                        iti: null,
+                        phonenumber: '{{ old('phone') }}',
+                        init() {
+                            if (typeof window.intlTelInput === 'undefined') {
+                                setTimeout(() => this.init(), 100);
+                                return;
+                            }
+                            
+                            const input = document.querySelector('#phone');
+                            this.iti = window.intlTelInput(input, {
+                                utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@19.2.16/build/js/utils.js',
+                                initialCountry: 'auto',
+                                geoIpLookup: function(callback) {
+                                    fetch('https://ipapi.co/json')
+                                    .then(function(res) { return res.json(); })
+                                    .then(function(data) { callback(data.country_code); })
+                                    .catch(function() { callback('SY'); });
+                                },
+                                separateDialCode: true,
+                                preferredCountries: ['sy', 'sa', 'ae', 'jo', 'lb', 'tr'],
+                            });
+                            
+                            // Set initial value if old input exists
+                            if(this.phonenumber) {
+                                this.iti.setNumber(this.phonenumber);
+                            }
+
+                            // Update hidden input on change
+                            input.addEventListener('countrychange', () => {
+                                this.phonenumber = this.iti.getNumber();
+                            });
+                            input.addEventListener('input', () => {
+                                this.phonenumber = this.iti.getNumber();
+                            });
+                        }
+                    }" x-init="init()">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">رقم الهاتف (الاسم المستخدم للبوابة)</label>
-                        <input type="text" name="phone" value="{{ old('phone') }}" class="block w-full py-3 px-4 border-gray-300 rounded-xl focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white" required>
+                        <div class="relative" dir="ltr" style="direction: ltr !important; text-align: left !important;">
+                            <input type="tel" id="phone" dir="ltr" class="block w-full py-3 px-4 border-gray-300 rounded-xl focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white" required style="direction: ltr !important; text-align: left !important;">
+                            <input type="hidden" name="phone" :value="phonenumber">
+                        </div>
+                        <p id="phone-error" class="text-red-500 text-xs mt-1 hidden">يرجى إدخال رقم هاتف صحيح</p>
                     </div>
                      <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">كلمة مرور البوابة</label>
@@ -411,5 +467,23 @@
 
 @push('scripts')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@19.2.16/build/js/intlTelInput.min.js"></script>
+<script>
+    // Global style fix for intl-tel-input inside text-right container
+    document.addEventListener('DOMContentLoaded', function() {
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .iti { width: 100%; direction: ltr !important; text-align: left !important; }
+            .iti__country-list { text-align: left !important; direction: ltr !important; left: 0 !important; right: auto !important; }
+            .iti__flag-container { left: 0 !important; right: auto !important; }
+            .iti__selected-flag { direction: ltr !important; padding-left: 12px !important; }
+            .iti__flag { background-image: url("https://cdn.jsdelivr.net/npm/intl-tel-input@19.2.16/build/img/flags.png"); }
+            @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+              .iti__flag { background-image: url("https://cdn.jsdelivr.net/npm/intl-tel-input@19.2.16/build/img/flags@2x.png"); }
+            }
+        `;
+        document.head.appendChild(style);
+    });
+</script>
 @endpush
 @endsection

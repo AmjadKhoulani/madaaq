@@ -61,7 +61,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         children: [
                           const Text('إجمالي الدخل', style: TextStyle(color: Colors.white70)),
                           const SizedBox(height: 8),
-                          Text('${_stats['total_revenue'] ?? 0} د.أ', style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                          Text('${_stats['total_revenue'] ?? 0} ${_stats['currency'] ?? ''}', style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
                         ],
                       ),
                       const Icon(Icons.monetization_on, color: Colors.white24, size: 48),
@@ -75,7 +75,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: ListTile(
                     leading: const Icon(Icons.pending_actions, color: Colors.orange),
                     title: const Text('مبالغ غير مسددة'),
-                    trailing: Text('${_stats['pending_revenue'] ?? 0} د.أ', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    trailing: Text('${_stats['pending_revenue'] ?? 0} ${_stats['currency'] ?? ''}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   ),
                 ),
 
@@ -85,7 +85,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ...(_stats['recent_invoices'] as List? ?? []).map((inv) => Card(
                   child: ListTile(
                     title: Text('Invoice #${inv['invoice_number']}'),
-                    trailing: Text('${inv['total']}'),
+                    trailing: Text('${inv['total']} ${_stats['currency'] ?? ''}'),
                   ),
                 )),
               ],

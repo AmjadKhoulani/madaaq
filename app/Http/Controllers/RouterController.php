@@ -43,20 +43,31 @@ class RouterController extends Controller
             $router->is_server_model = false;
         });
 
-        $allDevices = $routers->concat($servers)->sortByDesc('created_at');
+        $routers->each(function($router) {
+            $router->is_server_model = false;
+        });
+
+        // $allDevices = $routers->concat($servers)->sortByDesc('created_at'); // Removed: Separate lists
 
         if ($request->wantsJson()) {
-            return $allDevices;
+            return $routers->concat($servers);
         }
-        return view('routers.index', ['routers' => $allDevices]);
+        
+        return view('routers.index', compact('routers', 'servers'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $deviceModels = DeviceModel::all();
         $towers = \App\Models\Tower::all();
         $internetSources = \App\Models\InternetSource::all();
-        return view('routers.create', compact('deviceModels', 'towers', 'internetSources'));
+        
+        $preSelectedModel = null;
+        if ($request->has('model_id')) {
+            $preSelectedModel = DeviceModel::find($request->model_id);
+        }
+
+        return view('routers.create', compact('deviceModels', 'towers', 'internetSources', 'preSelectedModel'));
     }
 
     public function searchDevices(Request $request)
@@ -76,7 +87,8 @@ class RouterController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'device_type' => 'required|in:router,access_point,base_station,server',
+                'device_type' => 'required|in:router,switch,access_point,base_station',
+                'antenna_type' => 'nullable|in:sector,omni,dish',
                 'model_id' => 'nullable|exists:device_models,id',
                 'ip' => 'required|ip',
                 'api_port' => 'nullable|integer',
@@ -84,9 +96,9 @@ class RouterController extends Controller
                 'password' => 'nullable|string',
                 'lat' => 'nullable|numeric',
                 'lng' => 'nullable|numeric',
-                'coverage_radius' => 'nullable|integer',
-                'azimuth' => 'nullable|integer',
-                'beam_width' => 'nullable|integer',
+                'coverage_radius' => 'nullable|numeric',
+                'azimuth' => 'nullable|numeric',
+                'beam_width' => 'nullable|numeric',
                 'tower_id' => 'nullable|exists:towers,id',
                 'internet_source_id' => 'nullable|exists:internet_sources,id',
                 'price' => 'nullable|numeric',
@@ -185,15 +197,26 @@ class RouterController extends Controller
     {
          $validated = $request->validate([
             'name' => 'string',
+            'device_type' => 'nullable|in:router,switch,access_point,base_station',
+            'antenna_type' => 'nullable|in:sector,omni,dish',
+            'model_id' => 'nullable|exists:device_models,id',
             'ip' => 'ip',
             'api_port' => 'integer',
-            'username' => 'string',
-            'password' => 'string', // if provided, update
+            'username' => 'nullable|string',
+            'password' => 'nullable|string', // if provided, update
+            'lat' => 'nullable|numeric',
+            'lng' => 'nullable|numeric',
+            'coverage_radius' => 'nullable|numeric',
+            'azimuth' => 'nullable|numeric',
+            'beam_width' => 'nullable|numeric',
+            'tower_id' => 'nullable|exists:towers,id',
+            'price' => 'nullable|numeric',
         ]);
 
-        if (isset($validated['password'])) {
-            $validated['password_encrypted'] = Crypt::encryptString($validated['password']);
-            unset($validated['password']);
+        if (isset($validated['password']) && !empty($validated['password'])) {
+            $router->password_encrypted = Crypt::encryptString($validated['password']);
+        } else {
+             unset($validated['password']);
         }
 
         $router->update($validated);

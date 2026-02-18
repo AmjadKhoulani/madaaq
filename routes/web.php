@@ -223,6 +223,7 @@ Route::group([], function () {
 
                 // Tower SSIDs
                 Route::post('towers/{tower}/ssids', [\App\Http\Controllers\Network\TowerSSIDController::class, 'store'])->name('towers.ssids.store');
+                Route::put('towers/{tower}/ssids/{ssid}', [\App\Http\Controllers\Network\TowerSSIDController::class, 'update'])->name('towers.ssids.update');
                 Route::delete('towers/{tower}/ssids/{ssid}', [\App\Http\Controllers\Network\TowerSSIDController::class, 'destroy'])->name('towers.ssids.destroy');
     
                 // Tower Monthly Costs

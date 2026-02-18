@@ -85,7 +85,7 @@ class ClientController extends Controller
             'switch_port' => 'nullable|string',
             'cpe_ip' => 'nullable|ip',
             'cpe_mac' => 'nullable|string',
-            'tower_device_id' => 'nullable|exists:tower_devices,id',
+            'tower_device_id' => 'nullable|integer',
             // IP & Limits
             'ip_address' => 'nullable|ip',
             'data_limit' => 'nullable|numeric', // GB input
@@ -107,11 +107,11 @@ class ClientController extends Controller
 
         // Calculate Expiry
         if ($request->filled('duration_days')) {
-            $data['expires_at'] = now()->addDays($request->duration_days);
+            $data['expires_at'] = now()->addDays((int) $request->duration_days);
         } elseif ($request->filled('package_id')) {
             $package = \App\Models\Package::find($request->package_id);
             if ($package && $package->duration) {
-                $data['expires_at'] = now()->addDays($package->duration);
+                $data['expires_at'] = now()->addDays((int) $package->duration);
             }
         }
 
@@ -132,7 +132,8 @@ class ClientController extends Controller
                 $service = new \App\Services\MikroTikService($server);
                 
                 if ($client->type === 'pppoe') {
-                     $service->createPppoeUser($client);
+                     $username = $client->pppoe_username ?? $client->username;
+                     $service->createPPPoEUser($username, $request->service_password, optional($client->package)->name ?? 'default');
                 } elseif ($client->type === 'hotspot') {
                      $service->createHotspotUser($client->username, $request->service_password, $client->package->name ?? 'default');
                 }

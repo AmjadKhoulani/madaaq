@@ -81,6 +81,27 @@
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
                         </button>
                         <div class="dropdown-menu absolute right-0 w-64 glass rounded-xl shadow-xl py-2 mt-1">
+                            <a href="{{ route('network.internet-sources.index') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-indigo-50 transition text-gray-700">
+                                <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                                مصادر الانترنت
+                            </a>
+                            <a href="{{ route('servers.index') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-indigo-50 transition text-gray-700">
+                                <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
+                                راوترات مايكروتك
+                            </a>
+                            <a href="{{ route('network.towers.index') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-indigo-50 transition text-gray-700">
+                                <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                الأبراج
+                            </a>
+                            <a href="{{ route('routers.index') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-indigo-50 transition text-gray-700">
+                                <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
+                                معدات الشبكة
+                            </a>
+                            <a href="{{ route('network.backups.index') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-indigo-50 transition text-gray-700">
+                                <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                                النسخ الاحتياطية
+                            </a>
+                            <hr class="my-1 border-gray-100">
                             <a href="{{ route('hotspot.profiles.index') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-indigo-50 transition text-gray-700">
                                 <svg class="w-4 h-4 text-indigo-500" style="width: 1rem; height: 1rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
                                 هوت سبوت
@@ -96,27 +117,6 @@
                             <a href="{{ route('broadband.profiles.index') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-indigo-50 transition text-gray-700">
                                 <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                                 برودباند
-                            </a>
-                            <hr class="my-1 border-gray-100">
-                            <a href="{{ route('routers.index') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-indigo-50 transition text-gray-700">
-                                <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
-                                معدات الشبكة
-                            </a>
-                            <a href="{{ route('servers.index') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-indigo-50 transition text-gray-700">
-                                <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
-                                السيرفرات
-                            </a>
-                            <a href="{{ route('network.backups.index') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-indigo-50 transition text-gray-700">
-                                <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
-                                النسخ الاحتياطية
-                            </a>
-                            <a href="{{ route('network.towers.index') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-indigo-50 transition text-gray-700">
-                                <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                                الأبراج
-                            </a>
-                            <a href="{{ route('network.internet-sources.index') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-indigo-50 transition text-gray-700">
-                                <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-                                مصادر الانترنت
                             </a>
                         </div>
                     </div>
@@ -298,14 +298,15 @@
                     <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="currentColor" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
                 </button>
                 <div x-show="open" x-cloak class="pl-6 space-y-1">
+                    <a href="{{ route('network.internet-sources.index') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50">مصادر الانترنت</a>
+                    <a href="{{ route('servers.index') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50">راوترات مايكروتك</a>
+                    <a href="{{ route('network.towers.index') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50">الأبراج</a>
+                    <a href="{{ route('routers.index') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50">معدات الشبكة</a>
+                    <a href="{{ route('network.backups.index') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50">النسخ الاحتياطية</a>
                     <a href="{{ route('hotspot.profiles.index') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50">هوت سبوت</a>
                     <a href="{{ route('hotspot.vouchers.index') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50">مراقبة الكروت</a>
                     <a href="{{ route('hotspot.vouchers.create') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50">طباعة كروت جديدة</a>
                     <a href="{{ route('broadband.profiles.index') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50">برودباند</a>
-                    <a href="{{ route('routers.index') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50">معدات الشبكة</a>
-                    <a href="{{ route('servers.index') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50">السيرفرات</a>
-                    <a href="{{ route('network.towers.index') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50">الأبراج</a>
-                    <a href="{{ route('network.internet-sources.index') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50">مصادر الانترنت</a>
                 </div>
             </div>
 
@@ -384,6 +385,13 @@
             </div>
         @endif
 
+        @if(session('warning'))
+            <div class="glass border-l-4 border-amber-500 text-amber-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-3 shadow-lg">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                <span class="font-medium">{{ session('warning') }}</span>
+            </div>
+        @endif
+        
         @if(session('error'))
             <div class="glass border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-3 shadow-lg animate-pulse">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
