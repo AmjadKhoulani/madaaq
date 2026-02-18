@@ -11,7 +11,7 @@
         @csrf
         
         <!-- Customer Selection -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6" x-data="{ mode: 'existing' }">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6" x-data="{ mode: 'existing', selectedPhone: '' }">
             <h3 class="text-lg font-bold text-gray-900 mb-4">بيانات العميل</h3>
             
             <div class="flex gap-4 mb-6">
@@ -28,12 +28,20 @@
             <!-- Existing Customer -->
             <div x-show="mode === 'existing'">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">اختر العميل</label>
-                <select name="customer_id" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 select2">
+                <select name="customer_id" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 select2" @change="selectedPhone = $event.target.options[$event.target.selectedIndex].dataset.phone || ''">
                     <option value="">-- ابحث عن عميل (الاسم أو الهاتف) --</option>
                     @foreach($customers as $customer)
-                    <option value="{{ $customer->id }}">{{ $customer->name }} - {{ $customer->phone }}</option>
+                    <option value="{{ $customer->id }}" data-phone="{{ $customer->phone }}">{{ $customer->name }} - {{ $customer->phone }}</option>
                     @endforeach
                 </select>
+                <!-- Read-only Phone Display -->
+                <div class="mt-3" x-show="selectedPhone" x-transition>
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">رقم الهاتف المسجل:</label>
+                    <div class="flex items-center gap-2 text-gray-900 bg-gray-50 px-3 py-2 rounded-lg border border-gray-200 w-fit">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                        <span x-text="selectedPhone" class="font-mono font-medium"></span>
+                    </div>
+                </div>
             </div>
 
             <!-- New Customer -->

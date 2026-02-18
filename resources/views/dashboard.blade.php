@@ -105,14 +105,22 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Revenue Chart -->
-        <div class="lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4">تحليل الإيرادات (آخر 7 أيام)</h3>
             <div style="height: 300px;">
                 <canvas id="revenueChart"></canvas>
             </div>
         </div>
 
-        <!-- Recent Activities / Alerts -->
+        <!-- Clients Growth Chart -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4">نمو المشتركين (آخر 7 أيام)</h3>
+            <div style="height: 300px;">
+                <canvas id="clientsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Alerts & Activities -->
         <div class="space-y-6">
             <!-- Alerts -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -160,6 +168,84 @@
             </div>
         </div>
     </div>
+
+    <!-- Data Tables Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Recent Clients -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+                <h3 class="text-base font-semibold leading-6 text-gray-900">آخر المشتركين</h3>
+                <a href="{{ route('crm.clients.index') }}" class="text-sm text-blue-600 hover:text-blue-500">عرض الكل</a>
+            </div>
+            <ul role="list" class="divide-y divide-gray-100">
+                @forelse($recentClients as $client)
+                <li class="p-4 hover:bg-gray-50 transition">
+                    <div class="flex justify-between gap-x-3">
+                        <div class="min-w-0 flex flex-col gap-1">
+                            <p class="text-sm font-semibold leading-6 text-gray-900">{{ $client->name }}</p>
+                            <p class="text-xs text-gray-500">{{ $client->username }}</p>
+                        </div>
+                        <div class="flex items-center gap-x-2">
+                             <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">{{ $client->package->name ?? 'مخصص' }}</span>
+                        </div>
+                    </div>
+                </li>
+                @empty
+                <li class="p-4 text-center text-gray-500 text-sm">لا يوجد مشتركين جدد</li>
+                @endforelse
+            </ul>
+        </div>
+
+        <!-- Recent Invoices -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+                <h3 class="text-base font-semibold leading-6 text-gray-900">آخر الفواتير</h3>
+                <a href="{{ route('accounting.invoices.index') }}" class="text-sm text-blue-600 hover:text-blue-500">عرض الكل</a>
+            </div>
+            <ul role="list" class="divide-y divide-gray-100">
+                @forelse($recentInvoices as $invoice)
+                <li class="p-4 hover:bg-gray-50 transition">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">#{{ $invoice->invoice_number }}</p>
+                            <p class="text-xs text-gray-500">{{ $invoice->client->name ?? 'عميل محذوف' }}</p>
+                        </div>
+                        <div class="text-right">
+                             <p class="text-sm font-bold text-gray-900">@money($invoice->amount)</p>
+                             <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset {{ $invoice->status == 'paid' ? 'bg-green-50 text-green-700 ring-green-600/20' : 'bg-yellow-50 text-yellow-800 ring-yellow-600/20' }}">
+                                {{ $invoice->status == 'paid' ? 'مدفوعة' : 'انتظار' }}
+                             </span>
+                        </div>
+                    </div>
+                </li>
+                @empty
+                 <li class="p-4 text-center text-gray-500 text-sm">لا توجد فواتير حديثة</li>
+                @endforelse
+            </ul>
+        </div>
+
+        <!-- Expiring Soon -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+             <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+                <h3 class="text-base font-semibold leading-6 text-gray-900">تنتهي قريباً (7 أيام)</h3>
+            </div>
+            <ul role="list" class="divide-y divide-gray-100">
+                @forelse($expiringClients as $client)
+                <li class="p-4 hover:bg-gray-50 transition">
+                    <div class="flex justify-between items-center">
+                        <div class="min-w-0">
+                            <p class="text-sm font-semibold leading-6 text-gray-900">{{ $client->name }}</p>
+                             <p class="text-xs text-red-500 font-medium">ينتهي: {{ \Carbon\Carbon::parse($client->expires_at)->format('Y-m-d') }}</p>
+                        </div>
+                        <a href="{{ route('crm.clients.renew', $client) }}" class="rounded bg-indigo-50 px-2 py-1 text-xs font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100">تجديد</a>
+                    </div>
+                </li>
+                @empty
+                 <li class="p-4 text-center text-gray-500 text-sm">لا توجد اشتراكات تنتهي قريباً</li>
+                @endforelse
+            </ul>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -188,9 +274,7 @@ new Chart(revenueCtx, {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-            legend: {
-                display: false
-            },
+            legend: { display: false },
             tooltip: {
                 backgroundColor: '#1f2937',
                 padding: 12,
@@ -206,22 +290,15 @@ new Chart(revenueCtx, {
         scales: {
             y: {
                 beginAtZero: true,
-                grid: {
-                    color: '#f3f4f6'
-                },
+                grid: { color: '#f3f4f6' },
                 ticks: {
                     font: { family: "'Tajawal', sans-serif" },
-                    color: '#6b7280',
-                    callback: function(value) {
-                         return value + ' ';
-                    }
+                    color: '#6b7280'
                 },
                 border: { display: false }
             },
             x: {
-                grid: {
-                    display: false
-                },
+                grid: { display: false },
                 ticks: {
                     font: { family: "'Tajawal', sans-serif" },
                     color: '#6b7280'
@@ -229,10 +306,56 @@ new Chart(revenueCtx, {
                 border: { display: false }
             }
         },
-        interaction: {
-            intersect: false,
-            mode: 'index',
+        interaction: { intersect: false, mode: 'index' },
+    }
+});
+
+// Clients Growth Chart
+const clientsCtx = document.getElementById('clientsChart').getContext('2d');
+new Chart(clientsCtx, {
+    type: 'bar',
+    data: {
+        labels: @json($clientsChart['labels']),
+        datasets: [{
+            label: 'مشتركين جدد',
+            data: @json($clientsChart['data']),
+            backgroundColor: '#10b981',
+            borderRadius: 4,
+            barThickness: 20
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: '#1f2937',
+                padding: 12,
+                titleFont: { family: "'Tajawal', sans-serif" },
+                bodyFont: { family: "'Tajawal', sans-serif" }
+            }
         },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: { color: '#f3f4f6' },
+                ticks: {
+                    stepSize: 1,
+                    font: { family: "'Tajawal', sans-serif" },
+                    color: '#6b7280'
+                },
+                border: { display: false }
+            },
+            x: {
+                grid: { display: false },
+                ticks: {
+                    font: { family: "'Tajawal', sans-serif" },
+                    color: '#6b7280'
+                },
+                border: { display: false }
+            }
+        }
     }
 });
 </script>
