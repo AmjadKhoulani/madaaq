@@ -9,6 +9,7 @@
 
     body {
         font-family: 'Tajawal', sans-serif;
+        @apply bg-gray-50 text-gray-900;
     }
 
     /* Keep media responsive without overriding icon SVG sizing */
@@ -31,28 +32,6 @@
     svg.w-6.h-6 { width: 1.5rem !important; height: 1.5rem !important; }
     svg.w-7.h-7 { width: 1.75rem !important; height: 1.75rem !important; }
     svg.w-8.h-8 { width: 2rem !important; height: 2rem !important; }
-
-    .blob {
-        position: absolute;
-        background: linear-gradient(180deg, rgba(79, 70, 229, 0.4) 0%, rgba(124, 58, 237, 0.4) 100%);
-        filter: blur(80px);
-        z-index: -1;
-        animation: move 10s infinite alternate;
-    }
-
-    .glass {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .bg-grid-pattern {
-        background-image:
-            linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-        background-size: 40px 40px;
-    }
 
     .reveal {
         opacity: 0;

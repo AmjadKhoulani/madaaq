@@ -3,286 +3,161 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-3xl font-bold gradient-text">لوحة تحكم المزود (Vendor Dashboard)</h1>
+            <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">لوحة التحكم</h1>
             @if(auth()->user()->tenant)
-                <p class="text-indigo-600 font-semibold text-lg mt-1 decoration-skip-ink-none">{{ auth()->user()->tenant->name }}</p>
+                <p class="text-sm text-indigo-600 font-semibold mt-1">{{ auth()->user()->tenant->name }}</p>
             @endif
-            <p class="text-gray-500 mt-1">نظرة شاملة على أداء الشبكة والعمل باحترافية</p>
+        </div>
+        <div class="flex items-center gap-3">
+             <span class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
+                <div class="w-2 h-2 rounded-full {{ $networkStats['online'] > 0 ? 'bg-green-500' : 'bg-red-500' }} animate-pulse mr-2"></div>
+                الشبكة {{ $networkStats['online'] > 0 ? 'متصلة' : 'مفصولة' }}
+            </span>
         </div>
     </div>
 
     <!-- Stats Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Clients -->
-        <div class="glass rounded-xl p-6 shadow-lg border border-white/30 hover:shadow-xl transition">
+        <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 font-medium">إجمالي العملاء</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-1">{{ number_format($stats['total_clients']) }}</p>
-                    <p class="text-xs text-green-600 mt-1">✓ {{ $stats['active_clients'] }} نشط</p>
+                    <p class="text-sm font-medium text-gray-500">إجمالي العملاء</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format($stats['total_clients']) }}</p>
                 </div>
-                <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                <div class="p-3 bg-blue-50 rounded-lg text-blue-600">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 </div>
+            </div>
+            <div class="mt-4 flex items-center text-sm">
+                <span class="text-green-600 font-medium flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    {{ $stats['active_clients'] }} نشط
+                </span>
+                <span class="text-gray-400 mx-2">•</span>
+                <span class="text-gray-500">المشتركين الحاليين</span>
             </div>
         </div>
 
         <!-- Revenue -->
-        <div class="glass rounded-xl p-6 shadow-lg border border-white/30 hover:shadow-xl transition">
+        <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 font-medium">الإيرادات (الشهر)</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-1">@money($stats['monthly_revenue'])</p>
-                    <p class="text-xs text-orange-600 mt-1">⏳ @money($stats['pending_amount']) معلقة</p>
+                    <p class="text-sm font-medium text-gray-500">الإيرادات (الشهر)</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-2">@money($stats['monthly_revenue'])</p>
                 </div>
-                <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <div class="p-3 bg-green-50 rounded-lg text-green-600">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
+            </div>
+            <div class="mt-4 flex items-center text-sm">
+                <span class="text-orange-600 font-medium flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                     @money($stats['pending_amount']) معلقة
+                </span>
+                <span class="text-gray-400 mx-2">•</span>
+                <span class="text-gray-500">فواتير غير مدفوعة</span>
             </div>
         </div>
 
         <!-- Network Status -->
-        <div class="glass rounded-xl p-6 shadow-lg border border-white/30 hover:shadow-xl transition">
+        <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 font-medium">أجهزة الشبكة</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-1">{{ $networkStats['online'] }}/{{ $networkStats['total'] }}</p>
-                    <p class="text-xs text-green-600 mt-1">⚡ متصل</p>
+                    <p class="text-sm font-medium text-gray-500">أجهزة الشبكة</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-2">{{ $networkStats['online'] }} <span class="text-lg text-gray-400 font-normal">/ {{ $networkStats['total'] }}</span></p>
                 </div>
-                <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
+                <div class="p-3 bg-purple-50 rounded-lg text-purple-600">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
                 </div>
+            </div>
+            <div class="mt-4 flex items-center text-sm">
+                <span class="{{ $networkStats['online'] == $networkStats['total'] ? 'text-green-600' : 'text-orange-600' }} font-medium flex items-center gap-1">
+                    {{ number_format(($networkStats['online'] / max($networkStats['total'], 1)) * 100, 0) }}%
+                </span>
+                <span class="text-gray-500 mr-1">نسبة التوافر</span>
             </div>
         </div>
 
         <!-- Bandwidth -->
-        <div class="glass rounded-xl p-6 shadow-lg border border-white/30 hover:shadow-xl transition">
+        <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 font-medium">الاستهلاك (24 ساعة)</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-1">{{ number_format(($bandwidthToday->total_rx ?? 0) / 1024 / 1024 / 1024, 1) }} GB</p>
-                    <p class="text-xs text-blue-600 mt-1">↓ Download</p>
+                    <p class="text-sm font-medium text-gray-500">الاستهلاك (24 ساعة)</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format(($bandwidthToday->total_rx ?? 0) / 1024 / 1024 / 1024, 1) }} <span class="text-lg text-gray-400 font-normal">GB</span></p>
                 </div>
-                <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                <div class="p-3 bg-indigo-50 rounded-lg text-indigo-600">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                 </div>
+            </div>
+            <div class="mt-4 flex items-center text-sm">
+                <span class="text-indigo-600 font-medium flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                    Download
+                </span>
+                <span class="text-gray-400 mx-2">•</span>
+                <span class="text-gray-500">حركة البيانات</span>
             </div>
         </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Active Alerts -->
-        <div class="glass rounded-2xl p-6 shadow-lg border border-white/30">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold text-gray-900">🚨 التنبيهات النشطة</h3>
-                <a href="{{ route('network.monitoring.index') }}" class="text-sm text-purple-600 hover:text-purple-700 font-semibold">عرض الكل →</a>
-            </div>
-            <div class="space-y-3">
-                @forelse($activeAlerts as $alert)
-                <div class="p-3 bg-red-50 border border-red-200 rounded-lg">
-                    <p class="text-sm font-semibold text-red-800">{{ $alert->message }}</p>
-                    <p class="text-xs text-red-600 mt-1">{{ $alert->created_at->diffForHumans() }}</p>
-                </div>
-                @empty
-                <div class="text-center py-8 text-gray-400">
-                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <p class="text-sm">لا توجد تنبيهات</p>
-                </div>
-                @endforelse
-            </div>
-        </div>
-
-        <!-- Top Websites -->
-        <div class="glass rounded-2xl p-6 shadow-lg border border-white/30">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold gradient-text">🌐 أكثر المواقع تصفحاً</h3>
-                <a href="{{ route('network.website.analytics') }}" class="text-sm text-purple-600 hover:text-purple-700 font-semibold">عرض الكل →</a>
-            </div>
-            <div class="space-y-2">
-                @forelse($topWebsites as $index => $website)
-                <div class="flex items-center justify-between p-2 hover:bg-purple-50 rounded-lg transition">
-                    <div class="flex items-center gap-2">
-                        <span class="w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs font-bold">{{ $index + 1 }}</span>
-                        <span class="text-sm font-medium text-gray-900">{{ $website->domain }}</span>
-                    </div>
-                    <span class="text-xs text-gray-500">{{ number_format($website->total_hits) }}</span>
-                </div>
-                @empty
-                <div class="text-center py-8 text-gray-400">
-                    <p class="text-sm">لا توجد بيانات</p>
-                </div>
-                @endforelse
-            </div>
-        </div>
-
-        <!-- Expiring Soon -->
-        <div class="glass rounded-2xl p-6 shadow-lg border border-white/30">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold text-gray-900">⏰ اشتراكات منتهية قريباً</h3>
-                <span class="px-2 py-1 bg-orange-100 text-orange-700 text-xs font-bold rounded-full">{{ $stats['expiring_soon'] }}</span>
-            </div>
-            <div class="space-y-2 max-h-64 overflow-y-auto">
-                @forelse($expiringClients->take(5) as $client)
-                <div class="p-2 border border-orange-100 rounded-lg hover:bg-orange-50 transition">
-                    <p class="text-sm font-semibold text-gray-900">{{ $client->name }}</p>
-                    <p class="text-xs text-orange-600">ينتهي: {{ $client->expires_at->format('Y-m-d') }}</p>
-                </div>
-                @empty
-                <div class="text-center py-8 text-gray-400">
-                    <p class="text-sm">لا توجد اشتراكات منتهية</p>
-                </div>
-                @endforelse
-            </div>
-        </div>
-    </div>
-
-    <!-- Revenue Chart & Recent Activities -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Revenue Chart -->
-        <div class="glass rounded-2xl p-6 shadow-lg border border-white/30">
-            <h3 class="text-lg font-bold text-gray-900 mb-4">📈 الإيرادات (آخر 7 أيام)</h3>
-            <div style="height: 250px;">
+        <div class="lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4">تحليل الإيرادات (آخر 7 أيام)</h3>
+            <div style="height: 300px;">
                 <canvas id="revenueChart"></canvas>
             </div>
         </div>
 
-        <!-- Recent Activities -->
-        <div class="glass rounded-2xl p-6 shadow-lg border border-white/30">
-            <h3 class="text-lg font-bold text-gray-900 mb-4">📋 آخر النشاطات</h3>
-            <div class="space-y-3 max-h-64 overflow-y-auto">
-                @foreach($recentClients->take(5) as $client)
-                <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition">
-                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
-                        {{ strtoupper(substr($client->name, 0, 1)) }}
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-sm font-semibold text-gray-900">{{ $client->name }}</p>
-                        <p class="text-xs text-gray-500">عميل جديد • {{ $client->created_at->diffForHumans() }}</p>
-                    </div>
+        <!-- Recent Activities / Alerts -->
+        <div class="space-y-6">
+            <!-- Alerts -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-base font-semibold leading-6 text-gray-900">التنبيهات النشطة</h3>
+                    <a href="{{ route('network.monitoring.index') }}" class="text-sm font-semibold text-indigo-600 hover:text-indigo-500">عرض الكل</a>
                 </div>
-                @endforeach
-
-                @foreach($recentInvoices->take(3) as $invoice)
-                <div class="flex items-center gap-3 p-3 bg-green-50 rounded-lg hover:bg-green-100 transition">
-                    <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <div class="space-y-4">
+                    @forelse($activeAlerts->take(3) as $alert)
+                    <div class="flex gap-3">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /></svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">{{ $alert->message }}</p>
+                            <p class="text-xs text-gray-500 mt-1">{{ $alert->created_at->diffForHumans() }}</p>
+                        </div>
                     </div>
-                    <div class="flex-1">
-                        <p class="text-sm font-semibold text-gray-900">فاتورة @money($invoice->amount)</p>
-                        <p class="text-xs text-gray-500">{{ $invoice->client->name ?? 'N/A' }} • {{ $invoice->created_at->diffForHumans() }}</p>
-                    </div>
-                    <span class="px-2 py-1 text-xs font-bold rounded-full {{ $invoice->status === 'paid' ? 'bg-green-200 text-green-800' : 'bg-orange-200 text-orange-800' }}">
-                        {{ $invoice->status === 'paid' ? 'مدفوع' : 'معلق' }}
-                    </span>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
-
-    <!-- System Health & Network Map -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- System Health -->
-        <div class="glass rounded-2xl p-6 shadow-lg border border-white/30">
-            <h3 class="text-lg font-bold text-gray-900 mb-4">💚 صحة النظام</h3>
-            <div class="space-y-3">
-                <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                    <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                        <span class="text-sm font-medium text-gray-700">قاعدة البيانات</span>
-                    </div>
-                    <span class="text-xs font-bold text-green-600">✓ سليم</span>
-                </div>
-
-                <div class="flex items-center justify-between p-3 {{ $networkStats['online'] > 0 ? 'bg-green-50' : 'bg-red-50' }} rounded-lg">
-                    <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 {{ $networkStats['online'] > 0 ? 'bg-green-500' : 'bg-red-500' }} rounded-full animate-pulse"></div>
-                        <span class="text-sm font-medium text-gray-700">الشبكة</span>
-                    </div>
-                    <span class="text-xs font-bold {{ $networkStats['online'] > 0 ? 'text-green-600' : 'text-red-600' }}">
-                        {{ $networkStats['online'] > 0 ? '✓ متصلة' : '✗ معطلة' }}
-                    </span>
-                </div>
-
-                <div class="flex items-center justify-between p-3 {{ $activeAlerts->count() === 0 ? 'bg-green-50' : 'bg-orange-50' }} rounded-lg">
-                    <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 {{ $activeAlerts->count() === 0 ? 'bg-green-500' : 'bg-orange-500' }} rounded-full animate-pulse"></div>
-                        <span class="text-sm font-medium text-gray-700">التنبيهات</span>
-                    </div>
-                    <span class="text-xs font-bold {{ $activeAlerts->count() === 0 ? 'text-green-600' : 'text-orange-600' }}">
-                        {{ $activeAlerts->count() }} نشط
-                    </span>
-                </div>
-
-                <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                    <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                        <span class="text-sm font-medium text-gray-700">API</span>
-                    </div>
-                    <span class="text-xs font-bold text-blue-600">✓ جاهز</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Network Overview -->
-        <div class="lg:col-span-2 glass rounded-2xl p-6 shadow-lg border border-white/30">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold text-gray-900">🗺️ نظرة عامة على الشبكة</h3>
-                <a href="{{ route('network.topology.index') }}" class="text-sm text-purple-600 hover:text-purple-700 font-semibold">عرض الخريطة →</a>
-            </div>
-            <div class="grid grid-cols-3 gap-4">
-                <div class="text-center p-4 bg-gradient-to-br from-purple-100 to-blue-100 rounded-xl">
-
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['total_routers'] }}</p>
-                    <p class="text-xs text-gray-600 font-medium">Routers</p>
-                </div>
-
-                <div class="text-center p-4 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl">
-
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['total_towers'] }}</p>
-                    <p class="text-xs text-gray-600 font-medium">Towers</p>
-                </div>
-
-                <div class="text-center p-4 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl">
-
-                    <p class="text-2xl font-bold text-gray-900">{{ $networkStats['online'] }}</p>
-                    <p class="text-xs text-gray-600 font-medium">Online</p>
+                    @empty
+                    <p class="text-sm text-gray-500 text-center py-4">لا توجد تنبيهات نشطة حالياً</p>
+                    @endforelse
                 </div>
             </div>
 
-            <div class="mt-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
-                <p class="text-sm text-purple-800">
-                    <strong>💡 نصيحة:</strong> افحص الخريطة التفاعلية لمراقبة حالة جميع الأجهزة في الوقت الفعلي
-                </p>
+            <!-- Top Websites -->
+             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-base font-semibold leading-6 text-gray-900">أكثر المواقع زيارة</h3>
+                    <a href="{{ route('network.website.analytics') }}" class="text-sm font-semibold text-indigo-600 hover:text-indigo-500">التفاصيل</a>
+                </div>
+                <ul role="list" class="divide-y divide-gray-100">
+                    @forelse($topWebsites->take(5) as $website)
+                    <li class="flex items-center justify-between gap-x-6 py-2">
+                        <div class="min-w-0">
+                            <p class="text-sm font-semibold leading-6 text-gray-900">{{ $website->domain }}</p>
+                        </div>
+                        <div class="flex flex-none items-center gap-x-4">
+                            <span class="rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">{{ number_format($website->total_hits) }} زيارة</span>
+                        </div>
+                    </li>
+                    @empty
+                     <p class="text-sm text-gray-500 text-center py-4">لا توجد بيانات متاحة</p>
+                    @endforelse
+                </ul>
             </div>
-        </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="glass rounded-2xl p-6 shadow-lg border border-white/30">
-        <h3 class="text-lg font-bold text-gray-900 mb-4">⚡ إجراءات سريعة</h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <a href="{{ route('crm.clients.create') }}" class="p-4 bg-gradient-to-br from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl shadow-lg transition text-center">
-                <svg class="w-8 h-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
-                <p class="text-sm font-bold">عميل جديد</p>
-            </a>
-
-            <a href="{{ route('network.monitoring.index') }}" class="p-4 bg-gradient-to-br from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-xl shadow-lg transition text-center">
-                <svg class="w-8 h-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                <p class="text-sm font-bold">مراقبة الشبكة</p>
-            </a>
-
-            <a href="{{ route('network.monitoring.bandwidth') }}" class="p-4 bg-gradient-to-br from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-xl shadow-lg transition text-center">
-                <svg class="w-8 h-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                <p class="text-sm font-bold">استهلاك Bandwidth</p>
-            </a>
-
-            <a href="{{ route('network.website.blocked') }}" class="p-4 bg-gradient-to-br from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700 text-white rounded-xl shadow-lg transition text-center">
-                <svg class="w-8 h-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
-                <p class="text-sm font-bold">حظر المواقع</p>
-            </a>
         </div>
     </div>
 </div>
@@ -296,34 +171,68 @@ new Chart(revenueCtx, {
     data: {
         labels: @json($revenueChart['labels']),
         datasets: [{
-            label: 'الإيرادات ({{ $currency }})',
+            label: 'الإيرادات',
             data: @json($revenueChart['data']),
-            borderColor: '#8b5cf6',
-            backgroundColor: 'rgba(139, 92, 246, 0.1)',
-            tension: 0.4,
+            borderColor: '#4f46e5',
+            backgroundColor: 'rgba(79, 70, 229, 0.05)',
+            borderWidth: 2,
+            tension: 0.3,
             fill: true,
-            pointRadius: 4,
-            pointBackgroundColor: '#8b5cf6'
+            pointRadius: 3,
+            pointBackgroundColor: '#ffffff',
+            pointBorderColor: '#4f46e5',
+            pointBorderWidth: 2
         }]
     },
     options: {
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 display: false
+            },
+            tooltip: {
+                backgroundColor: '#1f2937',
+                padding: 12,
+                titleFont: { family: "'Tajawal', sans-serif" },
+                bodyFont: { family: "'Tajawal', sans-serif" },
+                callbacks: {
+                     label: function(context) {
+                        return ' ' + context.parsed.y + ' {{ \App\Models\Setting::getValue('currency', 'SAR') }}';
+                    }
+                }
             }
         },
         scales: {
             y: {
                 beginAtZero: true,
+                grid: {
+                    color: '#f3f4f6'
+                },
                 ticks: {
+                    font: { family: "'Tajawal', sans-serif" },
+                    color: '#6b7280',
                     callback: function(value) {
-                        return '{{ \App\Models\Setting::getValue('currency', 'SAR') }} ' + value;
+                         return value + ' ';
                     }
-                }
+                },
+                border: { display: false }
+            },
+            x: {
+                grid: {
+                    display: false
+                },
+                ticks: {
+                    font: { family: "'Tajawal', sans-serif" },
+                    color: '#6b7280'
+                },
+                border: { display: false }
             }
-        }
+        },
+        interaction: {
+            intersect: false,
+            mode: 'index',
+        },
     }
 });
 </script>
