@@ -206,30 +206,45 @@ class MikroTikServerController extends Controller
         }
 
         $script = <<<SCRIPT
-{$configWarning}
-/interface wireguard remove [find name=madaaqip]
-/interface wireguard
-add listen-port={$wireguardPort} mtu=1420 name=madaaqip private-key="{$server->wireguard_private_key}"
-/interface wireguard peers
-add allowed-address={$serverVpnIp}/32 endpoint-address={$serverDomain} endpoint-port={$wireguardPort} interface=madaaqip name=madaaq-server persistent-keepalive=25s public-key="{$serverPublicKey}"
-/ip address remove [find interface=madaaqip]
-/ip address
-add address={$vpnIp}/16 interface=madaaqip network=201.10.0.0
-/ip service
-set api disabled=no port={$server->api_port}
-/user group add name=madaaq policy=ftp,read,write,test,api
+:log info "Starting Madaaq Setup..."
+
+# 1. WireGuard Interface
+:if ([:len [/interface wireguard find name=madaaqip]] = 0) do={
+    /interface wireguard add listen-port={$wireguardPort} mtu=1420 name=madaaqip private-key="{$server->wireguard_private_key}"
+} else={
+    /interface wireguard set [find name=madaaqip] listen-port={$wireguardPort} mtu=1420 private-key="{$server->wireguard_private_key}"
+}
+
+# 2. WireGuard Peer
+:if ([:len [/interface wireguard peers find interface=madaaqip public-key="{$serverPublicKey}"]] = 0) do={
+    /interface wireguard peers add allowed-address={$serverVpnIp}/32 endpoint-address={$serverDomain} endpoint-port={$wireguardPort} interface=madaaqip name=madaaq-server persistent-keepalive=25s public-key="{$serverPublicKey}"
+}
+
+# 3. IP Address
+:if ([:len [/ip address find interface=madaaqip]] = 0) do={
+    /ip address add address={$vpnIp}/16 interface=madaaqip network=201.10.0.0
+}
+
+# 4. API Service
+/ip service set api disabled=no port={$server->api_port}
+
+# 5. User Management
+:if ([:len [/user group find name=madaaq]] = 0) do={
+    /user group add name=madaaq policy=ftp,read,write,test,api
+}
 /user remove [find comment="madaaq"]
 /user add name={$apiUser} password={$apiPass} address={$serverVpnIp}/32 comment=madaaq group=madaaq
-/system scheduler remove [find name=command]
-/system scheduler remove [find name=command-hotspot+]
-/system scheduler remove [find name=comand-hotspot+]
-/system scheduler remove [find name=madaaq-sync-scheduler]
-/system script remove [find name=command]
-/system script remove [find name=madaaq-sync-script]
+
+# 6. Cleanup & Sync Agent
+/system scheduler remove [find name~"madaaq-sync"]
+/system script remove [find name~"madaaq-sync"]
+
 /system script
-add name=madaaq-sync-script source="/tool fetch http-method=post keep-result=yes url={$syncUrl} dst-path=madaaq_sync.rsc; :delay 2s; /import madaaq_sync.rsc; /file remove madaaq_sync.rsc"
+add name=madaaq-sync-script source="/tool fetch http-method=post keep-result=yes url={$syncUrl} check-certificate=no dst-path=madaaq_sync.rsc; :delay 2s; :if ([:len [/file find name=madaaq_sync.rsc]] > 0) do={ /import madaaq_sync.rsc; /file remove madaaq_sync.rsc }"
+
 /system scheduler
 add interval=2m name=madaaq-sync-scheduler on-event="/system script run madaaq-sync-script" start-time=startup
+
 :log info "✅ Madaaq Persistent Agent Enabled"
 SCRIPT;
 
