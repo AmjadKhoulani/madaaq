@@ -184,7 +184,7 @@
     </div>
 
     <!-- Main Content Area -->
-    <div class="flex flex-1 flex-col lg:pr-72 h-full">
+    <div class="flex flex-1 flex-col lg:mr-72 h-full">
         <!-- Top Header (Search & Notifications) -->
         <header class="flex h-16 shrink-0 items-center justify-between gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
             <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
