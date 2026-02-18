@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'wireguard' => [
+        'public_key' => env('WIREGUARD_PUBLIC_KEY'),
+        'port' => env('WIREGUARD_PORT', 51820),
+    ],
+
 ];

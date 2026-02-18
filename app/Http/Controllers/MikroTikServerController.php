@@ -172,9 +172,9 @@ class MikroTikServerController extends Controller
         }
 
         // Configuration
-        $serverDomain = '129.224.207.246'; // Correct Public IP
-        $wireguardPort = env('WIREGUARD_PORT', 51820);
-        $serverPublicKey = trim(env('WIREGUARD_PUBLIC_KEY', ''), '"'); // Strip quotes
+        $serverDomain = '167.86.118.97'; // Use the confirmed production IP
+        $wireguardPort = config('services.wireguard.port', 51820);
+        $serverPublicKey = trim(config('services.wireguard.public_key', ''), '"'); // Strip quotes
         
         // Warning for missing configuration
         $configWarning = empty($serverPublicKey) ? "# WARNING: WIREGUARD_PUBLIC_KEY not configured in .env\n" : "";
@@ -195,9 +195,6 @@ class MikroTikServerController extends Controller
         
         // Explicitly set HTTPS URL to avoid APP_URL or Proxy issues
         $syncUrl = "https://madaaq.com/api/servers/{$server->id}/sync";
-        
-        // Use User Provided IP
-        $serverDomain = '167.86.118.97';
 
         $apiUser = $server->username;
         $apiPass = $password;
