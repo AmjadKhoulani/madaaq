@@ -26,7 +26,7 @@
     <div x-show="sidebarOpen" x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-900/80 z-40 lg:hidden" @click="sidebarOpen = false"></div>
 
     <!-- Sidebar -->
-    <div :class="sidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'" class="fixed inset-y-0 right-0 z-50 w-72 bg-white border-l border-gray-200 transition-transform duration-300 ease-in-out lg:static lg:inset-auto lg:flex lg:flex-col shadow-xl lg:shadow-none">
+    <div :class="sidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'" class="fixed inset-y-0 right-0 z-50 w-72 bg-white border-l border-gray-200 transition-transform duration-300 ease-in-out shadow-xl lg:shadow-none">
         
         <!-- Logo -->
         <div class="flex h-16 shrink-0 items-center gap-3 px-6 border-b border-gray-100">
