@@ -235,6 +235,58 @@ class MikroTikService
         return $this->client->query($query)->read();
     }
 
+    public function createHotspotProfile($name, $rateLimit)
+    {
+        $this->connect();
+        
+        $query = (new Query('/ip/hotspot/user/profile/add'))
+            ->equal('name', $name)
+            ->equal('rate-limit', $rateLimit)
+            ->equal('shared-users', '1') // Default to 1 device per user?
+            ->equal('status-autorefresh', '1m')
+            ->equal('transparent-proxy', 'yes');
+
+        return $this->client->query($query)->read();
+    }
+
+    public function updateHotspotProfile($oldName, $newName, $rateLimit)
+    {
+        $this->connect();
+
+        $findQuery = (new Query('/ip/hotspot/user/profile/print'))->where('name', $oldName);
+        $profile = $this->client->query($findQuery)->read();
+
+        if (empty($profile)) {
+            return $this->createHotspotProfile($newName, $rateLimit);
+        }
+
+        $id = $profile[0]['.id'];
+
+        $query = (new Query('/ip/hotspot/user/profile/set'))
+            ->equal('.id', $id)
+            ->equal('name', $newName)
+            ->equal('rate-limit', $rateLimit);
+
+        return $this->client->query($query)->read();
+    }
+
+    public function deleteHotspotProfile($name)
+    {
+        $this->connect();
+
+        $findQuery = (new Query('/ip/hotspot/user/profile/print'))->where('name', $name);
+        $profile = $this->client->query($findQuery)->read();
+
+        if (empty($profile)) {
+             return null;
+        }
+
+        $id = $profile[0]['.id'];
+
+        $query = (new Query('/ip/hotspot/user/profile/remove'))->equal('.id', $id);
+        return $this->client->query($query)->read();
+    }
+
     /**
      * Get active PPPoE connections
      */

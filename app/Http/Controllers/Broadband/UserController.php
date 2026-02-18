@@ -125,9 +125,22 @@ class UserController extends Controller
     
     public function destroy(Client $user)
     {
-        // Remove from Router?
-        // Implementation pending for full sync. Just delete from DB for now.
+        // SYNC: Delete User from MikroTik
+        if ($user->router_id) {
+            try {
+                $router = $user->router;
+                if ($router) {
+                    $service = new MikroTikService($router);
+                    $service->deletePPPoEUser($user->username);
+                    // Also kick if active
+                    $service->kickUser($user->username);
+                }
+            } catch (\Exception $e) {
+                \Log::error("Failed to delete PPPoE user from MikroTik: " . $e->getMessage());
+            }
+        }
+
         $user->delete();
-        return redirect()->route('broadband.users.index')->with('success', 'User deleted from DB.');
+        return redirect()->route('broadband.users.index')->with('success', 'User deleted from DB and MikroTik.');
     }
 }

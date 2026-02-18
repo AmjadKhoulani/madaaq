@@ -87,8 +87,23 @@ class UserController extends Controller
 
     public function destroy(Client $user)
     {
+        // SYNC: Delete User from MikroTik
+        if ($user->mikrotik_server_id) {
+            try {
+                $server = $user->mikrotikServer;
+                if ($server) {
+                    $service = new MikroTikService($server);
+                    $service->deleteHotspotUser($user->username);
+                    // Also kick if active
+                    $service->kickHotspotUser($user->username);
+                }
+            } catch (\Exception $e) {
+                \Log::error("Failed to delete hotspot user from MikroTik: " . $e->getMessage());
+            }
+        }
+
         $user->delete();
-        return redirect()->route('hotspot.users.index')->with('success', 'User deleted.');
+        return redirect()->route('hotspot.users.index')->with('success', 'User deleted from DB and MikroTik.');
     }
 
     public function print(Client $user)
