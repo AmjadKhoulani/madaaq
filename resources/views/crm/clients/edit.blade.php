@@ -2,450 +2,416 @@
 
 @push('styles')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@19.2.16/build/css/intlTelInput.css">
 <style>
-    #map { height: 400px; width: 100%; border-radius: 0.75rem; z-index: 1; }
+    #map { height: 300px; width: 100%; border-radius: 0.5rem; z-index: 1; }
+    [x-cloak] { display: none !important; }
+    .iti { width: 100%; }
 </style>
 @endpush
 
 @section('content')
-<div class="max-w-5xl mx-auto">
+<div class="max-w-7xl mx-auto" 
+     x-data="clientEditForm({ 
+        client: {{ Js::from($client) }},
+        servers: {{ Js::from($servers) }},
+        deviceModels: {{ Js::from($deviceModels) }} 
+     })"
+     x-cloak>
+     
     <!-- Header -->
-    <div class="mb-8">
-        <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">تعديل بيانات المشترك</h2>
-        <p class="mt-2 text-lg text-gray-500">تحديث معلومات المشترك {{ $client->name ?? $client->username }}</p>
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900">تعديل بيانات المشترك</h2>
+            <p class="text-sm text-gray-500">تحديث المعلومات والاشتراك: <span class="font-mono font-bold" x-text="client.name || client.username"></span></p>
+        </div>
+        <div class="flex gap-2">
+            <a href="{{ route('crm.clients.index') }}" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition text-sm">
+                إلغاء
+            </a>
+            @if($client->status === 'active')
+                <form action="{{ route('crm.clients.toggleStatus', $client) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من إيقاف هذا المشترك؟')">
+                    @csrf
+                    <button type="submit" class="px-4 py-2 bg-red-50 text-red-700 border border-red-200 font-medium rounded-lg hover:bg-red-100 transition text-sm">
+                        إيقاف الحساب
+                    </button>
+                </form>
+            @else
+                <form action="{{ route('crm.clients.toggleStatus', $client) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="px-4 py-2 bg-green-50 text-green-700 border border-green-200 font-medium rounded-lg hover:bg-green-100 transition text-sm">
+                        تفعيل الحساب
+                    </button>
+                </form>
+            @endif
+        </div>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-        <!-- Decoration Header -->
-        <div class="h-2 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600"></div>
+    <!-- Alert Messages -->
+    @if ($errors->any())
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-lg">
+            <div class="flex">
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-red-800">يوجد أخطاء في البيانات:</h3>
+                    <ul class="mt-2 list-disc list-inside text-sm text-red-700">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+    @endif
 
-        <form action="{{ route('crm.clients.update', $client) }}" method="POST" class="p-8 md:p-10 space-y-10"
-              x-data="{ 
-                  connectionType: '{{ $client->type }}',
-                  connectionMode: '{{ $client->connection_mode ?? 'wireless' }}',
-                  servers: {{ Js::from($servers) }},
-                  deviceModels: {{ Js::from($deviceModels) }},
-                  selectedServerId: {{ $client->mikrotik_server_id ?? 'null' }},
-                  towers: [],
-                  selectedTowerId: {{ $client->tower_id ?? 'null' }},
-                  towerDevices: [],
-                  ssids: [],
-                  selectedSSID: {{ $client->ssid_id ?? 'null' }},
-                  tower_device_id: {{ $client->tower_device_id ?? 'null' }},
-                  cpeIp: '{{ $client->cpe_ip ?? $client->ip }}',
-                  
-                  // Map Data
-                  lat: '{{ $client->lat }}',
-                  lng: '{{ $client->lng }}',
-                  map: null,
-                  marker: null,
-
-                  updateTowers() {
-                      const server = this.servers.find(s => s.id == this.selectedServerId);
-                      this.towers = server ? (server.all_towers || server.towers) : [];
-                  },
-                  updateTowerData() {
-                      const tower = this.towers.find(t => t.id == this.selectedTowerId);
-                      this.ssids = tower ? tower.ssids : [];
-                      this.towerDevices = tower ? tower.devices : [];
-                  },
-                  autoMapDevice() {
-                      if (!this.selectedSSID) return;
-                      const ssidObj = this.ssids.find(s => s.id == this.selectedSSID);
-                      if (ssidObj && ssidObj.tower_device_id) {
-                          this.tower_device_id = ssidObj.tower_device_id;
-                      }
-                  },
-                   syncIp(val) {
-                       this.cpeIp = val;
-                   },
-                   syncCpeIp(val) {
-                       this.cpeIp = val;
-                   },
-                  init() {
-                      this.updateTowers();
-                      this.updateTowerData();
-                      this.initMap();
-                  },
-                  initMap() {
-                      // Initial Lat/Lng or Default
-                      const initialLat = this.lat || (this.towers.find(t => t.id == this.selectedTowerId)?.lat || 33.5138);
-                      const initialLng = this.lng || (this.towers.find(t => t.id == this.selectedTowerId)?.lng || 36.2765);
-
-                      this.map = L.map('map').setView([initialLat, initialLng], 13);
-                      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                          attribution: 'Map data &copy; <a href=\'https://www.openstreetmap.org/\'>OpenStreetMap</a> contributors'
-                      }).addTo(this.map);
-
-                      if (this.lat && this.lng) {
-                           this.marker = L.marker([this.lat, this.lng]).addTo(this.map);
-                      }
-
-                      this.map.on('click', (e) => {
-                          this.lat = e.latlng.lat.toFixed(7);
-                          this.lng = e.latlng.lng.toFixed(7);
-                          
-                          if (this.marker) {
-                              this.marker.setLatLng(e.latlng);
-                          } else {
-                              this.marker = L.marker(e.latlng).addTo(this.map);
-                          }
-                      });
-                  }
-              }">
-            @csrf
-            @method('PUT')
+    <form action="{{ route('crm.clients.update', $client) }}" method="POST" id="clientForm">
+        @csrf
+        @method('PUT')
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
             
-            {{-- Validation Errors Display --}}
-            @if ($errors->any())
-                <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-5 mb-6">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0">
-                            <svg class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
+            <!-- LEFT COLUMN: Main Form -->
+            <div class="lg:col-span-2 space-y-6">
+
+                <!-- 1. Subscriber Info -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        بيانات المشترك
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Name -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">الاسم الكامل</label>
+                            <input type="text" name="name" x-model="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none" required>
                         </div>
-                        <div class="mr-3">
-                            <h3 class="text-base font-bold text-red-800 mb-2">يوجد مشاكل في البيانات المدخلة:</h3>
-                            <ul class="list-disc list-inside text-sm text-red-700 space-y-1">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
+
+                        <!-- Phone -->
+                        <div x-data="{ 
+                            iti: null, 
+                            initPhone() {
+                                if (window.intlTelInput) {
+                                    const input = this.$refs.phoneInput;
+                                    this.iti = window.intlTelInput(input, {
+                                        utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@19.2.16/build/js/utils.js',
+                                        initialCountry: 'auto',
+                                        geoIpLookup: function(callback) {
+                                            fetch('https://ipapi.co/json')
+                                            .then(res => res.json())
+                                            .then(data => callback(data.country_code))
+                                            .catch(() => callback('SY'));
+                                        },
+                                        separateDialCode: true,
+                                        preferredCountries: ['sy', 'sa', 'tr']
+                                    });
+                                    if(this.phone) this.iti.setNumber(this.phone);
+                                    
+                                    input.addEventListener('input', () => {
+                                        document.getElementById('hiddenPhone').value = this.iti.getNumber();
+                                    });
+                                }
+                            }
+                        }" x-init="initPhone()">
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">رقم الهاتف</label>
+                            <div class="relative" dir="ltr">
+                                <input type="tel" x-ref="phoneInput" x-model="phone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none" required>
+                                <input type="hidden" name="phone" id="hiddenPhone" :value="phone">
+                            </div>
+                        </div>
+
+                        <!-- Portal Password -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">كلمة مرور البوابة (تحديث)</label>
+                            <input type="text" name="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none" placeholder="اترك فارغاً لعدم التغيير">
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">البريد الإلكتروني</label>
+                            <input type="email" name="email" value="{{ old('email', $client->email) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none">
                         </div>
                     </div>
                 </div>
-            @endif
 
-            {{-- Success Message --}}
-            @if (session('success'))
-                <div class="bg-green-50 border-l-4 border-green-500 rounded-lg p-5 mb-6">
-                    <div class="flex items-start">
-                        <svg class="h-6 w-6 text-green-500 ml-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
-                    </div>
-                </div>
-            @endif
-            
-            <!-- Hidden Fields for Locked Data -->
-            <input type="hidden" name="type" value="{{ $client->type }}">
-
-            <!-- Section 1: Connection & Account Details -->
-            <div>
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900">بيانات الاتصال والحساب (الشبكة)</h3>
-                        <p class="text-sm text-gray-500">معلومات الدخول ونوع الاشتراك</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                <!-- 2. Service Details -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        تفاصيل الخدمة
+                        <span class="mr-auto text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded" x-text="connectionType.toUpperCase()"></span>
+                    </h3>
                     
-                    <!-- Status -->
-                    <div class="col-span-1 md:col-span-1">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">حالة الاشتراك</label>
-                        <select name="status" class="block w-full py-3 px-4 border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 shadow-sm bg-gray-50 focus:bg-white transition">
-                            <option value="active" {{ $client->status == 'active' ? 'selected' : '' }}>نشط (Active)</option>
-                            <option value="inactive" {{ $client->status == 'inactive' ? 'selected' : '' }}>غير نشط (Inactive)</option>
-                            <option value="suspended" {{ $client->status == 'suspended' ? 'selected' : '' }}>موقوف (Suspended)</option>
-                        </select>
-                    </div>
+                    <input type="hidden" name="type" :value="connectionType">
 
-                    <div class="col-span-1 md:col-span-1">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">تاريخ انتهاء الاشتراك (Renew Date)</label>
-                        <input type="date" name="expires_at" value="{{ $client->expires_at ? $client->expires_at->format('Y-m-d') : '' }}" class="block w-full py-3 px-4 border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 shadow-sm bg-gray-50 focus:bg-white transition">
-                        <p class="text-xs text-gray-500 mt-1">تعديل هذا التاريخ سيغير موعد فصل الخدمة يدوياً.</p>
-                    </div>
-
-                    <!-- Connection Type (LOCKED) -->
-                    <div class="col-span-1 md:col-span-2">
-                        <label class="block text-sm font-semibold text-gray-700 mb-3">نوع الاشتراك (لا يمكن تغييره)</label>
-                        <div class="grid grid-cols-2 gap-4">
-                            <!-- PPPoE Option -->
-                            <label class="relative flex cursor-not-allowed rounded-xl border p-4 shadow-sm focus:outline-none bg-gray-50 transition {{ $client->type == 'pppoe' ? 'border-blue-600 ring-1 ring-blue-600' : 'opacity-50' }}">
-                                <input type="radio" value="pppoe" class="sr-only peer" :checked="connectionType === 'pppoe'" disabled>
-                                <span class="flex flex-1">
-                                    <span class="flex flex-col">
-                                        <span class="block text-sm font-bold text-gray-900 peer-checked:text-blue-600">برودباند (PPPoE)</span>
-                                        <span class="mt-1 flex items-center text-xs text-gray-500">اتصال ثابت وسريع</span>
-                                    </span>
-                                </span>
-                                <svg class="h-5 w-5 text-gray-400 peer-checked:text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            </label>
-
-                            <!-- Hotspot Option -->
-                            <label class="relative flex cursor-not-allowed rounded-xl border p-4 shadow-sm focus:outline-none bg-gray-50 transition {{ $client->type == 'hotspot' ? 'border-purple-600 ring-1 ring-purple-600' : 'opacity-50' }}">
-                                <input type="radio" value="hotspot" class="sr-only peer" :checked="connectionType === 'hotspot'" disabled>
-                                <span class="flex flex-1">
-                                    <span class="flex flex-col">
-                                        <span class="block text-sm font-bold text-gray-900 peer-checked:text-purple-600">هوت سبوت (Hotspot)</span>
-                                        <span class="mt-1 flex items-center text-xs text-gray-500">كروت وشبكات واي فاي</span>
-                                    </span>
-                                </span>
-                                <svg class="h-5 w-5 text-gray-400 peer-checked:text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Network Fields (Broadband Only) -->
-                    <div class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8" x-show="connectionType === 'pppoe'" x-transition>
-                        <!-- 1. Select Control Server -->
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">1. سيرفر التحكم (Core Router)</label>
-                            <select name="mikrotik_server_id" x-model="selectedServerId" @change="selectedTowerId=''; updateTowers()" class="block w-full py-3 px-4 border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 shadow-sm bg-gray-50 focus:bg-white transition" :required="connectionType === 'pppoe'">
-                                <option value="">اختر سيرفر التحكم...</option>
-                                <template x-for="server in servers" :key="server.id">
-                                    <option :value="server.id" x-text="server.name + ' (' + server.ip + ')'" :selected="server.id == selectedServerId"></option>
-                                </template>
-                            </select>
-                            @error('router_id') <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p> @enderror
+                    <div class="space-y-4">
+                        <!-- Infrastructure Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" x-show="connectionType === 'pppoe'">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">سيرفر التحكم</label>
+                                <select name="mikrotik_server_id" x-model="selectedServerId" @change="updateTowers()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm">
+                                    <option value="">اختر السيرفر...</option>
+                                    <template x-for="server in servers" :key="server.id">
+                                        <option :value="server.id" x-text="server.name" :selected="server.id == selectedServerId"></option>
+                                    </template>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">البرج</label>
+                                <select name="tower_id" x-model="selectedTowerId" @change="updateTowerData()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm" :disabled="!selectedServerId">
+                                    <option value="">اختر البرج...</option>
+                                    <template x-for="tower in towers" :key="tower.id">
+                                        <option :value="tower.id" x-text="tower.name" :selected="tower.id == selectedTowerId"></option>
+                                    </template>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">الشبكة (SSID)</label>
+                                <select name="ssid_id" x-model="selectedSSID" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm" :disabled="!selectedTowerId">
+                                    <option value="">اختر الشبكة...</option>
+                                    <template x-for="ssid in ssids" :key="ssid.id">
+                                        <option :value="ssid.id" x-text="ssid.ssid_name" :selected="ssid.id == selectedSSID"></option>
+                                    </template>
+                                </select>
+                            </div>
                         </div>
 
-                        <!-- 2. Select Tower (Filtered) -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">2. البرج (Tower)</label>
-                            <select name="tower_id" x-model="selectedTowerId" @change="updateTowerData()" class="block w-full py-3 px-4 border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 shadow-sm bg-gray-50 focus:bg-white transition" :disabled="!selectedServerId">
-                                <option value="">اختر البرج...</option>
-                                <template x-for="tower in towers" :key="tower.id">
-                                    <option :value="tower.id" x-text="tower.name" :selected="tower.id == selectedTowerId"></option>
-                                </template>
-                            </select>
-                            @error('tower_id') <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p> @enderror
-                        </div>
-
-                        <!-- 3. Select SSID (Filtered) -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">3. الشبكة (SSID)</label>
-                            <select name="ssid_id" x-model="selectedSSID" @change="autoMapDevice()" class="block w-full py-3 px-4 border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 shadow-sm bg-gray-50 focus:bg-white transition" :disabled="!selectedTowerId">
-                                <option value="">اختر الشبكة...</option>
-                                <template x-for="ssid in ssids" :key="ssid.id">
-                                    <option :value="ssid.id" x-text="ssid.ssid_name" :selected="ssid.id == {{ $client->ssid_id ?? 'null' }}"></option>
-                                </template>
-                            </select>
-                            <p class="text-xs text-gray-500 mt-1" x-show="!selectedTowerId">يرجى اختيار البرج أولاً</p>
+                        <!-- Credentials Row -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-gray-100">
+                             <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">اسم المستخدم (للاتصال)</label>
+                                <input type="text" 
+                                       :name="connectionType === 'pppoe' ? 'pppoe_username' : 'hotspot_username'" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 font-mono text-sm cursor-not-allowed" 
+                                       readonly
+                                       :value="username">
+                                <p class="text-[10px] text-gray-400 mt-1">يُستخدم رقم الهاتف كاسم مستخدم</p>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">كلمة مرور الخدمة (تحديث)</label>
+                                <input type="text" name="service_password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none bg-blue-50 font-mono text-sm" 
+                                       placeholder="اترك فارغاً لعدم التغيير" 
+                                       value="{{ old('service_password') }}"> 
+                                <p class="text-[10px] text-gray-400 mt-1">كلمة المرور المسجلة: <span class="font-mono text-gray-600">{{ $client->service_password }}</span></p>
+                            </div>
                         </div>
                         
-                        <!-- 4. Connection Mode + Details -->
-                        <div class="col-span-1 md:col-span-2 border-t pt-6 mt-2">
-                             <label class="block text-sm font-semibold text-gray-700 mb-4">طريقة الربط (Connection Mode)</label>
-                             <div class="flex items-center gap-6 mb-4">
-                                 <label class="flex items-center gap-2 cursor-pointer">
-                                     <input type="radio" name="connection_mode" value="wireless" x-model="connectionMode" class="text-blue-600 focus:ring-blue-500" {{ $client->status == 'active' ? '' : '' /* Maybe lock if needed, but usually editable */ }}>
-                                     <span class="text-gray-900 font-medium">هوائي (Wireless)</span>
-                                 </label>
-                                 <label class="flex items-center gap-2 cursor-pointer">
-                                     <input type="radio" name="connection_mode" value="cable" x-model="connectionMode" class="text-blue-600 focus:ring-blue-500">
-                                     <span class="text-gray-900 font-medium">كابل (Cable)</span>
-                                 </label>
-                             </div>
-                             
-                             <!-- Wireless Fields -->
-                              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50 rounded-xl border border-gray-200" x-show="connectionMode === 'wireless'">
-                                  <div>
-                                      <label class="block text-sm font-semibold text-gray-700 mb-2">الجهاز المرسل (البرج)</label>
-                                      <select name="tower_device_id" x-model="tower_device_id" class="block w-full py-2 px-3 border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm">
-                                         <option value="">اختر القطعة المرسلة...</option>
-                                         <template x-for="device in towerDevices" :key="device.id">
-                                             <option :value="device.id" x-text="device.name + (device.ip ? ' (' + device.ip + ')' : '')"></option>
-                                         </template>
-                                      </select>
-                                      <p class="text-xs text-gray-500 mt-1" x-show="selectedTowerId && towerDevices && towerDevices.length > 0">
-                                          <span x-text="'عدد الأجهزة: ' + towerDevices.length"></span>
-                                      </p>
-                                      <p class="text-xs text-gray-400 mt-1" x-show="!selectedTowerId">يرجى اختيار البرج أولاً</p>
-                                      <p class="text-xs text-orange-500 mt-1" x-show="selectedTowerId && (!towerDevices || towerDevices.length === 0)">لا توجد أجهزة في هذا البرج</p>
-                                  </div>
-                                  <div>
-                                      <label class="block text-sm font-semibold text-gray-700 mb-2">جهاز الاستقبال (CPE Model)</label>
-                                      <input type="text" name="cpe_model" value="{{ $client->cpe_model }}" class="block w-full py-2 px-3 border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="مثال: NanoStation M5">
-                                  </div>
-                                   <div>
-                                        <label class="block text-sm font-semibold text-gray-700 mb-2">IP جهاز الاستقبال (CPE IP)</label>
-                                        <input type="text" name="cpe_ip" x-model="cpeIp" @input="syncCpeIp($event.target.value)" class="block w-full py-2 px-3 border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="192.168.x.x" dir="ltr">
-                                   </div>
-                                  <div>
-                                       <label class="block text-sm font-semibold text-gray-700 mb-2">MAC جهاز الاستقبال</label>
-                                       <input type="text" name="cpe_mac" value="{{ $client->cpe_mac }}" class="block w-full py-2 px-3 border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="XX:XX:XX:XX:XX:XX" dir="ltr">
-                                  </div>
-                              </div>
-                             
-                             <!-- Cable Fields -->
-                             <div class="p-4 bg-gray-50 rounded-xl border border-gray-200" x-show="connectionMode === 'cable'">
-                                 <label class="block text-sm font-semibold text-gray-700 mb-2">رقم البورت (Switch Port)</label>
-                                 <input type="number" name="switch_port" value="{{ old('switch_port', $client->switch_port) }}" class="block w-full py-2 px-3 border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm">
-                             </div>
-                        </div>
-                    </div>
-
-
-                    <!-- PPPoE Username -->
-                    <div x-show="connectionType === 'pppoe'" x-transition class="md:col-span-2">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">اسم المستخدم (PPPoE Username)</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        <!-- Hardware Details -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-gray-100" x-show="connectionType === 'pppoe'">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">جهاز العميل (CPE)</label>
+                                <input type="text" name="cpe_model" value="{{ old('cpe_model', $client->cpe_model) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm placeholder-gray-400" placeholder="NanoStation 5">
                             </div>
-                            <input type="text" name="pppoe_username" value="{{ old('pppoe_username', $client->type == 'pppoe' ? $client->username : '') }}" class="block w-full pl-10 pr-4 py-3 border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 transition shadow-sm bg-gray-50 focus:bg-white" dir="ltr" :required="connectionType === 'pppoe'" readonly>
-                             <p class="text-xs text-gray-400 mt-1">اسم المستخدم للقراءة فقط</p>
-                        </div>
-                    </div>
-
-                    <!-- Hotspot Username -->
-                    <div x-show="connectionType === 'hotspot'" x-transition class="md:col-span-2">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">اسم المستخدم (Hotspot Username)</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">عنوان IP (Static)</label>
+                                <input type="text" name="ip_address" value="{{ old('ip_address', $client->ip) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm placeholder-gray-400 font-mono" placeholder="10.x.x.x">
                             </div>
-                            <input type="text" name="hotspot_username" value="{{ old('hotspot_username', $client->type == 'hotspot' ? $client->username : '') }}" class="block w-full pl-10 pr-4 py-3 border-gray-300 rounded-xl focus:ring-purple-500 focus:border-purple-500 transition shadow-sm bg-gray-50 focus:bg-white" dir="ltr" :required="connectionType === 'hotspot'" readonly>
-                        </div>
-                    </div>
-
-                    <!-- Service Password -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">كلمة مرور الخدمة (PPPoE/Hotspot)</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
-                            </div>
-                            <input type="text" name="service_password" value="{{ old('service_password', $client->service_password) }}" class="block w-full pl-10 pr-4 py-3 border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 transition shadow-sm bg-gray-50 focus:bg-white" placeholder="Service Pass" dir="ltr">
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1">اتركها فارغة إذا لم ترد التغيير</p>
-                    </div>
-
-                    <!-- IP Address -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">عنوان IP (اختياري)</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-                            </div>
-                             <input type="text" name="ip_address" value="{{ old('ip_address', $client->ip) }}" x-model="cpeIp" @input="syncIp($event.target.value)" class="block w-full pl-10 pr-4 py-3 border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 transition shadow-sm bg-gray-50 focus:bg-white" placeholder="10.x.x.x" dir="ltr">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <hr class="border-gray-100">
-
-             <!-- Section: Location Map -->
-            <div>
-                 <div class="flex items-center gap-3 mb-6">
-                    <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900">الموقع الجغرافي</h3>
-                        <p class="text-sm text-gray-500">حدث موقع العميل على الخريطة</p>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="md:col-span-2">
-                        <div id="map" class="shadow-sm border border-gray-200"></div>
-                        <p class="text-xs text-gray-500 mt-2">انقر على الخريطة لتحديد الموقع</p>
-                    </div>
-                    <div>
-                         <label class="block text-sm font-semibold text-gray-700 mb-2">خط العرض (Latitude)</label>
-                         <input type="text" name="lat" x-model="lat" class="block w-full py-3 px-4 border-gray-300 rounded-xl focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white" readonly>
-                    </div>
-                    <div>
-                         <label class="block text-sm font-semibold text-gray-700 mb-2">خط الطول (Longitude)</label>
-                         <input type="text" name="lng" x-model="lng" class="block w-full py-3 px-4 border-gray-300 rounded-xl focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white" readonly>
-                    </div>
-                </div>
-            </div>
-
-            <hr class="border-gray-100">
-
-            <!-- Section: Limits & Billing -->
-            <div>
-                 <div class="flex items-center gap-3 mb-6">
-                    <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900">الباقة، المدة، والحدود</h3>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-                     <!-- Package -->
-                     <div class="md:col-span-2">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">الباقة المختارة</label>
-                        <select name="package_id" class="block w-full py-3 px-4 border-gray-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 shadow-sm bg-gray-50 focus:bg-white transition">
-                            <option value="">بدون باقة (اشتراك مخصص)</option>
-                            @foreach($packages as $package)
-                                <option value="{{ $package->id }}" {{ $client->package_id == $package->id ? 'selected' : '' }}>{{ $package->name }} - {{ $package->price }}$ ({{ $package->speed_down }}M/{{ $package->speed_up }}M)</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- Custom Price -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">السعر المخصص ($)</label>
-                        <div class="relative">
-                            <input type="number" step="0.01" name="custom_price" value="{{ old('custom_price', $client->custom_price) }}" class="block w-full pr-4 pl-12 py-3 border-gray-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm bg-gray-50 focus:bg-white" placeholder="0.00">
-                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <span class="text-gray-500 font-bold">$</span>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">MAC Address</label>
+                                <input type="text" name="cpe_mac" value="{{ old('cpe_mac', $client->cpe_mac) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm placeholder-gray-400 font-mono" placeholder="AA:BB:CC:DD:EE:FF">
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Data Limit -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">حد الاستخدام (GB)</label>
-                        <input type="number" name="custom_data_limit_mb" value="{{ old('custom_data_limit_mb', $client->custom_data_limit_mb) }}" class="block w-full py-3 px-4 border-gray-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 shadow-sm bg-gray-50 focus:bg-white transition" placeholder="Unlimited">
+                <!-- 3. Billing & Package -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                    <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        الباقة والمالية
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="md:col-span-2">
+                             <label class="block text-xs font-bold text-gray-500 uppercase mb-1">الباقة الحالية</label>
+                             <select name="package_id" x-model="selectedPackageId" @change="loadPackageDefaults()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-green-500 outline-none">
+                                <option value="">مخصص (بدون باقة)</option>
+                                @foreach($packages as $package)
+                                    <option value="{{ $package->id }}" 
+                                            data-price="{{ $package->price }}" 
+                                            data-limit="{{ $package->data_limit_mb }}">
+                                        {{ $package->name }} - {{ $package->price }}$ ({{ $package->speed_down }}M/{{ $package->speed_up }}M)
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">السعر (شهري)</label>
+                            <div class="relative">
+                                <input type="number" step="0.01" name="price" x-model="customPrice" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-green-500 outline-none font-mono" placeholder="0.00">
+                                <span class="absolute left-3 top-2.5 text-gray-400 text-sm">$</span>
+                            </div>
+                        </div>
+
+                        <div>
+                             <label class="block text-xs font-bold text-gray-500 uppercase mb-1">حد البيانات (GB)</label>
+                             <input type="number" name="data_limit" x-model="customDataLimit" placeholder="Unlimited" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-green-500 outline-none">
+                        </div>
                     </div>
                 </div>
-            </div>
-             
-             <hr class="border-gray-100">
 
-            <!-- Section: User Personal Info -->
-             <div>
-                <h3 class="text-xl font-bold text-gray-900 mb-4">البيانات الشخصية</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">الاسم الكامل</label>
-                        <input type="text" name="name" value="{{ old('name', $client->name ?? $client->username) }}" class="block w-full py-3 px-4 border-gray-300 rounded-xl focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white" required>
+                <!-- 4. Location (Collapsible) -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <button type="button" @click="showMap = !showMap" class="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition">
+                         <h3 class="font-bold text-gray-900 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            الموقع الجغرافي
+                        </h3>
+                        <svg class="w-5 h-5 text-gray-400 transform transition-transform" :class="showMap ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    
+                    <div x-show="showMap" x-collapse>
+                        <div class="p-5 pt-0">
+                            <div id="map" class="mb-4"></div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" name="lat" x-model="lat" placeholder="Latitude" class="px-3 py-2 border rounded-lg bg-gray-50 text-xs" readonly>
+                                <input type="text" name="lng" x-model="lng" placeholder="Longitude" class="px-3 py-2 border rounded-lg bg-gray-50 text-xs" readonly>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">رقم الهاتف</label>
-                        <input type="text" name="phone" value="{{ old('phone', $client->phone ?? $client->username) }}" class="block w-full py-3 px-4 border-gray-300 rounded-xl focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white" required>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: Sticky Summary -->
+            <div class="lg:col-span-1">
+                <div class="sticky top-6 space-y-4">
+                    <!-- Summary Card -->
+                    <div class="bg-gradient-to-br from-indigo-900 to-blue-900 rounded-xl shadow-lg p-6 text-white text-center">
+                        <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-4">
+                            <span class="text-indigo-200 text-sm">الحالة</span>
+                            @if($client->status === 'active')
+                                <span class="bg-green-500/20 text-green-300 px-2 py-1 rounded text-xs border border-green-500/30">نشط (Active)</span>
+                            @else
+                                <span class="bg-red-500/20 text-red-300 px-2 py-1 rounded text-xs border border-red-500/30 font-bold">{{ strtoupper($client->status) }}</span>
+                            @endif
+                        </div>
+                        
+                        <div class="text-indigo-200 text-sm font-medium mb-1">الاشتراك الشهري</div>
+                        <div class="text-4xl font-bold font-mono tracking-tight flex items-center justify-center gap-1">
+                            <span x-text="customPrice || '0'"></span>
+                            <span class="text-2xl">$</span>
+                        </div>
+                        <div class="mt-4 pt-4 text-sm space-y-2 text-left">
+                            <div class="flex justify-between">
+                                <span class="text-indigo-200">النوع:</span>
+                                <span class="font-bold" x-text="connectionType.toUpperCase()"></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-indigo-200">ينتهي في:</span>
+                                <span class="font-bold text-yellow-300">{{ $client->expires_at ? $client->expires_at->format('Y-m-d') : 'غير محدد' }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="w-full mt-6 py-3 bg-white text-blue-900 font-bold rounded-lg shadow hover:bg-blue-50 transition transform active:scale-95">
+                            💾 حفظ التعديلات
+                        </button>
                     </div>
-                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">كلمة مرور البوابة</label>
-                        <input type="text" name="password" class="block w-full py-3 px-4 border-gray-300 rounded-xl focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white" placeholder="اتركها فارغة لعدم التغيير">
+
+                    <!-- Quick Warnings -->
+                    @if($client->status == 'suspended')
+                    <div class="bg-red-50 rounded-xl border border-red-200 p-4">
+                        <h4 class="font-bold text-red-800 text-sm mb-2">تنبيه هام</h4>
+                        <p class="text-xs text-red-700">هذا الحساب موقوف حالياً. للتفعيل، اضغط على زر "تفعيل الحساب" في الأعلى.</p>
                     </div>
-                    <div>
-                         <label class="block text-sm font-semibold text-gray-700 mb-2">البريد الإلكتروني</label>
-                        <input type="email" name="email" value="{{ old('email', $client->email) }}" class="block w-full py-3 px-4 border-gray-300 rounded-xl focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white">
-                    </div>
+                    @endif
                 </div>
             </div>
 
-            <!-- Footer Buttons -->
-            <div class="pt-6 flex flex-col md:flex-row items-center justify-end gap-4">
-                <a href="{{ route('crm.clients.index') }}" class="px-6 py-3 bg-white border border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition w-full md:w-auto text-center">
-                    إلغاء الأمر
-                </a>
-                <button type="submit" class="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl hover:shadow-lg hover:from-blue-700 hover:to-indigo-700 transition transform hover:-translate-y-0.5 w-full md:w-auto">
-                    <span class="flex items-center justify-center gap-2">
-                         حفظ التعديلات
-                    </span>
-                </button>
-            </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
 
 @push('scripts')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@19.2.16/build/js/intlTelInput.min.js"></script>
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('clientEditForm', (data) => ({
+            client: data.client,
+            name: data.client.name || data.client.username,
+            phone: data.client.phone || data.client.username,
+            username: data.client.username,
+            connectionType: data.client.type,
+            
+            servers: data.servers,
+            selectedServerId: data.client.mikrotik_server_id,
+            towers: [],
+            selectedTowerId: data.client.tower_id,
+            ssids: [],
+            selectedSSID: data.client.ssid_id,
+            
+            selectedPackageId: data.client.package_id,
+            customPrice: data.client.custom_price || (data.client.package ? data.client.package.price : ''),
+            customDataLimit: data.client.custom_data_limit_mb ? (data.client.custom_data_limit_mb / 1024) : 
+                             (data.client.package ? (data.client.package.data_limit_mb / 1024) : ''),
+            
+            // Map
+            showMap: false,
+            map: null,
+            marker: null,
+            lat: data.client.lat || '',
+            lng: data.client.lng || '',
+
+            init() {
+                this.updateTowers();
+                this.updateTowerData();
+                
+                this.$watch('showMap', (value) => {
+                    if (value && !this.map) {
+                        setTimeout(() => this.initMap(), 100);
+                    }
+                });
+            },
+
+            updateTowers() {
+                // Keep selection if previously set and valid, else reset
+                const oldTower = this.selectedTowerId;
+                this.ssids = [];
+                const server = this.servers.find(s => s.id == this.selectedServerId);
+                this.towers = server ? (server.all_towers || server.towers) : [];
+                
+                // If the currently selected tower isn't in the new list, clear it
+                if (!this.towers.find(t => t.id == oldTower)) {
+                    this.selectedTowerId = '';
+                }
+            },
+            updateTowerData() {
+                const tower = this.towers.find(t => t.id == this.selectedTowerId);
+                this.ssids = tower ? tower.ssids : [];
+                // Center Map if changed manually? Maybe not for Edit.
+            },
+            loadPackageDefaults() {
+                const select = document.querySelector('select[name="package_id"]');
+                const option = select.options[select.selectedIndex];
+                if (option.dataset.price) {
+                    this.customPrice = option.dataset.price;
+                }
+                if (option.dataset.limit) {
+                    this.customDataLimit = (option.dataset.limit / 1024).toFixed(0);
+                }
+            },
+
+            initMap() {
+                const initialLat = this.lat || 33.5138;
+                const initialLng = this.lng || 36.2765;
+                
+                this.map = L.map('map').setView([initialLat, initialLng], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
+                
+                if (this.lat && this.lng) {
+                    this.marker = L.marker([this.lat, this.lng]).addTo(this.map);
+                }
+
+                this.map.on('click', (e) => {
+                    this.lat = e.latlng.lat.toFixed(6);
+                    this.lng = e.latlng.lng.toFixed(6);
+                    if (this.marker) this.marker.setLatLng(e.latlng);
+                    else this.marker = L.marker(e.latlng).addTo(this.map);
+                });
+            }
+        }));
+    });
+</script>
 @endpush
 @endsection
