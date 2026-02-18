@@ -15,22 +15,25 @@ class SyncWireGuardPeers extends Command
     {
         $this->info("Starting WireGuard Peer Sync...");
         
-        $servers = MikroTikServer::where('wireguard_enabled', true)
+        // 1. Fetch Servers
+        $servers = \App\Models\MikroTikServer::where('wireguard_enabled', true)
             ->whereNotNull('wireguard_public_key')
             ->whereNotNull('wireguard_ip')
             ->get();
 
-        foreach ($servers as $server) {
-            $this->info("Syncing: {$server->name} ({$server->wireguard_ip})");
+        // 2. Fetch Routers (New structural support)
+        $routers = \App\Models\Router::where('wireguard_enabled', true)
+            ->whereNotNull('wireguard_public_key')
+            ->whereNotNull('wireguard_ip')
+            ->get();
+
+        $allDevices = $servers->concat($routers);
+
+        foreach ($allDevices as $device) {
+            $this->info("Syncing: {$device->name} ({$device->wireguard_ip})");
             
             try {
-                // Command to add peer. If it exists, wg set updates it (idempotent for keys/endpoints usually, but 'set' might strict fail if peer exists? 
-                // 'wg set' adds or updates. It does NOT fail if peer exists.
-                // We use sudo -n.
-                // We execute via shell_exec/exec. But we are CLI user (root/agent), so it works.
-                // If running via cron as web user? No, cron usually madaaq. madaaq has sudo.
-
-                $cmd = "sudo -n wg set madaaqip peer {$server->wireguard_public_key} allowed-ips {$server->wireguard_ip}/32 2>&1";
+                $cmd = "sudo -n wg set madaaqip peer {$device->wireguard_public_key} allowed-ips {$device->wireguard_ip}/32 2>&1";
                 
                 $outputLines = [];
                 $returnVar = 0;
@@ -38,8 +41,8 @@ class SyncWireGuardPeers extends Command
                 $output = implode("\n", $outputLines);
                 
                 if ($returnVar !== 0) {
-                    $this->error("Failed to add peer for {$server->name}. Code: $returnVar");
-                    Log::error("WireGuard Sync Failed for {$server->name}: $output");
+                    $this->error("Failed to add peer for {$device->name}. Code: $returnVar");
+                    Log::error("WireGuard Sync Failed for {$device->name}: $output");
                 } else {
                     $this->info("Success.");
                 }

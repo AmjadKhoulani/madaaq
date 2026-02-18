@@ -121,16 +121,56 @@ class RouterController extends Controller
                 unset($validated['password']);
             }
 
+            // Generate WireGuard Keys using Sodium for ALL device types
+            try {
+                $keyPair = sodium_crypto_box_keypair();
+                $privateKey = sodium_crypto_box_secretkey($keyPair);
+                $publicKey = sodium_crypto_box_publickey($keyPair);
+                
+                $validated['wireguard_private_key'] = base64_encode($privateKey);
+                $validated['wireguard_public_key'] = base64_encode($publicKey);
+                $validated['wireguard_enabled'] = true;
+            } catch (\Throwable $e) {
+                \Log::warning('Device WireGuard Key Gen Failed: ' . $e->getMessage());
+            }
+
             if ($validated['device_type'] === 'server') {
                 // Create MikroTik Server
-                // Ensure specific fields
                 $validated['setup_script_generated'] = true;
                 $server = MikroTikServer::create($validated);
-                
+
+                // Assign WireGuard IP for Server
+                try {
+                    $ipOctet3 = floor($server->id / 255) % 255; 
+                    $ipOctet4 = $server->id % 255;
+                    if ($ipOctet4 == 0) $ipOctet4 = 1; 
+                    if ($ipOctet4 == 255) $ipOctet4 = 254;
+                    
+                    $server->wireguard_ip = "201.10.{$ipOctet3}.{$ipOctet4}";
+                    $server->save();
+                } catch (\Exception $e) {
+                    \Log::error('Server WG IP Assignment Failed: ' . $e->getMessage());
+                }
+
                 $message = "✅ تم إضافة السيرفر '{$server->name}' بنجاح!";
             } else {
                 // Create Router
                 $router = Router::create($validated);
+
+                // Assign WireGuard IP for Router (with offset 1000)
+                try {
+                    $routerId = $router->id + 1000;
+                    $ipOctet3 = floor($routerId / 255) % 255; 
+                    $ipOctet4 = $routerId % 255;
+                    if ($ipOctet4 == 0) $ipOctet4 = 1; 
+                    if ($ipOctet4 == 255) $ipOctet4 = 254;
+                    
+                    $router->wireguard_ip = "201.10.{$ipOctet3}.{$ipOctet4}";
+                    $router->save();
+                } catch (\Exception $e) {
+                    \Log::error('Router WG IP Assignment Failed: ' . $e->getMessage());
+                }
+
                 $message = "✅ تمت إضافة الجهاز '{$router->name}' بنجاح!";
             }
 

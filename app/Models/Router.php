@@ -31,12 +31,23 @@ class Router extends Model
         'latency',
         'is_reachable',
         'last_ping_at',
-        'status', // Added price field
+        'status', 
         'antenna_type',
+        'wireguard_enabled',
+        'wireguard_public_key',
+        'wireguard_private_key',
+        'wireguard_ip',
+    ];
+
+    protected $casts = [
+        'wireguard_enabled' => 'boolean',
+        'is_reachable' => 'boolean',
+        'last_ping_at' => 'datetime',
     ];
 
     protected $hidden = [
         'password_encrypted',
+        'wireguard_private_key',
     ];
 
     protected $appends = ['ssids'];
