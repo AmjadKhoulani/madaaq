@@ -159,12 +159,79 @@ class MikroTikService
     }
 
     /**
+     * Create a PPPoE Profile
+     * rateLimit format: "upload/download" (e.g., "2M/10M")
+     */
+    public function createPPPoEProfile($name, $rateLimit)
+    {
+        $this->connect();
+        
+        $query = (new Query('/ppp/profile/add'))
+            ->equal('name', $name)
+            ->equal('rate-limit', $rateLimit)
+            ->equal('only-one', 'default') // Or 'yes'/'no' depending on policy
+            ->equal('use-mpls', 'default')
+            ->equal('use-compression', 'default')
+            ->equal('use-encryption', 'default')
+            ->equal('use-ipv6', 'default');
+
+        return $this->client->query($query)->read();
+    }
+
+    /**
+     * Update a PPPoE Profile
+     */
+    public function updatePPPoEProfile($oldName, $newName, $rateLimit)
+    {
+        $this->connect();
+
+        // Find ID first
+        $findQuery = (new Query('/ppp/profile/print'))->where('name', $oldName);
+        $profile = $this->client->query($findQuery)->read();
+
+        if (empty($profile)) {
+            // If not found, create it? Or return error?
+            // Let's try to create it if it doesn't exist (Self-healing)
+            return $this->createPPPoEProfile($newName, $rateLimit);
+        }
+
+        $id = $profile[0]['.id'];
+
+        $query = (new Query('/ppp/profile/set'))
+            ->equal('.id', $id)
+            ->equal('name', $newName)
+            ->equal('rate-limit', $rateLimit);
+
+        return $this->client->query($query)->read();
+    }
+
+    /**
+     * Delete a PPPoE Profile
+     */
+    public function deletePPPoEProfile($name)
+    {
+        $this->connect();
+
+        $findQuery = (new Query('/ppp/profile/print'))->where('name', $name);
+        $profile = $this->client->query($findQuery)->read();
+
+        if (empty($profile)) {
+             return null;
+        }
+
+        $id = $profile[0]['.id'];
+
+        $query = (new Query('/ppp/profile/remove'))->equal('.id', $id);
+        return $this->client->query($query)->read();
+    }
+
+    /**
      * Get Hotspot profiles from MikroTik
      */
     public function getHotspotProfiles()
     {
         $this->connect();
-        $query = new Query('/ip/hotspot/user/profile/print');
+        $query = (new Query('/ip/hotspot/user/profile/print'));
         return $this->client->query($query)->read();
     }
 

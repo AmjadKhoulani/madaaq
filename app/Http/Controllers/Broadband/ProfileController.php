@@ -29,9 +29,12 @@ class ProfileController extends Controller
         ]);
 
         $validated['type'] = 'pppoe';
-        Package::create($validated);
+        $package = Package::create($validated);
 
-        return redirect()->route('broadband.profiles.index')->with('success', 'Profile created successfully.');
+        // SYNC: Create Profile on all MikroTik devices
+        $this->syncProfileToMikroTik($package, 'create');
+
+        return redirect()->route('broadband.profiles.index')->with('success', 'Profile created and synced to routers.');
     }
 
     public function edit(Package $profile)
@@ -50,14 +53,60 @@ class ProfileController extends Controller
             'data_limit_mb' => 'nullable|integer',
         ]);
 
+        $oldName = $profile->name;
         $profile->update($validated);
 
-        return redirect()->route('broadband.profiles.index')->with('success', 'Profile updated successfully.');
+        // SYNC: Update Profile on all MikroTik devices
+        $this->syncProfileToMikroTik($profile, 'update', $oldName);
+
+        return redirect()->route('broadband.profiles.index')->with('success', 'Profile updated and synced to routers.');
     }
 
     public function destroy(Package $profile)
     {
+        $name = $profile->name;
         $profile->delete();
-        return redirect()->route('broadband.profiles.index')->with('success', 'Profile deleted successfully.');
+
+        // SYNC: Delete Profile from all MikroTik devices
+        $this->syncProfileToMikroTik(null, 'delete', $name);
+
+        return redirect()->route('broadband.profiles.index')->with('success', 'Profile deleted from DB and routers.');
+    }
+
+    /**
+     * Sync Profile to all Tenant Routers & Servers
+     */
+    protected function syncProfileToMikroTik($package, $action, $oldName = null)
+    {
+        $tenantId = auth()->user()->tenant_id ?? 1;
+        
+        // Fetch all devices
+        $routers = \App\Models\Router::where('tenant_id', $tenantId)->get();
+        $servers = \App\Models\MikroTikServer::where('tenant_id', $tenantId)->get();
+        $allDevices = $routers->concat($servers);
+
+        foreach ($allDevices as $device) {
+            try {
+                $service = new \App\Services\MikroTikService($device);
+                
+                if ($action === 'create') {
+                     // rate-limit: "rx/tx" -> "upload/download" (from client perspective)
+                     // speed_up/speed_down
+                     $rateLimit = "{$package->speed_up}M/{{$package->speed_down}}M";
+                     $service->createPPPoEProfile($package->name, $rateLimit);
+                } 
+                elseif ($action === 'update') {
+                     $rateLimit = "{$package->speed_up}M/{{$package->speed_down}}M";
+                     $service->updatePPPoEProfile($oldName, $package->name, $rateLimit);
+                }
+                elseif ($action === 'delete') {
+                     $service->deletePPPoEProfile($oldName); // oldName holds the name to delete
+                }
+
+            } catch (\Exception $e) {
+                \Log::error("Failed to sync profile to {$device->name}: " . $e->getMessage());
+                // Continue to next device
+            }
+        }
     }
 }
