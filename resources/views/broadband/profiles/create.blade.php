@@ -42,6 +42,42 @@
         </div>
 
         <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">تحديد السيرفرات/الرواتر المستهدفة</label>
+            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Routers -->
+                <div>
+                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">الرواتر (Routers)</h4>
+                    <div class="space-y-2">
+                        @forelse($routers as $router)
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" name="targets[]" value="router_{{ $router->id }}" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm text-gray-700">{{ $router->name }}</span>
+                            </label>
+                        @empty
+                            <p class="text-xs text-gray-400">لا يوجد رواتر</p>
+                        @endforelse
+                    </div>
+                </div>
+
+                <!-- Servers -->
+                <div>
+                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">السيرفرات (Servers)</h4>
+                    <div class="space-y-2">
+                        @forelse($servers as $server)
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" name="targets[]" value="server_{{ $server->id }}" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm text-gray-700">{{ $server->name }}</span>
+                            </label>
+                        @empty
+                            <p class="text-xs text-gray-400">لا يوجد سيرفرات</p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">إذا لم يتم تحديد أي جهاز، لن تتم مزامنة الباقة.</p>
+        </div>
+
+        <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">السعر</label>
             <div class="relative">
                 <input type="number" name="price" step="0.01" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="150.00">
