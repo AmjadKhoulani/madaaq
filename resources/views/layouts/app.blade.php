@@ -20,13 +20,13 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
-<body class="h-full font-tajawal text-gray-900 antialiased" x-data="{ sidebarOpen: false }">
+<body class="h-full font-tajawal text-gray-900 antialiased lg:flex" x-data="{ sidebarOpen: false }">
 
     <!-- Mobile Sidebar Backdrop -->
     <div x-show="sidebarOpen" x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-900/80 z-40 lg:hidden" @click="sidebarOpen = false"></div>
 
     <!-- Sidebar -->
-    <div :class="sidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'" class="fixed inset-y-0 right-0 z-50 w-72 bg-white border-l border-gray-200 transition-transform duration-300 ease-in-out shadow-xl lg:shadow-none">
+    <div :class="sidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'" class="fixed inset-y-0 right-0 z-50 w-72 bg-white border-l border-gray-200 transition-transform duration-300 ease-in-out shadow-xl lg:static lg:inset-auto lg:flex lg:flex-col lg:shadow-none">
         
         <!-- Logo -->
         <div class="flex h-16 shrink-0 items-center gap-3 px-6 border-b border-gray-100">
@@ -184,7 +184,7 @@
     </div>
 
     <!-- Main Content Area -->
-    <div class="flex flex-1 flex-col lg:mr-72 h-full">
+    <div class="flex flex-1 flex-col h-full min-w-0">
         <!-- Top Header (Search & Notifications) -->
         <header class="flex h-16 shrink-0 items-center justify-between gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
             <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
