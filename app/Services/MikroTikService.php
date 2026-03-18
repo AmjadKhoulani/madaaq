@@ -798,6 +798,11 @@ class MikroTikService
                 $reachable = true;
                 $receivedPackets++;
                 // Convert 10ms to 10
+                $time = str_replace('ms', '', $packet['time']);
+                $totalLatency += (float)$time;
+            }
+        }
+        
         return ['reachable' => $reachable, 'latency' => $receivedPackets > 0 ? round($totalLatency / $receivedPackets, 2) : null];
     }
 
@@ -851,16 +856,7 @@ class MikroTikService
 
         return $this->client->query($query)->read();
     }
-                $totalLatency += (int) preg_replace('/[^0-9]/', '', $packet['time']);
-            }
-        }
 
-        return [
-            'reachable' => $reachable,
-            'latency' => $receivedPackets > 0 ? round($totalLatency / $receivedPackets) : null,
-            'packet_loss' => round((($count - $receivedPackets) / $count) * 100)
-        ];
-    }
 
     /**
      * Get discovered neighbors via MNDP/CDP
@@ -1008,41 +1004,6 @@ class MikroTikService
         return $this->client->query($query)->read();
     }
 
-    // ==================== Session Management ====================
-
-    public function getActiveSessions($type = 'all')
-    {
-        $this->connect();
-        $sessions = [];
-
-        if ($type === 'all' || $type === 'pppoe') {
-            $query = new Query('/ppp/active/print');
-            $pppoeSessions = $this->client->query($query)->read();
-            foreach ($pppoeSessions as $session) {
-                $sessions[] = array_merge($session, ['type' => 'pppoe']);
-            }
-        }
-
-        if ($type === 'all' || $type === 'hotspot') {
-            $query = new Query('/ip/hotspot/active/print');
-            $hotspotSessions = $this->client->query($query)->read();
-            foreach ($hotspotSessions as $session) {
-                $sessions[] = array_merge($session, ['type' => 'hotspot']);
-            }
-        }
-
-        return $sessions;
-    }
-
-    public function disconnectSession($sessionId, $type = 'pppoe')
-    {
-        $this->connect();
-        
-        $path = $type === 'pppoe' ? '/ppp/active/remove' : '/ip/hotspot/active/remove';
-        $query = (new Query($path))->equal('.id', $sessionId);
-        
-        return $this->client->query($query)->read();
-    }
 
     public function getSessionDetails($username)
     {

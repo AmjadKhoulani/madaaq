@@ -128,7 +128,7 @@
     <!-- Quick Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <!-- Revenue -->
-        <div class="glass p-5 rounded-2xl border-l-4 border-green-500">
+        <div class="bg-white shadow-sm border border-gray-100 p-5 rounded-2xl border-l-4 border-green-500">
             <div class="text-slate-500 dark:text-slate-400 text-sm mb-1">إيرادات السنة الحالية</div>
             <div class="text-2xl font-bold text-slate-800 dark:text-white">@money($thisYearRevenue)</div>
             <div class="text-xs text-green-600 mt-2 font-medium">
@@ -137,14 +137,14 @@
         </div>
 
         <!-- Profit -->
-        <div class="glass p-5 rounded-2xl border-l-4 border-blue-500">
+        <div class="bg-white shadow-sm border border-gray-100 p-5 rounded-2xl border-l-4 border-blue-500">
             <div class="text-slate-500 dark:text-slate-400 text-sm mb-1">صافي الربح (التقريبي)</div>
             <div class="text-2xl font-bold text-blue-600">@money($thisYearProfit)</div>
             <div class="text-xs text-slate-400 mt-2">الإيرادات - مصاريف الأبراج</div>
         </div>
 
         <!-- Expenses -->
-        <div class="glass p-5 rounded-2xl border-l-4 border-red-500">
+        <div class="bg-white shadow-sm border border-gray-100 p-5 rounded-2xl border-l-4 border-red-500">
             <div class="text-slate-500 dark:text-slate-400 text-sm mb-1">إجمالي المصاريف</div>
             <div class="text-2xl font-bold text-red-600">@money($thisYearExpenses)</div>
             <div class="text-xs text-red-400 mt-2 font-medium">
@@ -153,7 +153,7 @@
         </div>
 
         <!-- Debts -->
-        <div class="glass p-5 rounded-2xl border-l-4 border-orange-500">
+        <div class="bg-white shadow-sm border border-gray-100 p-5 rounded-2xl border-l-4 border-orange-500">
             <div class="text-slate-500 dark:text-slate-400 text-sm mb-1">الديون المستحقة</div>
             <div class="text-2xl font-bold text-orange-600">@money($totalDebts)</div>
             <div class="text-xs text-orange-400 mt-2">فواتير لم يتم سدادها</div>
@@ -167,7 +167,7 @@
     </h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Structure Costs -->
-        <div class="glass p-5 rounded-2xl border-l-4 border-indigo-500 relative overflow-hidden group">
+        <div class="bg-white shadow-sm border border-gray-100 p-5 rounded-2xl border-l-4 border-indigo-500 relative overflow-hidden group">
             <div class="absolute -right-6 -top-6 w-24 h-24 bg-indigo-500/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
             <div class="relative">
                 <div class="text-slate-500 dark:text-slate-400 text-sm mb-1 font-medium">قيمة البنية التحتية (الهيكل)</div>
@@ -183,13 +183,13 @@
     <!-- Charts Row 1 -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Main Revenue Chart -->
-        <div class="lg:col-span-2 glass rounded-2xl p-6 shadow-sm">
+        <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <h3 class="text-xl font-bold gradient-text mb-4">📈 نمو الإيرادات والمصاريف (شهرياً)</h3>
             <canvas id="revenueChart" height="250" class="w-full"></canvas>
         </div>
 
         <!-- Source Breakdown -->
-        <div class="glass rounded-2xl p-6 shadow-sm">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <h3 class="text-xl font-bold gradient-text mb-4">📊 توزيع الإيرادات (المصدر)</h3>
             <div class="h-64 flex items-center justify-center">
                 <canvas id="sourceChart"></canvas>
@@ -200,13 +200,13 @@
     <!-- Charts Row 2 -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Expenses Breakdown -->
-        <div class="glass rounded-2xl p-6 shadow-sm">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <h3 class="text-xl font-bold gradient-text mb-4">💸 تحليل المصاريف</h3>
             <canvas id="expensesChart" height="200"></canvas>
         </div>
 
         <!-- Top Towers Table -->
-        <div class="glass rounded-2xl p-6 shadow-sm overflow-hidden">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 overflow-hidden">
             <h3 class="text-xl font-bold gradient-text mb-4">🏆 أعلى الأبراج دخلاً</h3>
             <table class="w-full text-sm text-right">
                 <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500">

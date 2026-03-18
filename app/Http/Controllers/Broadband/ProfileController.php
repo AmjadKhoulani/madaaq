@@ -16,9 +16,8 @@ class ProfileController extends Controller
 
     public function create()
     {
-        $routers = \App\Models\Router::where('tenant_id', auth()->user()->tenant_id ?? 1)->get();
         $servers = \App\Models\MikroTikServer::where('tenant_id', auth()->user()->tenant_id ?? 1)->get();
-        return view('broadband.profiles.create', compact('routers', 'servers'));
+        return view('broadband.profiles.create', compact('servers'));
     }
 
     public function store(Request $request)
@@ -59,13 +58,12 @@ class ProfileController extends Controller
 
     public function edit(Package $profile)
     {
-        $routers = \App\Models\Router::where('tenant_id', auth()->user()->tenant_id ?? 1)->get();
         $servers = \App\Models\MikroTikServer::where('tenant_id', auth()->user()->tenant_id ?? 1)->get();
         
         // Load existing targets
         $profile->load(['routers', 'mikrotikServers']);
         
-        return view('broadband.profiles.edit', compact('profile', 'routers', 'servers'));
+        return view('broadband.profiles.edit', compact('profile', 'servers'));
     }
 
     public function update(Request $request, Package $profile)

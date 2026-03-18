@@ -45,7 +45,7 @@
         @csrf
         
         <!-- Model Selection -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6" x-data="modelSelector({{ $products->map(fn($p) => ['id' => $p->id, 'name' => $p->model_name, 'image' => $p->image_url, 'price' => $p->max_throughput, 'description' => $p->description])->toJson() }}, {{ old('model_id') ?? 'null' }})">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6" x-data="modelSelector({{ $products->map(fn($p) => ['id' => $p->id, 'model_name' => $p->model_name, 'image_url' => $p->image_url, 'price' => $p->max_throughput, 'description' => $p->description, 'manufacturer' => $p->manufacturer, 'device_type' => $p->device_type])->toJson() }}, {{ old('model_id') ?? 'null' }})">
             <h3 class="text-lg font-bold text-gray-800 mb-2">معلومات الجهاز</h3>
             <p class="text-gray-500 text-sm mb-6">اختر من القائمة أدناه أو ابحث عن جهازك إذا لم تجده ضمن القائمة</p>
             

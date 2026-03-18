@@ -45,117 +45,136 @@
         <nav class="flex-1 overflow-y-auto sidebar-scroll px-4 py-6 space-y-1">
             
             <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600' }} group flex items-center gap-x-3 rounded-md px-3 py-2 text-sm font-semibold leading-6 transition-all duration-200">
-                <svg class="h-5 w-5 shrink-0 {{ request()->routeIs('dashboard') ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                <svg class="h-6 w-6 shrink-0 {{ request()->routeIs('dashboard') ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                </svg>
                 لوحة التحكم
             </a>
 
-            <!-- Network Section -->
+            <!-- Network Section (Cyan) -->
             <div x-data="{ open: {{ request()->routeIs('network.*', 'servers.*', 'routers.*') ? 'true' : 'false' }} }" class="pt-4">
-                <button @click="open = !open" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600 group transition-all duration-200">
+                <button @click="open = !open" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600 group transition-all duration-200 cursor-pointer">
                     <div class="flex items-center gap-x-3">
-                        <svg class="h-5 w-5 shrink-0 text-gray-400 group-hover:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                        <svg class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 17.25v-.228a4.5 4.5 0 00-.12-1.03l-2.268-9.64a3.375 3.375 0 00-3.285-2.602H7.923a3.375 3.375 0 00-3.285 2.602l-2.268 9.64a4.5 4.5 0 00-.12 1.03v.228m19.5 0a3 3 0 01-3 3H5.25a3 3 0 01-3-3m19.5 0a3 3 0 00-3-3H5.25a3 3 0 00-3 3m16.5 0h.008v.008h-.008v-.008zm-3 0h.008v.008h-.008v-.008z" />
+                        </svg>
                         إدارة الشبكة
                     </div>
                     <svg class="h-4 w-4 shrink-0 text-gray-400 transition-transform duration-200" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
                 </button>
                 <div x-show="open" x-collapse x-cloak class="mt-1 space-y-1 pr-11">
-                    <a href="{{ route('servers.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('servers.*') ? 'text-indigo-600 bg-indigo-50' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }}">سيرفرات مايكروتك</a>
-                    <a href="{{ route('network.internet-sources.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('network.internet-sources.*') ? 'text-indigo-600 bg-indigo-50' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }}">مصادر الانترنت</a>
-                    <a href="{{ route('network.towers.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('network.towers.*') ? 'text-indigo-600 bg-indigo-50' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }}">الأبراج</a>
-                    <a href="{{ route('routers.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('routers.*') ? 'text-indigo-600 bg-indigo-50' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }}">معدات الشبكة</a>
-                    <a href="{{ route('network.backups.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('network.backups.*') ? 'text-indigo-600 bg-indigo-50' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }}">النسخ الاحتياطية</a>
+                    <a href="{{ route('servers.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('servers.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">سيرفرات مايكروتك</a>
+                    <a href="{{ route('network.internet-sources.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('network.internet-sources.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">مصادر الانترنت</a>
+                    <a href="{{ route('network.towers.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('network.towers.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">الأبراج</a>
+                    <a href="{{ route('maps.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('maps.index') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">الخريطة الجغرافية</a>
+                    <a href="{{ route('routers.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('routers.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">معدات الشبكة</a>
+                    <a href="{{ route('network.backups.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('network.backups.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">النسخ الاحتياطية</a>
                 </div>
             </div>
 
-            <!-- Hotspot Section -->
+            <!-- Hotspot Section (Fuchsia) -->
             <div x-data="{ open: {{ request()->routeIs('hotspot.*') ? 'true' : 'false' }} }" class="pt-2">
-                <button @click="open = !open" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-purple-600 group transition-all duration-200">
+                <button @click="open = !open" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600 group transition-all duration-200 cursor-pointer">
                     <div class="flex items-center gap-x-3">
-                        <svg class="h-5 w-5 shrink-0 text-gray-400 group-hover:text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
+                        <svg class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z" />
+                        </svg>
                         هوت سبوت
                     </div>
                     <svg class="h-4 w-4 shrink-0 text-gray-400 transition-transform duration-200" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
                 </button>
                 <div x-show="open" x-collapse x-cloak class="mt-1 space-y-1 pr-11">
-                    <a href="{{ route('hotspot.profiles.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('hotspot.profiles.*') ? 'text-purple-600 bg-purple-50' : 'text-gray-600 hover:text-purple-600 hover:bg-gray-50' }}">الباقات والبروفايلات</a>
-                    <a href="{{ route('hotspot.vouchers.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('hotspot.vouchers.index') ? 'text-purple-600 bg-purple-50' : 'text-gray-600 hover:text-purple-600 hover:bg-gray-50' }}">إدارة الكروت</a>
-                    <a href="{{ route('hotspot.vouchers.create') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('hotspot.vouchers.create') ? 'text-purple-600 bg-purple-50' : 'text-gray-600 hover:text-purple-600 hover:bg-gray-50' }}">طباعة كروت</a>
+                    <a href="{{ route('hotspot.profiles.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('hotspot.profiles.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">الباقات والبروفايلات</a>
+                    <a href="{{ route('hotspot.vouchers.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('hotspot.vouchers.index') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">إدارة الكروت</a>
+                    <a href="{{ route('hotspot.vouchers.create') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('hotspot.vouchers.create') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">طباعة كروت</a>
                 </div>
             </div>
 
-            <!-- Broadband Section -->
+            <!-- Broadband Section (Blue) -->
             <div x-data="{ open: {{ request()->routeIs('broadband.*') ? 'true' : 'false' }} }" class="pt-2">
-                <button @click="open = !open" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-blue-600 group transition-all duration-200">
+                <button @click="open = !open" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600 group transition-all duration-200 cursor-pointer">
                     <div class="flex items-center gap-x-3">
-                        <svg class="h-5 w-5 shrink-0 text-gray-400 group-hover:text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <svg class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+                        </svg>
                         برودباند (PPPoE)
                     </div>
                     <svg class="h-4 w-4 shrink-0 text-gray-400 transition-transform duration-200" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
                 </button>
                 <div x-show="open" x-collapse x-cloak class="mt-1 space-y-1 pr-11">
-                    <a href="{{ route('broadband.profiles.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('broadband.profiles.*') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50' }}">الباقات والاشتراكات</a>
-                    <a href="{{ route('broadband.users.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('broadband.users.*') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50' }}">المشتركين النشطين</a>
+                    <a href="{{ route('broadband.profiles.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('broadband.profiles.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">الباقات والاشتراكات</a>
+                    <a href="{{ route('broadband.users.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('broadband.users.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">المشتركين النشطين</a>
                 </div>
             </div>
             
-            <!-- Monitoring Section -->
+            <!-- Monitoring Section (Emerald) -->
             <div x-data="{ open: {{ request()->routeIs('network.monitoring.*', 'network.live-monitoring', 'network.sessions.*') ? 'true' : 'false' }} }" class="pt-2">
-                <button @click="open = !open" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-emerald-600 group transition-all duration-200">
+                <button @click="open = !open" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600 group transition-all duration-200 cursor-pointer">
                     <div class="flex items-center gap-x-3">
-                        <svg class="h-5 w-5 shrink-0 text-gray-400 group-hover:text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        <svg class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
+                        </svg>
                         المراقبة والتقارير
                     </div>
                     <svg class="h-4 w-4 shrink-0 text-gray-400 transition-transform duration-200" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
                 </button>
                 <div x-show="open" x-collapse x-cloak class="mt-1 space-y-1 pr-11">
-                    <a href="{{ route('network.live-monitoring') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('network.live-monitoring') ? 'text-emerald-600 bg-emerald-50' : 'text-gray-600 hover:text-emerald-600 hover:bg-gray-50' }}">مراقبة حية</a>
-                    <a href="{{ route('network.sessions.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('network.sessions.*') ? 'text-emerald-600 bg-emerald-50' : 'text-gray-600 hover:text-emerald-600 hover:bg-gray-50' }}">الجلسات النشطة</a>
-                    <a href="{{ route('network.monitoring.bandwidth') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('network.monitoring.bandwidth') ? 'text-emerald-600 bg-emerald-50' : 'text-gray-600 hover:text-emerald-600 hover:bg-gray-50' }}">استهلاك البيانات</a>
+                    <a href="{{ route('network.live-monitoring') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('network.live-monitoring') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">مراقبة حية</a>
+                    <a href="{{ route('network.sessions.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('network.sessions.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">الجلسات النشطة</a>
+                    <a href="{{ route('network.monitoring.bandwidth') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('network.monitoring.bandwidth') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">استهلاك البيانات</a>
                 </div>
             </div>
 
-            <!-- CRM Section -->
+            <!-- CRM Section (Rose) -->
             <div x-data="{ open: {{ request()->routeIs('crm.*', 'whatsapp.*') ? 'true' : 'false' }} }" class="pt-2">
-                <button @click="open = !open" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-pink-600 group transition-all duration-200">
+                <button @click="open = !open" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600 group transition-all duration-200 cursor-pointer">
                     <div class="flex items-center gap-x-3">
-                        <svg class="h-5 w-5 shrink-0 text-gray-400 group-hover:text-pink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        <svg class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                        </svg>
                         العملاء والتسويق
                     </div>
                     <svg class="h-4 w-4 shrink-0 text-gray-400 transition-transform duration-200" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
                 </button>
                 <div x-show="open" x-collapse x-cloak class="mt-1 space-y-1 pr-11">
-                    <a href="{{ route('crm.clients.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('crm.clients.*') ? 'text-pink-600 bg-pink-50' : 'text-gray-600 hover:text-pink-600 hover:bg-gray-50' }}">دليل العملاء</a>
-                    <a href="{{ route('whatsapp.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('whatsapp.*') ? 'text-pink-600 bg-pink-50' : 'text-gray-600 hover:text-pink-600 hover:bg-gray-50' }}">واتساب</a>
-                    <a href="{{ route('crm.campaigns.create') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('crm.campaigns.*') ? 'text-pink-600 bg-pink-50' : 'text-gray-600 hover:text-pink-600 hover:bg-gray-50' }}">الحملات التسويقية</a>
+                    <a href="{{ route('crm.clients.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('crm.clients.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">دليل العملاء</a>
+                    <a href="{{ route('whatsapp.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('whatsapp.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">واتساب</a>
+                    <a href="{{ route('crm.campaigns.create') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('crm.campaigns.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">الحملات التسويقية</a>
                 </div>
             </div>
 
-            <!-- Finance Section -->
+            <!-- Finance Section (Amber) -->
             <div x-data="{ open: {{ request()->routeIs('accounting.*') ? 'true' : 'false' }} }" class="pt-2">
-                <button @click="open = !open" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-amber-600 group transition-all duration-200">
+                <button @click="open = !open" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600 group transition-all duration-200 cursor-pointer">
                     <div class="flex items-center gap-x-3">
-                        <svg class="h-5 w-5 shrink-0 text-gray-400 group-hover:text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <svg class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75a.75.75 0 01-.75-.75V15m.75 0H3m0 0h-.375a.75.75 0 01-.75-.75V5.625a.75.75 0 01.75-.75H3.75m1.5 0h.375a.75.75 0 01.75.75v9.75a.75.75 0 01-.75.75h-.375m-.75 0H4.5m0 0v.75c0 .414.336.75.75.75H5.25m0 0h13.5m0-13.5h.375c.621 0 1.125.504 1.125 1.125v6.75c0 .621-.504 1.125-1.125 1.125H18.75A.75.75 0 0118 14.25V5.25a.75.75 0 00-.75-.75h-.375m0 0H6.375" />
+</svg>
                         المالية والفواتير
                     </div>
                     <svg class="h-4 w-4 shrink-0 text-gray-400 transition-transform duration-200" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
                 </button>
                 <div x-show="open" x-collapse x-cloak class="mt-1 space-y-1 pr-11">
-                    <a href="{{ route('accounting.invoices.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('accounting.invoices.*') ? 'text-amber-600 bg-amber-50' : 'text-gray-600 hover:text-amber-600 hover:bg-gray-50' }}">الفواتير</a>
-                    <a href="{{ route('accounting.reports.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('accounting.reports.*') ? 'text-amber-600 bg-amber-50' : 'text-gray-600 hover:text-amber-600 hover:bg-gray-50' }}">التقارير المالية</a>
+                    <a href="{{ route('accounting.invoices.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('accounting.invoices.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">الفواتير</a>
+                    <a href="{{ route('accounting.reports.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('accounting.reports.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">التقارير المالية</a>
                 </div>
             </div>
 
-            <!-- System Section -->
+            <!-- System Section (Slate) -->
             <div x-data="{ open: {{ request()->routeIs('settings.*', 'staff.*', 'roles.*') ? 'true' : 'false' }} }" class="pt-2">
-                <button @click="open = !open" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-slate-600 group transition-all duration-200">
+                <button @click="open = !open" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600 group transition-all duration-200 cursor-pointer">
                     <div class="flex items-center gap-x-3">
-                        <svg class="h-5 w-5 shrink-0 text-gray-400 group-hover:text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        <svg class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.02-.398-1.11-.94l-.149-.894c-.07-.424-.384-.764-.78-.929-.398-.164-.855-.142-1.205.108l-.737.527a1.125 1.125 0 01-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.738.527c.35.25.806.272 1.204.107.397-.165.71-.505.78-.929l.149-.894z" />
+  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+</svg>
                         إعدادات النظام
                     </div>
                     <svg class="h-4 w-4 shrink-0 text-gray-400 transition-transform duration-200" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
                 </button>
                 <div x-show="open" x-collapse x-cloak class="mt-1 space-y-1 pr-11">
                     <a href="{{ route('settings.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('settings.*') ? 'text-slate-600 bg-slate-50' : 'text-gray-600 hover:text-slate-600 hover:bg-gray-50' }}">الإعدادات العامة</a>
+                    <a href="{{ route('mobile-app.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('mobile-app.*') ? 'text-slate-600 bg-slate-50' : 'text-gray-600 hover:text-slate-600 hover:bg-gray-50' }}">تطبيقات الموبايل</a>
                     <a href="{{ route('staff.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('staff.*') ? 'text-slate-600 bg-slate-50' : 'text-gray-600 hover:text-slate-600 hover:bg-gray-50' }}">الموظفين</a>
                     <a href="{{ route('roles.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('roles.*') ? 'text-slate-600 bg-slate-50' : 'text-gray-600 hover:text-slate-600 hover:bg-gray-50' }}">الأدوار</a>
                 </div>

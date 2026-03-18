@@ -3,7 +3,7 @@
 @section('content')
 <div class="max-w-7xl mx-auto pb-12" x-data="serverDashboard()">
     <!-- Premium Header -->
-    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mb-8 relative overflow-hidden">
+    <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-md border border-slate-200 border-b-4 border-b-indigo-500 p-8 mb-8 relative overflow-hidden">
         <!-- Background Gradient Decor -->
         <div class="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full -mr-32 -mt-32 opacity-50 blur-3xl"></div>
         <div class="absolute bottom-0 left-0 w-64 h-64 bg-indigo-50 rounded-full -ml-32 -mb-32 opacity-50 blur-3xl"></div>
@@ -59,10 +59,10 @@
     <!-- Live Performance Dashboard -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8" x-show="isConnected">
         <!-- CPU Card -->
-        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 transition-all hover:shadow-md">
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 border-r-4 border-r-blue-500 transition-all hover:shadow-md">
             <div class="flex items-center justify-between mb-4">
                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">تحميل المعالج</p>
-                <span class="text-blue-500">📟</span>
+                <span class="text-blue-500 p-2 bg-blue-50 rounded-xl">📟</span>
             </div>
             <div class="flex items-end gap-2">
                 <h3 class="text-3xl font-black text-gray-900" id="cpu-val">0%</h3>
@@ -73,10 +73,10 @@
         </div>
 
         <!-- RAM Card -->
-        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 transition-all hover:shadow-md">
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 border-r-4 border-r-indigo-500 transition-all hover:shadow-md">
             <div class="flex items-center justify-between mb-4">
                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">الذاكرة المتاحة</p>
-                <span class="text-indigo-500">🧠</span>
+                <span class="text-indigo-500 p-2 bg-indigo-50 rounded-xl">🧠</span>
             </div>
             <div class="flex flex-col">
                 <h3 class="text-xl font-black text-gray-900" id="mem-val">-- / --</h3>
@@ -85,20 +85,20 @@
         </div>
 
         <!-- PPPoE Card -->
-        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 transition-all hover:shadow-md">
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 border-r-4 border-r-green-500 transition-all hover:shadow-md">
             <div class="flex items-center justify-between mb-4">
                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">نشط PPPoE</p>
-                <span class="text-green-500">📡</span>
+                <span class="text-green-500 p-2 bg-green-50 rounded-xl">📡</span>
             </div>
             <h3 class="text-3xl font-black text-gray-900" id="active-pppoe-val">0</h3>
             <p class="text-[10px] text-green-600 font-bold mt-1">متصل الآن</p>
         </div>
 
         <!-- Hotspot Card -->
-        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 transition-all hover:shadow-md">
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 border-r-4 border-r-orange-500 transition-all hover:shadow-md">
             <div class="flex items-center justify-between mb-4">
                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">نشط Hotspot</p>
-                <span class="text-orange-500">📶</span>
+                <span class="text-orange-500 p-2 bg-orange-50 rounded-xl">📶</span>
             </div>
             <h3 class="text-3xl font-black text-gray-900" id="active-hotspot-val">0</h3>
             <p class="text-[10px] text-orange-600 font-bold mt-1">متصل الآن</p>
@@ -108,11 +108,11 @@
     <!-- Main Content Tabs -->
     <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden min-h-[500px]">
         <!-- Tabs Navigation -->
-        <div class="flex border-b border-gray-100 bg-gray-50/50 p-2 gap-2">
+        <div class="flex border-b border-gray-200 bg-slate-100 p-2 gap-2">
             <template x-for="tab in tabs" :key="tab.id">
                 <button @click="activeTab = tab.id" 
                         class="px-6 py-3 rounded-2xl font-bold text-sm transition-all flex items-center gap-2"
-                        :class="activeTab === tab.id ? 'bg-white text-blue-600 shadow-sm border border-gray-100' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100/50'">
+                        :class="activeTab === tab.id ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 hover:text-indigo-700 hover:bg-white border border-transparent'">
                     <span x-text="tab.icon"></span>
                     <span x-text="tab.name"></span>
                 </button>
@@ -126,11 +126,11 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <!-- Info Table -->
                     <div class="space-y-6">
-                        <h4 class="text-lg font-black text-gray-900 flex items-center gap-2">
-                            <span class="w-2 h-6 bg-blue-500 rounded-full"></span>
-                            تفاصيل النظام
-                        </h4>
-                        <div class="grid grid-cols-2 gap-6 bg-gray-50 p-6 rounded-3xl border border-gray-100">
+                        <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 flex items-center gap-3">
+                            <span class="p-2 bg-blue-100 text-blue-600 rounded-xl">🖥️</span>
+                            <h4 class="text-lg font-black text-gray-900">تفاصيل النظام</h4>
+                        </div>
+                        <div class="grid grid-cols-2 gap-6 bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
                             <div class="space-y-1">
                                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">الإصدار (RouterOS)</p>
                                 <p class="font-bold text-gray-900 font-mono" id="version-val">--</p>
@@ -153,11 +153,11 @@
                         
                         <!-- Top DNS Sites -->
                         <div id="top-sites-card-new" class="hidden">
-                            <h4 class="text-lg font-black text-gray-900 flex items-center gap-2 mb-4">
-                                <span class="w-2 h-6 bg-indigo-500 rounded-full"></span>
-                                المواقع الأكثر طلباً (DNS)
-                            </h4>
-                            <div class="bg-gray-50 p-6 rounded-3xl border border-gray-100 space-y-4" id="top-sites-list-new">
+                            <div class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 flex items-center gap-3 mb-4">
+                                <span class="p-2 bg-indigo-100 text-indigo-600 rounded-xl">🌐</span>
+                                <h4 class="text-lg font-black text-gray-900">المواقع الأكثر طلباً (DNS)</h4>
+                            </div>
+                            <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-4" id="top-sites-list-new">
                                 <!-- JS content -->
                             </div>
                         </div>
@@ -165,11 +165,11 @@
 
                     <!-- Map Location -->
                     <div class="space-y-6">
-                        <h4 class="text-lg font-black text-gray-900 flex items-center gap-2">
-                            <span class="w-2 h-6 bg-green-500 rounded-full"></span>
-                            موقع السيرفر
-                        </h4>
-                        <div class="aspect-video w-full rounded-3xl overflow-hidden border border-gray-100 shadow-sm relative group">
+                        <div class="bg-green-50/50 p-4 rounded-2xl border border-green-100 flex items-center gap-3">
+                            <span class="p-2 bg-green-100 text-green-600 rounded-xl">📍</span>
+                            <h4 class="text-lg font-black text-gray-900">موقع السيرفر</h4>
+                        </div>
+                        <div class="aspect-video w-full rounded-3xl overflow-hidden border border-gray-200 shadow-md relative group">
                             @if($server->lat && $server->lng)
                                 <div id="map" class="w-full h-full z-0"></div>
                             @else
@@ -186,11 +186,11 @@
             <!-- Users Tab -->
             <div x-show="activeTab === 'users'" x-cloak x-transition:enter="duration-500 ease-out">
                 <div id="sessions-card-new" class="space-y-6">
-                    <div class="flex items-center justify-between">
-                        <h4 class="text-lg font-black text-gray-900 flex items-center gap-2">
-                            <span class="w-2 h-6 bg-green-500 rounded-full"></span>
-                            الجلسات المتصلة حالياً
-                        </h4>
+                    <div class="flex items-center justify-between bg-teal-50/50 p-4 rounded-2xl border border-teal-100">
+                        <div class="flex items-center gap-3">
+                            <span class="p-2 bg-teal-100 text-teal-600 rounded-xl">👥</span>
+                            <h4 class="text-lg font-black text-gray-900">الجلسات المتصلة حالياً</h4>
+                        </div>
                         <div class="flex gap-2">
                             <span class="px-3 py-1 bg-green-100 text-green-700 rounded-xl text-[10px] font-black uppercase tracking-widest">PPPoE: <span id="pppoe-count-label-new">0</span></span>
                             <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-xl text-[10px] font-black uppercase tracking-widest">Hotspot: <span id="hotspot-count-label-new">0</span></span>
@@ -222,10 +222,12 @@
             <div x-show="activeTab === 'tools'" x-cloak x-transition:enter="duration-500 ease-out" class="space-y-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Connectivity -->
-                    <div class="bg-gray-50 p-8 rounded-3xl border border-gray-100 space-y-6">
-                        <div class="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center text-2xl">🔌</div>
+                    <div class="bg-gray-50 p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-2xl shadow-sm border border-green-200">🔌</div>
+                            <h4 class="text-lg font-black text-gray-900">اختبار الاتصال</h4>
+                        </div>
                         <div>
-                            <h4 class="text-lg font-black text-gray-900 mb-2">اختبار الاتصال</h4>
                             <p class="text-sm text-gray-500 leading-relaxed mb-6">التأكد من أن لوحة التحكم قادرة على الوصول إلى الـ API الخاص بالمايكروتيك عبر WireGuard.</p>
                         </div>
                         <button onclick="testConnection()" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-2xl font-black shadow-md transition-all active:scale-95">
@@ -235,12 +237,14 @@
                     </div>
 
                     <!-- Sync Imports -->
-                    <div class="bg-indigo-600 p-8 rounded-3xl shadow-xl text-white space-y-6 relative overflow-hidden">
+                    <div class="bg-gradient-to-br from-indigo-600 to-indigo-700 p-8 rounded-3xl shadow-md border border-indigo-500 text-white space-y-6 relative overflow-hidden">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-xl"></div>
-                        <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-2xl">📥</div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-12 h-12 bg-white/20 text-white rounded-2xl flex items-center justify-center text-2xl border border-white/10 shadow-sm">📥</div>
+                            <h4 class="text-lg font-black text-white">استيراد البيانات والمزامنة</h4>
+                        </div>
                         <div>
-                            <h4 class="text-lg font-black mb-2 text-white">استيراد البيانات والمزامنة</h4>
-                            <p class="text-sm text-blue-100 leading-relaxed mb-6">جلب المستخدمين والبروفايلات الموجودة مسبقاً في السيرفر إلى قاعدة بيانات MadaaQ.</p>
+                            <p class="text-sm text-indigo-100 leading-relaxed mb-6">جلب المستخدمين والبروفايلات الموجودة مسبقاً في السيرفر إلى قاعدة بيانات MadaaQ.</p>
                         </div>
                         <div class="grid grid-cols-1 gap-3">
                             <button onclick="importData('pppoe')" class="flex items-center justify-between px-4 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl font-bold transition">
@@ -262,11 +266,11 @@
 
             <!-- Config Tab -->
             <div x-show="activeTab === 'config'" x-cloak x-transition:enter="duration-500 ease-out" class="space-y-6">
-                <div class="flex items-center justify-between">
-                    <h4 class="text-lg font-black text-gray-900 flex items-center gap-2">
-                        <span class="w-2 h-6 bg-amber-500 rounded-full"></span>
-                        كود الإعداد الأولي (Terminal)
-                    </h4>
+                <div class="flex items-center justify-between bg-amber-50/50 p-4 rounded-2xl border border-amber-100">
+                    <div class="flex items-center gap-3">
+                        <span class="p-2 bg-amber-100 text-amber-600 rounded-xl">📜</span>
+                        <h4 class="text-lg font-black text-gray-900">كود الإعداد الأولي (Terminal)</h4>
+                    </div>
                     <button @click="copyScript()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-md transition-all flex items-center gap-2">
                         <span x-show="!scriptCopied">📋 نسخ الكود</span>
                         <span x-show="scriptCopied" class="flex items-center gap-1">✅ تم النسخ</span>
@@ -301,10 +305,10 @@
 
             <!-- Backups Tab -->
             <div x-show="activeTab === 'backups'" x-cloak x-transition:enter="duration-500 ease-out" class="space-y-6">
-                <h4 class="text-lg font-black text-gray-900 flex items-center gap-2">
-                    <span class="w-2 h-6 bg-purple-500 rounded-full"></span>
-                    سجل النسخ الاحتياطية
-                </h4>
+                <div class="bg-purple-50/50 p-4 rounded-2xl border border-purple-100 flex items-center gap-3">
+                    <span class="p-2 bg-purple-100 text-purple-600 rounded-xl">💾</span>
+                    <h4 class="text-lg font-black text-gray-900">سجل النسخ الاحتياطية</h4>
+                </div>
                 
                 @if($server->backups->count() > 0)
                     <div class="overflow-hidden border border-gray-100 rounded-3xl">

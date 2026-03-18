@@ -85,27 +85,14 @@
                         الأجهزة المستهدفة (المزامنة)
                     </h3>
                     <div class="bg-gray-50 rounded-lg border border-gray-200 p-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <h4 class="text-xs font-bold text-gray-500 uppercase mb-2 border-b border-gray-200 pb-1">الراوترات (Routers)</h4>
-                                <div class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
-                                    @forelse($routers as $router)
-                                        <label class="flex items-center gap-2 hover:bg-gray-100 p-1 rounded cursor-pointer">
-                                            <input type="checkbox" name="targets[]" value="router_{{ $router->id }}" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 bg-white">
-                                            <span class="text-xs font-medium text-gray-700">{{ $router->name }}</span>
-                                        </label>
-                                    @empty
-                                        <span class="text-xs text-gray-400">لا يوجد راوترات</span>
-                                    @endforelse
-                                </div>
-                            </div>
+                        <div class="space-y-4">
                             <div>
                                 <h4 class="text-xs font-bold text-gray-500 uppercase mb-2 border-b border-gray-200 pb-1">السيرفرات (MikroTik)</h4>
-                                <div class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-40 overflow-y-auto custom-scrollbar">
                                     @forelse($servers as $server)
-                                        <label class="flex items-center gap-2 hover:bg-gray-100 p-1 rounded cursor-pointer">
-                                            <input type="checkbox" name="targets[]" value="server_{{ $server->id }}" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 bg-white">
-                                            <span class="text-xs font-medium text-gray-700">{{ $server->name }}</span>
+                                        <label class="flex items-center gap-2 hover:bg-white p-2 rounded-lg cursor-pointer transition border border-transparent hover:border-gray-200">
+                                            <input type="checkbox" name="targets[]" value="server_{{ $server->id }}" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 bg-white shadow-sm">
+                                            <span class="text-sm font-bold text-gray-700">{{ $server->name }}</span>
                                         </label>
                                     @empty
                                         <span class="text-xs text-gray-400">لا يوجد سيرفرات</span>
@@ -121,34 +108,34 @@
             <!-- Sticky Summary -->
             <div class="lg:col-span-1">
                 <div class="sticky top-6">
-                    <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg p-6 text-white text-center">
-                        <div class="text-gray-400 text-xs font-medium mb-1">اسم الباقة</div>
-                        <div class="text-xl font-bold text-white mb-4 break-words" x-text="name || '---'"></div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
+                        <div class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">اسم الباقة</div>
+                        <div class="text-xl font-bold text-gray-900 mb-4 break-words" x-text="name || '---'"></div>
                         
-                        <div class="text-gray-400 text-xs font-medium mb-1">السعر</div>
-                        <div class="text-4xl font-bold font-mono tracking-tight flex items-center justify-center gap-1 text-green-400">
-                            <span x-text="price || '0'"></span>
+                        <div class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">السعر</div>
+                        <div class="text-4xl font-bold font-mono tracking-tight flex items-center justify-center gap-1 text-green-600">
+                            <span x-text="price || '0.00'"></span>
                             <span class="text-2xl">$</span>
                         </div>
 
-                        <div class="mt-6 pt-6 border-t border-white/10 space-y-3">
-                            <div class="flex justify-between items-center bg-white/5 p-2 rounded">
-                                <span class="text-xs text-gray-300">السرعة</span>
-                                <div class="text-sm font-bold dir-ltr">
+                        <div class="mt-6 pt-6 border-t border-gray-100 space-y-3">
+                            <div class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                                <span class="text-xs font-medium text-gray-500">السرعة</span>
+                                <div class="text-sm font-bold dir-ltr text-gray-700">
                                     <span x-text="speed_down || 0"></span>M / <span x-text="speed_up || 0"></span>M
                                 </div>
                             </div>
-                            <div class="flex justify-between items-center bg-white/5 p-2 rounded">
-                                <span class="text-xs text-gray-300">البيانات</span>
-                                <span class="text-sm font-bold" x-text="limit ? (limit/1024).toFixed(1) + ' GB' : 'غير محدود'"></span>
+                            <div class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                                <span class="text-xs font-medium text-gray-500">البيانات</span>
+                                <span class="text-sm font-bold text-gray-700" x-text="limit ? (limit/1024).toFixed(1) + ' GB' : 'غير محدود'"></span>
                             </div>
-                            <div class="flex justify-between items-center bg-white/5 p-2 rounded">
-                                <span class="text-xs text-gray-300">المدة</span>
-                                <span class="text-sm font-bold" x-text="duration ? duration + ' يوم' : 'دائم'"></span>
+                            <div class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                                <span class="text-xs font-medium text-gray-500">المدة</span>
+                                <span class="text-sm font-bold text-gray-700" x-text="duration ? duration + ' يوم' : 'دائم'"></span>
                             </div>
                         </div>
 
-                        <button type="submit" class="w-full mt-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg shadow transition transform active:scale-95">
+                        <button type="submit" class="w-full mt-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-sm transition transform active:scale-95">
                             حفظ الباقة
                         </button>
                     </div>

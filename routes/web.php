@@ -186,7 +186,7 @@ Route::group([], function () {
             Route::prefix('accounting')->name('accounting.')->group(function () {
                 Route::resource('invoices', \App\Http\Controllers\Accounting\InvoiceController::class);
                 Route::get('reports', [\App\Http\Controllers\Accounting\ReportController::class, 'index'])
-                    ->middleware('feature:financial_reports')
+                    // ->middleware('feature:financial_reports')
                     ->name('reports.index');
             });
     
