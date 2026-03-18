@@ -3,141 +3,117 @@
 @section('content')
 <div class="max-w-7xl mx-auto pb-12" x-data="serverDashboard()">
     <!-- Premium Header -->
-    <div class="bg-white/80 backdrop-blur-xl rounded-[2.5rem] shadow-sm border border-slate-200/60 p-8 mb-8 relative overflow-hidden group">
+    <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-md border border-slate-200 border-b-4 border-b-indigo-500 p-8 mb-8 relative overflow-hidden">
         <!-- Background Gradient Decor -->
-        <div class="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-indigo-100/50 to-purple-100/50 rounded-full -mr-40 -mt-40 blur-3xl transition-all duration-700 group-hover:scale-110"></div>
-        <div class="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-blue-100/50 to-cyan-100/50 rounded-full -ml-40 -mb-40 blur-3xl transition-all duration-700 group-hover:scale-110"></div>
+        <div class="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full -mr-32 -mt-32 opacity-50 blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-indigo-50 rounded-full -ml-32 -mb-32 opacity-50 blur-3xl"></div>
 
-        <div class="relative flex flex-col md:flex-row items-center gap-8 z-10">
+        <div class="relative flex flex-col md:flex-row items-center gap-8">
             <!-- Device Image & Status -->
-            <div class="relative">
-                <div class="w-48 h-48 bg-white/70 backdrop-blur-md rounded-3xl border border-white p-5 flex items-center justify-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-1">
+            <div class="relative group">
+                <div class="w-48 h-48 bg-gray-50 rounded-3xl border border-gray-100 p-4 flex items-center justify-center shadow-inner group-hover:shadow-md transition-all duration-500">
                     <img src="{{ $server->deviceModel->image_url ?? 'https://placehold.co/200x150?text=MikroTik' }}" 
                          alt="{{ $server->name }}" 
-                         class="max-w-full max-h-full object-contain transition-transform duration-700 hover:scale-110 drop-shadow-sm">
+                         class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105">
                 </div>
-                <div class="absolute -bottom-3 -right-3 transform transition-transform hover:scale-110">
+                <div class="absolute -bottom-2 -right-2 transform transition-transform group-hover:scale-110">
                     {!! $server->status_badge !!}
                 </div>
             </div>
 
             <!-- Server Title & Quick Info -->
             <div class="flex-1 text-center md:text-right">
-                <div class="flex flex-col md:flex-row md:items-center gap-4 mb-5 justify-center md:justify-start">
-                    <h1 class="text-4xl font-black text-slate-800 tracking-tight">{{ $server->name }}</h1>
-                    <span class="px-4 py-1.5 bg-gradient-to-r from-indigo-50 to-blue-50 text-indigo-700 rounded-full text-xs font-black uppercase tracking-widest border border-indigo-100 shadow-sm">
+                <div class="flex flex-col md:flex-row md:items-center gap-3 mb-2 justify-center md:justify-start">
+                    <h1 class="text-3xl font-black text-gray-900 tracking-tight">{{ $server->name }}</h1>
+                    <span class="px-3 py-1 bg-gray-100 text-gray-500 rounded-full text-xs font-bold uppercase tracking-widest border border-gray-200">
                         {{ $server->deviceModel->model_name ?? 'MadaaQ Server' }}
                     </span>
                 </div>
                 
-                <div class="flex flex-wrap justify-center md:justify-start gap-4 text-sm">
-                    <div class="flex items-center gap-2.5 text-slate-600 bg-white/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 group/badge cursor-default">
-                        <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 group-hover/badge:bg-blue-100 transition-colors">🌐</div>
+                <div class="flex flex-wrap justify-center md:justify-start gap-6 text-sm">
+                    <div class="flex items-center gap-2 text-gray-600 bg-white/50 px-3 py-1.5 rounded-xl border border-gray-50 shadow-sm">
+                        <span class="text-lg opacity-70">🌐</span>
                         <span class="font-mono font-bold">{{ $server->ip }}</span>
                     </div>
-                    <div class="flex items-center gap-2.5 text-slate-600 bg-white/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 group/badge cursor-default">
-                        <div class="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center text-purple-500 group-hover/badge:bg-purple-100 transition-colors">🔌</div>
+                    <div class="flex items-center gap-2 text-gray-600 bg-white/50 px-3 py-1.5 rounded-xl border border-gray-50 shadow-sm">
+                        <span class="text-lg opacity-70">🔌</span>
                         <span class="font-mono font-bold">{{ $server->api_port }}</span>
                     </div>
-                    <div class="flex items-center gap-2.5 text-slate-600 bg-white/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 group/badge cursor-default">
-                        <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 group-hover/badge:bg-emerald-100 transition-colors">📍</div>
+                    <div class="flex items-center gap-2 text-gray-600 bg-white/50 px-3 py-1.5 rounded-xl border border-gray-50 shadow-sm">
+                        <span class="text-lg opacity-70">📍</span>
                         <span class="font-bold">{{ $server->location ?? 'الموقع غير محدد' }}</span>
                     </div>
                 </div>
             </div>
 
             <!-- Edit Action -->
-            <div class="shrink-0 mt-4 md:mt-0">
-                <a href="{{ route('servers.edit', $server) }}" class="group flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 border border-slate-800 text-white rounded-2xl font-bold hover:bg-indigo-600 hover:border-indigo-600 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 hover:-translate-y-1 w-full md:w-auto">
-                    <span class="group-hover:rotate-90 transition-transform duration-500">⚙️</span>
-                    <span>الإعدادات المتقدمة</span>
+            <div class="shrink-0">
+                <a href="{{ route('servers.edit', $server) }}" class="flex items-center gap-2 px-6 py-3 bg-white border border-gray-200 text-gray-700 rounded-2xl font-bold hover:bg-gray-50 hover:shadow-md transition-all">
+                    <span>⚙️</span>
+                    <span>تعديل الإعدادات</span>
                 </a>
             </div>
         </div>
     </div>
 
     <!-- Live Performance Dashboard -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8" x-show="isConnected" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 transform translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8" x-show="isConnected">
         <!-- CPU Card -->
-        <div class="bg-white/80 backdrop-blur-xl p-6 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-500 hover:-translate-y-1 group relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-50 to-transparent rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
-            <div class="relative z-10">
-                <div class="flex items-center justify-between mb-6">
-                    <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest">المعالج (CPU)</p>
-                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100/50 flex items-center justify-center text-blue-500 border border-blue-100/50 shadow-sm group-hover:scale-110 transition-transform duration-300">📟</div>
-                </div>
-                <div class="flex items-end gap-2">
-                    <h3 class="text-4xl font-black text-slate-800 tracking-tighter" id="cpu-val">0%</h3>
-                </div>
-                <div class="w-full bg-slate-100 h-2 rounded-full mt-5 overflow-hidden ring-1 ring-inset ring-slate-200/50">
-                    <div id="cpu-bar" class="bg-gradient-to-r from-blue-400 to-indigo-500 h-full rounded-full transition-all duration-1000 relative">
-                        <div class="absolute inset-0 bg-white/20 w-full h-full animate-pulse"></div>
-                    </div>
-                </div>
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 border-r-4 border-r-blue-500 transition-all hover:shadow-md">
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">تحميل المعالج</p>
+                <span class="text-blue-500 p-2 bg-blue-50 rounded-xl">📟</span>
+            </div>
+            <div class="flex items-end gap-2">
+                <h3 class="text-3xl font-black text-gray-900" id="cpu-val">0%</h3>
+            </div>
+            <div class="w-full bg-gray-100 h-1.5 rounded-full mt-4 overflow-hidden">
+                <div id="cpu-bar" class="bg-blue-500 h-full transition-all duration-1000" style="width: 0%"></div>
             </div>
         </div>
 
         <!-- RAM Card -->
-        <div class="bg-white/80 backdrop-blur-xl p-6 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-500 hover:-translate-y-1 group relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-50 to-transparent rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
-            <div class="relative z-10">
-                <div class="flex items-center justify-between mb-6">
-                    <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest">الذاكرة المتاحة</p>
-                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100/50 flex items-center justify-center text-purple-500 border border-purple-100/50 shadow-sm group-hover:scale-110 transition-transform duration-300">🧠</div>
-                </div>
-                <div class="flex flex-col">
-                    <h3 class="text-2xl font-black text-slate-800 tracking-tight" id="mem-val">-- / --</h3>
-                    <p class="text-[11px] text-slate-400 font-bold mt-2 uppercase tracking-wider">ميقابايت</p>
-                </div>
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 border-r-4 border-r-indigo-500 transition-all hover:shadow-md">
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">الذاكرة المتاحة</p>
+                <span class="text-indigo-500 p-2 bg-indigo-50 rounded-xl">🧠</span>
+            </div>
+            <div class="flex flex-col">
+                <h3 class="text-xl font-black text-gray-900" id="mem-val">-- / --</h3>
+                <p class="text-[10px] text-gray-400 font-bold mt-1">ميغابايت</p>
             </div>
         </div>
 
         <!-- PPPoE Card -->
-        <div class="bg-white/80 backdrop-blur-xl p-6 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-500 hover:-translate-y-1 group relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-50 to-transparent rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
-            <div class="relative z-10">
-                <div class="flex items-center justify-between mb-6">
-                    <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest">نشط PPPoE</p>
-                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-50 to-emerald-100/50 flex items-center justify-center text-emerald-500 border border-emerald-100/50 shadow-sm group-hover:scale-110 transition-transform duration-300">📡</div>
-                </div>
-                <div class="flex items-end gap-3">
-                    <h3 class="text-4xl font-black text-slate-800 tracking-tighter" id="active-pppoe-val">0</h3>
-                    <div class="flex items-center gap-1.5 mb-1 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100/50">
-                        <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                        <span class="text-[10px] font-black text-emerald-600 uppercase">متصل</span>
-                    </div>
-                </div>
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 border-r-4 border-r-green-500 transition-all hover:shadow-md">
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">نشط PPPoE</p>
+                <span class="text-green-500 p-2 bg-green-50 rounded-xl">📡</span>
             </div>
+            <h3 class="text-3xl font-black text-gray-900" id="active-pppoe-val">0</h3>
+            <p class="text-[10px] text-green-600 font-bold mt-1">متصل الآن</p>
         </div>
 
         <!-- Hotspot Card -->
-        <div class="bg-white/80 backdrop-blur-xl p-6 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-500 hover:-translate-y-1 group relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-50 to-transparent rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
-            <div class="relative z-10">
-                <div class="flex items-center justify-between mb-6">
-                    <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest">نشط Hotspot</p>
-                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-orange-50 to-orange-100/50 flex items-center justify-center text-orange-500 border border-orange-100/50 shadow-sm group-hover:scale-110 transition-transform duration-300">📶</div>
-                </div>
-                <div class="flex items-end gap-3">
-                    <h3 class="text-4xl font-black text-slate-800 tracking-tighter" id="active-hotspot-val">0</h3>
-                    <div class="flex items-center gap-1.5 mb-1 bg-orange-50 px-2 py-1 rounded-md border border-orange-100/50">
-                        <div class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></div>
-                        <span class="text-[10px] font-black text-orange-600 uppercase">متصل</span>
-                    </div>
-                </div>
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 border-r-4 border-r-orange-500 transition-all hover:shadow-md">
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">نشط Hotspot</p>
+                <span class="text-orange-500 p-2 bg-orange-50 rounded-xl">📶</span>
             </div>
+            <h3 class="text-3xl font-black text-gray-900" id="active-hotspot-val">0</h3>
+            <p class="text-[10px] text-orange-600 font-bold mt-1">متصل الآن</p>
         </div>
     </div>
 
     <!-- Main Content Tabs -->
-    <div class="bg-white/90 backdrop-blur-md rounded-[2.5rem] shadow-lg shadow-slate-200/40 border border-slate-100 overflow-hidden min-h-[500px]">
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden min-h-[500px]">
         <!-- Tabs Navigation -->
-        <div class="flex p-3 bg-slate-50/80 border-b border-slate-100 gap-2 overflow-x-auto custom-scrollbar-light">
+        <div class="flex border-b border-gray-200 bg-slate-100 p-2 gap-2">
             <template x-for="tab in tabs" :key="tab.id">
                 <button @click="activeTab = tab.id" 
-                        class="px-6 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap"
-                        :class="activeTab === tab.id ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200/50' : 'text-slate-500 hover:text-slate-900 hover:bg-white/50'">
-                    <span x-text="tab.icon" class="text-lg opacity-80" :class="activeTab === tab.id ? 'opacity-100 scale-110 transition-transform duration-300' : ''"></span>
+                        class="px-6 py-3 rounded-2xl font-bold text-sm transition-all flex items-center gap-2"
+                        :class="activeTab === tab.id ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 hover:text-indigo-700 hover:bg-white border border-transparent'">
+                    <span x-text="tab.icon"></span>
                     <span x-text="tab.name"></span>
                 </button>
             </template>
@@ -315,26 +291,20 @@
                     </div>
                 </div>
 
-                <div class="bg-indigo-50/50 border border-indigo-100/50 rounded-3xl p-8 shadow-sm">
-                    <div class="flex items-start gap-5">
-                        <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-2xl shrink-0 shadow-inner">💡</div>
-                        <div class="text-slate-700 leading-relaxed space-y-3 w-full">
-                            <p class="font-black text-lg text-slate-900">كيف أقوم بالإعداد؟</p>
-                            <ol class="list-decimal list-inside space-y-2 opacity-90 marker:font-bold marker:text-indigo-400">
-                                <li>قم بنسخ الكود أعلاه.</li>
-                                <li>افتح تطبيق <strong>Winbox</strong> وادخل إلى السيرفر الخاص بك.</li>
-                                <li>افتح <strong>New Terminal</strong> من القائمة الجانبية اليسرى.</li>
-                                <li>قم بلصق الكود <span class="text-xs bg-white border border-slate-200 px-2 py-0.5 rounded-md font-mono text-slate-500 mx-1 shadow-sm">Right Click -> Paste</span> ثم اضغط <strong>Enter</strong>.</li>
-                            </ol>
-                            
-                            <!-- Important 60 seconds Note -->
-                            <div class="mt-6 p-4 bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200/60 rounded-2xl flex items-start flex-col sm:flex-row gap-4 shadow-sm relative overflow-hidden">
-                                <div class="absolute right-0 top-0 bottom-0 w-1 bg-amber-400"></div>
-                                <span class="text-2xl mt-0.5 animate-bounce">⏳</span>
-                                <div>
-                                    <p class="font-black text-amber-900">خطوة هامة (انتظر ٦٠ ثانية)</p>
-                                    <p class="text-sm text-amber-800/90 mt-1 font-medium leading-relaxed">بمجرد لصق كود الإعداد في التيرمنال، <strong class="text-amber-900 bg-amber-200/40 px-1.5 py-0.5 rounded shadow-sm mx-1">انتظر ٦٠ ثانية</strong> لكي يأخذ الراوتر الوقت الكافي للاتصال والتسجيل. وبعدها اختبر الاتصال لتأكيد الربط بنجاح.</p>
-                                </div>
+                <div class="bg-blue-50 border border-blue-100 rounded-3xl p-6 flex items-start gap-4">
+                    <span class="text-2xl">💡</span>
+                    <div class="text-sm text-blue-800 leading-relaxed">
+                        <p class="font-black mb-2 text-base">كيف أقوم بالإعداد؟</p>
+                        <p>1. قم بنسخ الكود أعلاه.</p>
+                        <p>2. افتح تطبيق <strong>Winbox</strong> وادخل إلى السيرفر الخاص بك.</p>
+                        <p>3. افتح <strong>New Terminal</strong> من القائمة اليسرى.</p>
+                        <p>4. قم بلصق الكود (Right Click -> Paste) ثم اضغط <strong>Enter</strong>.</p>
+                        
+                        <div class="mt-4 p-4 bg-orange-50 border-r-4 border-orange-500 rounded-lg text-orange-900 flex gap-3 shadow-sm items-center">
+                            <span class="text-2xl animate-pulse">⏳</span>
+                            <div>
+                                <p class="font-bold">خطوة هامة (انتظر ٦٠ ثانية)</p>
+                                <p class="text-xs font-semibold mt-1">بمجرد لصق كود الإعداد في التيرمنال، انتظر ٦٠ ثانية لكي يأخذ الراوتر الوقت الكافي للاتصال والتسجيل. وبعدها، قم باختبار الاتصال لتأكيد الربط بنجاح.</p>
                             </div>
                         </div>
                     </div>
