@@ -17,10 +17,10 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         password: ${{ secrets.SERVER_PASSWORD }}
         script: |
-          cd /home/madaaq/public_html
-          git pull origin master
-          composer install --no-dev --optimize-autoloader
-          php artisan migrate --force
-          php artisan optimize
-          npm install
-          npm run build
+          su -s /bin/bash madaaq -c "
+            cd /home/madaaq/public_html &&
+            git pull origin master &&
+            composer install --no-dev --optimize-autoloader &&
+            php artisan migrate --force &&
+            php artisan optimize
+          "
