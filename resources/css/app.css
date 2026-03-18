@@ -17,8 +17,8 @@
         @apply bg-gray-50 text-gray-900;
     }
 
-    /* Keep media responsive without overriding icon SVG sizing */
-    img, svg {
+    /* Keep media responsive but EXCLUDE SVG to allow Tailwind w-6/h-6 classes to work properly */
+    img {
         max-width: 100%;
         height: auto;
     }

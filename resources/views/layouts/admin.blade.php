@@ -25,7 +25,7 @@
         ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
 
         /* Safety rule for icons */
-        img, svg { max-width: 100%; height: auto; }
+        img { max-width: 100%; height: auto; }
 
         /* Fallback sizes if Tailwind CSS fails to load */
         .w-3 { width: 0.75rem; } .h-3 { height: 0.75rem; }

@@ -16,8 +16,6 @@
         .sidebar-scroll::-webkit-scrollbar { width: 4px; }
         .sidebar-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
         .sidebar-scroll::-webkit-scrollbar-track { background-color: transparent; }
-        /* Safety rule: prevent SVG icons from growing too large */
-        svg { max-width: 100%; }
     </style>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
