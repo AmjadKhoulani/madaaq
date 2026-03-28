@@ -30,15 +30,17 @@
                 إلغاء
             </a>
             @if($client->status === 'active')
-                <form action="{{ route('crm.clients.toggleStatus', $client) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من إيقاف هذا المشترك؟')">
+                <form action="{{ route('crm.clients.toggle-status', $client) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من إيقاف هذا المشترك؟')">
                     @csrf
+                    @method('PATCH')
                     <button type="submit" class="px-4 py-2 bg-red-50 text-red-700 border border-red-200 font-medium rounded-lg hover:bg-red-100 transition text-sm">
                         إيقاف الحساب
                     </button>
                 </form>
             @else
-                <form action="{{ route('crm.clients.toggleStatus', $client) }}" method="POST">
+                <form action="{{ route('crm.clients.toggle-status', $client) }}" method="POST">
                     @csrf
+                    @method('PATCH')
                     <button type="submit" class="px-4 py-2 bg-green-50 text-green-700 border border-green-200 font-medium rounded-lg hover:bg-green-100 transition text-sm">
                         تفعيل الحساب
                     </button>
