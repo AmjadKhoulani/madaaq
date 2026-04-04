@@ -47,8 +47,8 @@ class ClientController extends Controller
         
         // Load servers with both administrative towers and uplink (hierarchy) towers
         $servers = \App\Models\MikroTikServer::with([
-            'towers.ssids', 'towers.routers',
-            'uplinkTowers.ssids', 'uplinkTowers.routers'
+            'towers.ssids', 'towers.routers', 'towers.devices',
+            'uplinkTowers.ssids', 'uplinkTowers.routers', 'uplinkTowers.devices'
         ])->get();
 
         // Merge towers for each server so the view sees them all in one list

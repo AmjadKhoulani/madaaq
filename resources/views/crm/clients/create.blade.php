@@ -81,6 +81,12 @@
                             </div>
                         </div>
 
+                        <!-- Email -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">البريد الإلكتروني</label>
+                            <input type="email" name="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none" placeholder="example@mail.com">
+                        </div>
+
                         <!-- Portal Password -->
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase mb-1">كلمة مرور البوابة</label>
@@ -110,7 +116,7 @@
                         </div>
 
                         <!-- Infrastructure Grid -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" x-show="connectionType === 'pppoe'">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" x-show="connectionType === 'pppoe'">
                             <div>
                                 <label class="block text-xs font-bold text-gray-500 uppercase mb-1">سيرفر التحكم</label>
                                 <select name="mikrotik_server_id" x-model="selectedServerId" @change="updateTowers()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm">
@@ -137,6 +143,54 @@
                                         <option :value="ssid.ssid_name" x-text="ssid.ssid_name"></option>
                                     </template>
                                 </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">جهاز البث (AP)</label>
+                                <select name="tower_device_id" x-model="selectedTowerDeviceId" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm" :disabled="!selectedTowerId">
+                                    <option value="">اختر الجهاز...</option>
+                                    <template x-for="device in towerDevices" :key="device.id">
+                                        <option :value="device.id" x-text="device.name"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Technical Details Sub-Section -->
+                        <div class="pt-4 border-t border-gray-100" x-show="connectionType === 'pppoe'">
+                            <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">تفاصيل فنية (Hardware)</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">نوع الربط</label>
+                                    <select name="connection_mode" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm">
+                                        <option value="wireless">لاسلكي (Wireless)</option>
+                                        <option value="cable">كبل (Cable)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">موديل الجهاز (Dropdown)</label>
+                                    <select x-model="selectedDeviceModelId" @change="updateCpeModel()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm">
+                                        <option value="">أخرى / يدوي</option>
+                                        <template x-for="model in deviceModels" :key="model.id">
+                                            <option :value="model.id" x-text="model.name"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">اسم/موديل الجهاز</label>
+                                    <input type="text" name="cpe_model" x-model="cpeModel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm" placeholder="e.g. LiteBeam M5">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">عنوان IP (Static)</label>
+                                    <input type="text" name="ip_address" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm font-mono" placeholder="10.x.x.x">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">MAC Address</label>
+                                    <input type="text" name="cpe_mac" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm font-mono" placeholder="AA:BB:CC:DD:EE:FF">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">رقم المنفذ (Port)</label>
+                                    <input type="text" name="switch_port" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm" placeholder="e.g. Eth1 / Port 5">
+                                </div>
                             </div>
                         </div>
 
@@ -173,7 +227,8 @@
                                     <option value="{{ $package->id }}" 
                                             data-price="{{ $package->price }}" 
                                             data-speed="{{ $package->speed_down }}/{{ $package->speed_up }}"
-                                            data-limit="{{ $package->data_limit_mb }}">
+                                            data-limit="{{ $package->data_limit_mb }}"
+                                            data-duration="{{ $package->duration }}">
                                         {{ $package->name }} - {{ $package->price }}$ ({{ $package->speed_down }}M/{{ $package->speed_up }}M)
                                     </option>
                                 @endforeach
@@ -190,8 +245,20 @@
 
                         <div>
                              <label class="block text-xs font-bold text-gray-500 uppercase mb-1">حد البيانات (GB)</label>
-                             <input type="number" name="data_limit" placeholder="Unlimited" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-green-500 outline-none">
+                             <input type="number" name="data_limit" x-model="customDataLimit" placeholder="Unlimited" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-green-500 outline-none">
                         </div>
+
+                        <div>
+                             <label class="block text-xs font-bold text-gray-500 uppercase mb-1">المدة (أيام)</label>
+                             <input type="number" name="duration_days" x-model="durationDays" placeholder="30" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-green-500 outline-none">
+                        </div>
+
+                        <div class="md:col-span-2">
+                             <label class="block text-xs font-bold text-gray-500 uppercase mb-1">ملاحظات إضافية</label>
+                             <textarea name="notes" rows="2" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm" placeholder="أية ملاحظات حول الموقع أو التمديد..."></textarea>
+                        </div>
+                    </div>
+                </div>
                     </div>
                 </div>
 
@@ -275,11 +342,20 @@
             selectedServerId: '',
             towers: [],
             selectedTowerId: '',
+            towerDevices: [],
+            selectedTowerDeviceId: '',
             ssids: [],
             selectedSSID: '',
+            
             selectedPackageId: '',
             customPrice: '',
             packageName: '',
+            customDataLimit: '',
+            durationDays: '',
+            
+            deviceModels: data.deviceModels || [],
+            selectedDeviceModelId: '',
+            cpeModel: '',
             
             // Map
             showMap: false,
@@ -305,8 +381,16 @@
             updateTowerData() {
                 const tower = this.towers.find(t => t.id == this.selectedTowerId);
                 this.ssids = tower ? tower.ssids : [];
+                this.towerDevices = tower ? tower.devices : [];
+                this.selectedTowerDeviceId = '';
                 if (tower && tower.lat && this.map) {
                      this.map.setView([tower.lat, tower.lng], 14);
+                }
+            },
+            updateCpeModel() {
+                const model = this.deviceModels.find(m => m.id == this.selectedDeviceModelId);
+                if (model) {
+                    this.cpeModel = model.name;
                 }
             },
             loadPackageDefaults() {
@@ -317,6 +401,23 @@
                     this.packageName = option.text.split('-')[0].trim();
                 } else {
                     this.packageName = '';
+                    this.customPrice = '';
+                }
+
+                if (option.dataset.limit) {
+                    this.customDataLimit = (option.dataset.limit / 1024 / 1024 / 1024).toFixed(0); // Assuming MB to GB if needed, wait, let's see controller
+                    // Controller line 121: custom_data_limit_mb = data_limit * 1024
+                    // So data_limit input is in GB.
+                    // Dataset limit is usually MB.
+                    this.customDataLimit = (option.dataset.limit / 1024).toFixed(0);
+                } else {
+                    this.customDataLimit = '';
+                }
+
+                if (option.dataset.duration) {
+                    this.durationDays = option.dataset.duration;
+                } else {
+                    this.durationDays = '';
                 }
             },
 
