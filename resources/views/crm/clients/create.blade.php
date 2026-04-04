@@ -14,7 +14,8 @@
 <div class="max-w-7xl mx-auto" 
      x-data="clientForm({ 
         servers: {{ Js::from($servers) }}, 
-        deviceModels: {{ Js::from($deviceModels) }} 
+        deviceModels: {{ Js::from($deviceModels) }},
+        lastIp: '{{ $lastIp }}'
      })"
      x-cloak>
      
@@ -182,6 +183,9 @@
                                 <div>
                                     <label class="block text-xs font-bold text-gray-500 uppercase mb-1">عنوان IP (Static)</label>
                                     <input type="text" name="ip_address" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm font-mono" placeholder="10.x.x.x">
+                                    <template x-if="lastIp">
+                                        <p class="text-[10px] text-gray-400 mt-1">آخر IP مستخدم: <span class="font-bold text-blue-600" x-text="lastIp"></span></p>
+                                    </template>
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-gray-500 uppercase mb-1">MAC Address</label>
@@ -363,6 +367,7 @@
             marker: null,
             lat: '',
             lng: '',
+            lastIp: data.lastIp || '',
 
             init() {
                 this.$watch('showMap', (value) => {
