@@ -172,7 +172,7 @@ class MikroTikServerController extends Controller
         }
 
         // Configuration
-        $serverDomain = '167.86.118.97'; // Use the confirmed production IP
+        $serverDomain = '173.249.52.218'; // Use the confirmed production host IP
         $wireguardPort = config('services.wireguard.port', 51820);
         $serverPublicKey = trim(config('services.wireguard.public_key', ''), '"'); // Strip quotes
         

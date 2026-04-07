@@ -22,7 +22,7 @@ if ($ipOctet4 == 255) $ipOctet4 = 254;
 $vpnIp = "201.10.{$ipOctet3}.{$ipOctet4}";
 $serverVpnIp = "201.10.1.1";
 $syncUrl = "https://madaaq.com/api/servers/{$server->id}/sync";
-$serverDomain = '167.86.118.97';
+$serverDomain = '173.249.52.218'; // Use the confirmed production host IP
 
 $apiUser = $server->username;
 // We need to use the encrypted password we just saved, or re-encrypt the known one.

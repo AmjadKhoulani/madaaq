@@ -168,7 +168,7 @@ class MikroTikServerController extends Controller
         $vpnIp = "201.10.{$ipOctet3}.{$ipOctet4}";
         $serverVpnIp = "201.10.1.1";
         
-        $serverDomain = '167.86.118.97';
+        $serverDomain = '173.249.52.218'; // Use the confirmed production host IP
         $syncUrl = "https://madaaq.com/api/servers/{$server->id}/sync";
         
         $apiUser = $server->username;
