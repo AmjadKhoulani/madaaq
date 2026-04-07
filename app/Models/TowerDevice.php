@@ -9,10 +9,12 @@ class TowerDevice extends Model
 {
     protected $fillable = [
         'tower_id',
+        'device_type',
         'device_model_id',
         'name',
         'ip',
         'mac_address',
+        'ports_count',
         'ssid',
         'frequency',
         'mode',

@@ -177,16 +177,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }).addTo(map);
 
     // Icons
-    const towerIcon = L.divIcon({
-        className: 'custom-div-icon',
-        html: `<div style="background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 2px solid white;">
-            <svg style="width: 20px; height: 20px; color: white;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2L2 22h20L12 2zm0 4l6 12H6l6-12z M12 6v13 M9 14h6 M10 10h4" />
-            </svg>
-        </div>`,
-        iconSize: [40, 40],
-        iconAnchor: [20, 20]
-    });
+    const siteIcons = {
+        tower: L.divIcon({
+            className: 'custom-div-icon',
+            html: `<div style="background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 2px solid white;">
+                <svg style="width: 20px; height: 20px; color: white;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+                </svg>
+            </div>`,
+            iconSize: [40, 40],
+            iconAnchor: [20, 20]
+        }),
+        cabinet: L.divIcon({
+            className: 'custom-div-icon',
+            html: `<div style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 2px solid white;">
+                <svg style="width: 20px; height: 20px; color: white;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+            </div>`,
+            iconSize: [40, 40],
+            iconAnchor: [20, 20]
+        }),
+        office: L.divIcon({
+            className: 'custom-div-icon',
+            html: `<div style="background: linear-gradient(135deg, #10b981 0%, #065f46 100%); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 2px solid white;">
+                <svg style="width: 20px; height: 20px; color: white;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+            </div>`,
+            iconSize: [40, 40],
+            iconAnchor: [20, 20]
+        })
+    };
 
     function getDeviceColor(type) {
         if (type === 'server') return { main: '#6b7280', dark: '#374151', light: '#9ca3af' };
@@ -228,19 +250,33 @@ document.addEventListener('DOMContentLoaded', function() {
     towersData.forEach(tower => {
         const lat = parseFloat(tower.lat);
         const lng = parseFloat(tower.lng);
-        if (isNaN(lat) || isNaN(lng)) return;
+        const type = tower.type || 'tower';
+        const icon = siteIcons[type] || siteIcons['tower'];
+        let typeLabel = '📡 برج بث (Tower)';
+        let headerColor = '#4338ca';
+
+        if (type === 'cabinet') {
+            typeLabel = '🗄️ كبينة / نقطة توزيع (POP)';
+            headerColor = '#1e40af';
+        } else if (type === 'office') {
+            typeLabel = '🏢 مكتب / فرع (Office)';
+            headerColor = '#065f46';
+        }
 
         const popupContent = `
-            <div style="min-width: 200px;">
-                <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: bold; color: #4338ca;">📡 ${tower.name}</h3>
+            <div style="min-width: 220px;">
+                <div style="font-size: 10px; font-bold; text-transform: uppercase; color: ${headerColor}; opacity: 0.8; margin-bottom: 2px;">${typeLabel}</div>
+                <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: bold; color: ${headerColor}; border-bottom: 1px solid #eee; padding-bottom: 4px;">${tower.name}</h3>
                 <p style="margin: 4px 0; font-size: 13px; color: #666;">📍 ${tower.location || 'موقع غير محدد'}</p>
-                <a href="/network/towers/${tower.id}" style="display: inline-block; margin-top: 8px; padding: 6px 12px; background: #6366f1; color: white; text-decoration: none; border-radius: 6px; font-size: 12px;">عرض التفاصيل →</a>
+                <div style="margin-top: 10px; display: flex; gap: 4px;">
+                    <a href="/network/towers/${tower.id}" style="flex: 1; text-align: center; padding: 6px 12px; background: ${headerColor}; color: white; text-decoration: none; border-radius: 6px; font-size: 12px;">إدارة الموقع →</a>
+                </div>
             </div>
         `;
         // Add small jitter
         const jitter = () => (Math.random() - 0.5) * 0.0002;
         const marker = L.marker([lat + jitter(), lng + jitter()], { 
-            icon: towerIcon,
+            icon: icon,
             zIndexOffset: 1000 
         }).bindPopup(popupContent);
         towerMarkers.push(marker);

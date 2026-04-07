@@ -20,29 +20,39 @@
      x-cloak>
      
     <!-- Header -->
-    <div class="flex items-center justify-between mb-6">
-        <div>
-            <h2 class="text-2xl font-bold text-gray-900">تعديل بيانات المشترك</h2>
-            <p class="text-sm text-gray-500">تحديث المعلومات والاشتراك: <span class="font-mono font-bold" x-text="client.name || client.username"></span></p>
-        </div>
-        <div class="flex gap-2">
-            <a href="{{ route('crm.clients.index') }}" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition text-sm">
-                إلغاء
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-10">
+        <div class="flex items-center gap-6">
+            <a href="{{ route('crm.clients.show', $client) }}" class="w-12 h-12 rounded-2xl bg-white/40 backdrop-blur-md flex items-center justify-center text-gray-400 hover:text-indigo-600 hover:bg-white border border-white/30 transition-all shadow-sm group">
+                <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
             </a>
+            <div class="relative">
+                <div class="absolute -top-6 -right-6 w-20 h-20 bg-indigo-500/10 rounded-full blur-2xl -z-10"></div>
+                <h2 class="text-3xl font-black text-gray-900 tracking-tight">تعديل المشترك</h2>
+                <p class="text-xs font-bold text-indigo-600 uppercase tracking-widest mt-1">
+                    Editing: <span x-text="client.name || client.username"></span>
+                </p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <a href="{{ route('crm.clients.show', $client) }}" class="px-6 py-3 bg-white/50 backdrop-blur-md text-gray-700 font-black text-[11px] uppercase tracking-widest rounded-2xl border border-white/40 hover:bg-white transition-all">
+                Cancel
+            </a>
+            <div class="h-8 w-px bg-gray-900/10 mx-2"></div>
             @if($client->status === 'active')
                 <form action="{{ route('crm.clients.toggle-status', $client) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من إيقاف هذا المشترك؟')">
                     @csrf
                     @method('PATCH')
-                    <button type="submit" class="px-4 py-2 bg-red-50 text-red-700 border border-red-200 font-medium rounded-lg hover:bg-red-100 transition text-sm">
-                        إيقاف الحساب
+                    <button type="submit" class="px-6 py-3 bg-rose-50/50 hover:bg-rose-50 text-rose-600 border border-rose-100 rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all">
+                        Suspend
                     </button>
                 </form>
             @else
                 <form action="{{ route('crm.clients.toggle-status', $client) }}" method="POST">
                     @csrf
                     @method('PATCH')
-                    <button type="submit" class="px-4 py-2 bg-green-50 text-green-700 border border-green-200 font-medium rounded-lg hover:bg-green-100 transition text-sm">
-                        تفعيل الحساب
+                    <button type="submit" class="px-6 py-3 bg-emerald-50/50 hover:bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all">
+                        Reactivate
                     </button>
                 </form>
             @endif
@@ -51,13 +61,20 @@
 
     <!-- Alert Messages -->
     @if ($errors->any())
-        <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-lg">
-            <div class="flex">
-                <div class="ml-3">
-                    <h3 class="text-sm font-medium text-red-800">يوجد أخطاء في البيانات:</h3>
-                    <ul class="mt-2 list-disc list-inside text-sm text-red-700">
+        <div class="glass-panel border-r-4 border-rose-500 p-6 mb-10 rounded-2xl relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-24 h-24 bg-rose-500/10 rounded-full blur-2xl"></div>
+            <div class="relative flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-600 shrink-0">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-black text-rose-900 uppercase tracking-tight mb-2">Input Validation Error</h3>
+                    <ul class="space-y-1">
                         @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
+                            <li class="text-xs font-bold text-rose-700 flex items-center gap-2">
+                                <span class="w-1 h-1 rounded-full bg-rose-400"></span>
+                                {{ $error }}
+                            </li>
                         @endforeach
                     </ul>
                 </div>
@@ -75,20 +92,22 @@
             <div class="lg:col-span-2 space-y-6">
 
                 <!-- 1. Subscriber Info -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                <div class="glass-panel rounded-[2rem] p-8 relative overflow-hidden group">
+                    <div class="absolute -top-10 -right-10 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl transition-all"></div>
+                    <h3 class="text-xl font-black text-gray-900 mb-8 flex items-center gap-3">
+                        <span class="w-2 h-8 bg-indigo-600 rounded-full"></span>
                         بيانات المشترك
                     </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <!-- Name -->
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">الاسم الكامل</label>
-                            <input type="text" name="name" x-model="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none" required>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">الاسم الكامل</label>
+                            <input type="text" name="name" x-model="name" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-bold text-gray-900 placeholder-gray-400" required>
                         </div>
 
                         <!-- Phone -->
-                        <div x-data="{ 
+                        <div class="space-y-2" x-data="{ 
                             iti: null, 
                             initPhone() {
                                 if (window.intlTelInput) {
@@ -113,61 +132,80 @@
                                 }
                             }
                         }" x-init="initPhone()">
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">رقم الهاتف</label>
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">رقم الهاتف</label>
                             <div class="relative" dir="ltr">
-                                <input type="tel" x-ref="phoneInput" x-model="phone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none" required>
+                                <input type="tel" x-ref="phoneInput" x-model="phone" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-bold text-gray-900 placeholder-gray-400" required>
                                 <input type="hidden" name="phone" id="hiddenPhone" :value="phone">
                             </div>
                         </div>
 
                         <!-- Portal Password -->
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">كلمة مرور البوابة (تحديث)</label>
-                            <input type="text" name="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none" placeholder="اترك فارغاً لعدم التغيير">
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">كلمة مرور البوابة (تحديث)</label>
+                            <input type="text" name="password" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-bold text-gray-900 placeholder-gray-400" placeholder="اترك فارغاً لعدم التغيير">
                         </div>
 
                         <!-- Email -->
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">البريد الإلكتروني</label>
-                            <input type="email" name="email" value="{{ old('email', $client->email) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none">
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">البريد الإلكتروني</label>
+                            <input type="email" name="email" value="{{ old('email', $client->email) }}" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-bold text-gray-900 placeholder-gray-400">
+                        </div>
+
+                        <!-- Address -->
+                        <div class="md:col-span-2 space-y-2">
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">العنوان بالتفصيل</label>
+                            <input type="text" name="address" value="{{ old('address', $client->address) }}" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-bold text-gray-900 placeholder-gray-400" placeholder="الشارع، البناء، الشقة">
+                        </div>
+
+                        <!-- City & District -->
+                        <div class="grid grid-cols-2 gap-8 md:col-span-2">
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">المدينة</label>
+                                <input type="text" name="city" value="{{ old('city', $client->city) }}" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-bold text-gray-900 placeholder-gray-400">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">المنطقة</label>
+                                <input type="text" name="district" value="{{ old('district', $client->district) }}" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-bold text-gray-900 placeholder-gray-400">
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- 2. Service Details -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <div class="glass-panel rounded-[2rem] p-8 relative overflow-hidden group">
+                    <div class="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/5 rounded-full blur-3xl transition-all"></div>
+                    <h3 class="text-xl font-black text-gray-900 mb-8 flex items-center gap-3">
+                        <span class="w-2 h-8 bg-purple-600 rounded-full"></span>
                         تفاصيل الخدمة
-                        <span class="mr-auto text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded" x-text="connectionType.toUpperCase()"></span>
+                        <span class="mr-auto px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-gray-900/5 text-gray-500 border border-gray-900/5" x-text="connectionType.toUpperCase()"></span>
                     </h3>
                     
                     <input type="hidden" name="type" :value="connectionType">
 
-                    <div class="space-y-4">
+                    <div class="space-y-8">
                         <!-- Infrastructure Grid -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" x-show="connectionType === 'pppoe'">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">سيرفر التحكم</label>
-                                <select name="mikrotik_server_id" x-model="selectedServerId" @change="updateTowers()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8" x-show="connectionType === 'pppoe'">
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">سيرفر التحكم</label>
+                                <select name="mikrotik_server_id" x-model="selectedServerId" @change="updateTowers()" class="w-full py-3.5 px-6 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-bold text-gray-700 appearance-none text-sm">
                                     <option value="">اختر السيرفر...</option>
                                     <template x-for="server in servers" :key="server.id">
                                         <option :value="server.id" x-text="server.name" :selected="server.id == selectedServerId"></option>
                                     </template>
                                 </select>
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">البرج</label>
-                                <select name="tower_id" x-model="selectedTowerId" @change="updateTowerData()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm" :disabled="!selectedServerId">
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">البرج</label>
+                                <select name="tower_id" x-model="selectedTowerId" @change="updateTowerData()" class="w-full py-3.5 px-6 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-bold text-gray-700 appearance-none text-sm" :disabled="!selectedServerId">
                                     <option value="">اختر البرج...</option>
                                     <template x-for="tower in towers" :key="tower.id">
                                         <option :value="tower.id" x-text="tower.name" :selected="tower.id == selectedTowerId"></option>
                                     </template>
                                 </select>
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">الشبكة (SSID)</label>
-                                <select name="ssid_id" x-model="selectedSSID" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm" :disabled="!selectedTowerId">
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">الشبكة (SSID)</label>
+                                <select name="ssid_id" x-model="selectedSSID" class="w-full py-3.5 px-6 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-bold text-gray-700 appearance-none text-sm" :disabled="!selectedTowerId">
                                     <option value="">اختر الشبكة...</option>
                                     <template x-for="ssid in ssids" :key="ssid.id">
                                         <option :value="ssid.id" x-text="ssid.ssid_name" :selected="ssid.id == selectedSSID"></option>
@@ -177,55 +215,95 @@
                         </div>
 
                         <!-- Credentials Row -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-gray-100">
-                             <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">اسم المستخدم (للاتصال)</label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-gray-900/5">
+                             <div class="space-y-2">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">اسم المستخدم (للاتصال)</label>
                                 <input type="text" 
                                        :name="connectionType === 'pppoe' ? 'pppoe_username' : 'hotspot_username'" 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 font-mono text-sm cursor-not-allowed" 
+                                       class="w-full px-6 py-4 bg-gray-900/5 backdrop-blur-md border border-gray-900/5 rounded-2xl font-mono text-xs font-black text-indigo-600 cursor-not-allowed" 
                                        readonly
                                        :value="username">
-                                <p class="text-[10px] text-gray-400 mt-1">يُستخدم رقم الهاتف كاسم مستخدم</p>
+                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-1 ml-1">Phone number acts as identity</p>
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">كلمة مرور الخدمة (تحديث)</label>
-                                <input type="text" name="service_password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none bg-blue-50 font-mono text-sm" 
-                                       placeholder="اترك فارغاً لعدم التغيير" 
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">كلمة مرور الخدمة (تحديث)</label>
+                                <input type="text" name="service_password" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-mono text-sm font-black text-gray-900" 
+                                       placeholder="Keep blank to retain existing key" 
                                        value="{{ old('service_password') }}"> 
-                                <p class="text-[10px] text-gray-400 mt-1">كلمة المرور المسجلة: <span class="font-mono text-gray-600">{{ $client->service_password }}</span></p>
+                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-1 ml-1">Active Key: <span class="text-indigo-600 select-all">{{ $client->service_password }}</span></p>
                             </div>
                         </div>
                         
                         <!-- Hardware Details -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-gray-100" x-show="connectionType === 'pppoe'">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">جهاز العميل (CPE)</label>
-                                <input type="text" name="cpe_model" value="{{ old('cpe_model', $client->cpe_model) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm placeholder-gray-400" placeholder="NanoStation 5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-8 border-t border-gray-900/5">
+                             <div class="space-y-2">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">نوع الربط (Core Technology)</label>
+                                <select name="connection_mode" x-model="connectionMode" class="w-full py-3.5 px-6 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-bold text-gray-900 appearance-none text-sm">
+                                    <option value="wireless">لاسلكي (Wireless)</option>
+                                    <option value="tower_switch">سويتش مباشر (Direct Switch)</option>
+                                    <option value="fiber">فايبر (Fiber / FTTH)</option>
+                                    <option value="cable">كبل (Cable / Ethernet)</option>
+                                    <option value="dsl">دي اس ال (DSL / VDSL)</option>
+                                </select>
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">عنوان IP (Static)</label>
-                                <input type="text" name="ip_address" value="{{ old('ip_address', $client->ip) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm placeholder-gray-400 font-mono" placeholder="10.x.x.x">
+                             <div x-show="connectionMode === 'tower_switch'" class="space-y-2">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">الطرفية (Switch)</label>
+                                <select name="tower_device_id" x-model="selectedTowerDeviceId" class="w-full py-3.5 px-6 bg-emerald-50/50 backdrop-blur-md border border-emerald-100 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:bg-white focus:border-emerald-500/30 transition-all font-black text-emerald-600 appearance-none text-sm">
+                                    <option value="">-- Choose Hardware --</option>
+                                    <template x-for="device in towerDevices.filter(d => d.device_type === 'switch')" :key="device.id">
+                                        <option :value="device.id" x-text="device.name + ' (' + (device.ports_count || '?') + ' P)'" :selected="device.id == selectedTowerDeviceId"></option>
+                                    </template>
+                                </select>
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">MAC Address</label>
-                                <input type="text" name="cpe_mac" value="{{ old('cpe_mac', $client->cpe_mac) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm placeholder-gray-400 font-mono" placeholder="AA:BB:CC:DD:EE:FF">
+                            <div x-show="connectionMode !== 'tower_switch'" class="space-y-2">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">موديل الجهاز (Selection)</label>
+                                <select x-model="selectedDeviceModelId" @change="updateCpeModel()" class="w-full py-3.5 px-6 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-bold text-gray-700 appearance-none text-sm">
+                                    <option value="">أخرى / يدوي</option>
+                                    <template x-for="model in deviceModels" :key="model.id">
+                                        <option :value="model.id" x-text="model.name" :selected="model.id == selectedDeviceModelId"></option>
+                                    </template>
+                                </select>
+                            </div>
+                            <div x-show="connectionMode !== 'tower_switch'" class="space-y-2">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1" x-text="connectionMode === 'fiber' ? 'ONT Model' : (connectionMode === 'dsl' ? 'Modem Model' : 'Unit Architecture')"></label>
+                                <input type="text" name="cpe_model" x-model="cpeModel" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-black text-gray-900 text-sm">
+                            </div>
+                            <div x-show="connectionMode === 'wireless'" class="space-y-2">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">عنوان IP (Radio)</label>
+                                <input type="text" name="cpe_ip" value="{{ old('cpe_ip', $client->cpe_ip) }}" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-mono text-sm font-black text-gray-900" placeholder="10.x.x.x">
+                            </div>
+                            <div x-show="connectionMode !== 'tower_switch'" class="space-y-2">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">MAC Identity</label>
+                                <input type="text" name="cpe_mac" 
+                                       @input="$el.value = $el.value.toUpperCase().replace(/[^0-9A-F]/g, '').match(/.{1,2}/g)?.join(':').substr(0, 17) || $el.value" 
+                                       value="{{ old('cpe_mac', $client->cpe_mac) }}" 
+                                       class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-mono text-sm font-black text-gray-900" placeholder="AA:BB:CC:DD:EE:FF">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">رقم المنفذ (Access Port)</label>
+                                <input type="text" name="switch_port" value="{{ old('switch_port', $client->switch_port) }}" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-black text-gray-900 text-sm" placeholder="e.g. Port 5">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">عنوان IP (Subscriber)</label>
+                                <input type="text" name="ip_address" value="{{ old('ip', $client->ip) }}" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-mono text-sm font-black text-indigo-600" placeholder="172.x.x.x">
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- 3. Billing & Package -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-                    <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <div class="glass-panel rounded-[2rem] p-8 relative overflow-hidden group">
+                    <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl transition-all"></div>
+                    <h3 class="text-xl font-black text-gray-900 mb-8 flex items-center gap-3">
+                        <span class="w-2 h-8 bg-emerald-600 rounded-full"></span>
                         الباقة والمالية
                     </h3>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="md:col-span-2">
-                             <label class="block text-xs font-bold text-gray-500 uppercase mb-1">الباقة الحالية</label>
-                             <select name="package_id" x-model="selectedPackageId" @change="loadPackageDefaults()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-green-500 outline-none">
-                                <option value="">مخصص (بدون باقة)</option>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="md:col-span-2 space-y-2">
+                             <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">الباقة الحالية</label>
+                             <select name="package_id" x-model="selectedPackageId" @change="loadPackageDefaults()" class="w-full py-3.5 px-6 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:bg-white focus:border-emerald-500/30 transition-all font-bold text-gray-900 appearance-none text-sm">
+                                <option value="">مخصص (Advanced Manual Control)</option>
                                 @foreach($packages as $package)
                                     <option value="{{ $package->id }}" 
                                             data-price="{{ $package->price }}" 
@@ -236,37 +314,45 @@
                             </select>
                         </div>
 
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">السعر (شهري)</label>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Custom Settlement Price</label>
                             <div class="relative">
-                                <input type="number" step="0.01" name="price" x-model="customPrice" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-green-500 outline-none font-mono" placeholder="0.00">
-                                <span class="absolute left-3 top-2.5 text-gray-400 text-sm">$</span>
+                                <input type="number" step="0.01" name="price" x-model="customPrice" class="w-full pl-6 pr-12 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:bg-white focus:border-emerald-500/30 transition-all font-mono text-sm font-black text-gray-900" placeholder="0.00">
+                                <span class="absolute right-6 top-4.5 text-[10px] font-black text-gray-400 uppercase tracking-widest">$ USD</span>
                             </div>
                         </div>
 
-                        <div>
-                             <label class="block text-xs font-bold text-gray-500 uppercase mb-1">حد البيانات (GB)</label>
-                             <input type="number" name="data_limit" x-model="customDataLimit" placeholder="Unlimited" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-green-500 outline-none">
+                        <div class="space-y-2">
+                             <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Quota Allocation (GB)</label>
+                             <input type="number" name="data_limit" x-model="customDataLimit" placeholder="Unlimited Access" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:bg-white focus:border-emerald-500/30 transition-all font-bold text-gray-900 text-sm">
                         </div>
                     </div>
                 </div>
 
                 <!-- 4. Location (Collapsible) -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <button type="button" @click="showMap = !showMap" class="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition">
-                         <h3 class="font-bold text-gray-900 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <div class="glass-panel rounded-[2rem] overflow-hidden group">
+                    <button type="button" @click="showMap = !showMap" class="w-full p-8 flex items-center justify-between hover:bg-white/40 transition-colors">
+                         <h3 class="text-xl font-black text-gray-900 flex items-center gap-3">
+                            <span class="w-2 h-8 bg-rose-500 rounded-full"></span>
                             الموقع الجغرافي
                         </h3>
-                        <svg class="w-5 h-5 text-gray-400 transform transition-transform" :class="showMap ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        <div class="w-10 h-10 rounded-xl bg-gray-900/5 flex items-center justify-center text-gray-400 transform transition-transform" :class="showMap ? 'rotate-180' : ''">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                        </div>
                     </button>
                     
                     <div x-show="showMap" x-collapse>
-                        <div class="p-5 pt-0">
-                            <div id="map" class="mb-4"></div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <input type="text" name="lat" x-model="lat" placeholder="Latitude" class="px-3 py-2 border rounded-lg bg-gray-50 text-xs" readonly>
-                                <input type="text" name="lng" x-model="lng" placeholder="Longitude" class="px-3 py-2 border rounded-lg bg-gray-50 text-xs" readonly>
+                        <div class="p-8 pt-0">
+                            <div id="map" class="mb-6 rounded-[1.5rem] overflow-hidden border border-gray-900/5 shadow-inner"></div>
+                            <div class="grid grid-cols-2 gap-8">
+                                <div class="space-y-2">
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Latitude</label>
+                                    <input type="text" name="lat" x-model="lat" class="w-full px-6 py-4 bg-gray-900/5 border border-gray-900/5 rounded-2xl font-mono text-xs font-black text-gray-900 cursor-not-allowed" readonly>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Longitude</label>
+                                    <input type="text" name="lng" x-model="lng" class="w-full px-6 py-4 bg-gray-900/5 border border-gray-900/5 rounded-2xl font-mono text-xs font-black text-gray-900 cursor-not-allowed" readonly>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -276,45 +362,55 @@
 
             <!-- RIGHT COLUMN: Sticky Summary -->
             <div class="lg:col-span-1">
-                <div class="sticky top-6 space-y-4">
+                <div class="sticky top-6 space-y-6">
                     <!-- Summary Card -->
-                    <div class="bg-gradient-to-br from-indigo-900 to-blue-900 rounded-xl shadow-lg p-6 text-white text-center">
-                        <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-4">
-                            <span class="text-indigo-200 text-sm">الحالة</span>
-                            @if($client->status === 'active')
-                                <span class="bg-green-500/20 text-green-300 px-2 py-1 rounded text-xs border border-green-500/30">نشط (Active)</span>
-                            @else
-                                <span class="bg-red-500/20 text-red-300 px-2 py-1 rounded text-xs border border-red-500/30 font-bold">{{ strtoupper($client->status) }}</span>
-                            @endif
-                        </div>
+                    <div class="bg-gradient-to-br from-gray-900 via-indigo-900 to-indigo-950 rounded-[2rem] shadow-2xl p-8 text-white relative overflow-hidden group">
+                        <div class="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl transition-all group-hover:scale-110"></div>
                         
-                        <div class="text-indigo-200 text-sm font-medium mb-1">الاشتراك الشهري</div>
-                        <div class="text-4xl font-bold font-mono tracking-tight flex items-center justify-center gap-1">
-                            <span x-text="customPrice || '0'"></span>
-                            <span class="text-2xl">$</span>
-                        </div>
-                        <div class="mt-4 pt-4 text-sm space-y-2 text-left">
-                            <div class="flex justify-between">
-                                <span class="text-indigo-200">النوع:</span>
-                                <span class="font-bold" x-text="connectionType.toUpperCase()"></span>
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-6">
+                                <span class="text-[10px] font-black text-indigo-300 uppercase tracking-widest">Account State</span>
+                                @if($client->status === 'active')
+                                    <span class="px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-emerald-500/20 text-emerald-300 border border-emerald-500/20">Active Hub</span>
+                                @else
+                                    <span class="px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-rose-500/20 text-rose-300 border border-rose-500/20">{{ strtoupper($client->status) }}</span>
+                                @endif
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-indigo-200">ينتهي في:</span>
-                                <span class="font-bold text-yellow-300">{{ $client->expires_at ? $client->expires_at->format('Y-m-d') : 'غير محدد' }}</span>
+                            
+                            <p class="text-[10px] font-black text-indigo-300 uppercase tracking-[0.2em] mb-2">Monthly Commitment</p>
+                            <div class="text-6xl font-black tracking-tighter flex items-end gap-2 mb-8">
+                                <span x-text="customPrice || '0.00'"></span>
+                                <span class="text-xl text-indigo-400 font-bold mb-2">$</span>
                             </div>
-                        </div>
 
-                        <!-- Submit Button -->
-                        <button type="submit" class="w-full mt-6 py-3 bg-white text-blue-900 font-bold rounded-lg shadow hover:bg-blue-50 transition transform active:scale-95">
-                            💾 حفظ التعديلات
-                        </button>
+                            <div class="space-y-4 mb-8 bg-black/20 backdrop-blur-md rounded-2xl p-6 border border-white/5">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] font-black text-indigo-300 uppercase tracking-widest">Logic Type</span>
+                                    <span class="font-black text-sm tracking-tight" x-text="connectionType.toUpperCase()"></span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] font-black text-indigo-300 uppercase tracking-widest">Expiry Pulse</span>
+                                    <span class="font-black text-sm text-yellow-400 tracking-tight">{{ $client->expires_at ? $client->expires_at->format('Y-M-d') : 'Non-Expiring' }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="w-full py-5 bg-white hover:bg-gray-50 text-indigo-950 font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                                Sync Changes
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Quick Warnings -->
                     @if($client->status == 'suspended')
-                    <div class="bg-red-50 rounded-xl border border-red-200 p-4">
-                        <h4 class="font-bold text-red-800 text-sm mb-2">تنبيه هام</h4>
-                        <p class="text-xs text-red-700">هذا الحساب موقوف حالياً. للتفعيل، اضغط على زر "تفعيل الحساب" في الأعلى.</p>
+                    <div class="glass-panel border-r-4 border-rose-500/50 p-6 rounded-2xl relative overflow-hidden group">
+                        <div class="absolute -top-10 -right-10 w-24 h-24 bg-rose-500/5 rounded-full blur-2xl"></div>
+                        <h4 class="text-[10px] font-black text-rose-600 uppercase tracking-widest mb-2 flex items-center gap-2">
+                             <span class="w-1.5 h-1.5 bg-rose-600 rounded-full animate-pulse"></span>
+                             System Alert
+                        </h4>
+                        <p class="text-xs font-bold text-gray-900 leading-relaxed">Account is offline. Activate to restore service.</p>
                     </div>
                     @endif
                 </div>
@@ -335,11 +431,17 @@
             phone: data.client.phone || data.client.username,
             username: data.client.username,
             connectionType: data.client.type,
+            connectionMode: data.client.connection_mode || 'wireless',
             
             servers: data.servers,
             selectedServerId: data.client.mikrotik_server_id,
             towers: [],
             selectedTowerId: data.client.tower_id,
+            deviceModels: data.deviceModels || [],
+            selectedDeviceModelId: data.client.device_model_id || '',
+            cpeModel: data.client.cpe_model || '',
+            towerDevices: [],
+            selectedTowerDeviceId: data.client.tower_device_id || '',
             ssids: [],
             selectedSSID: data.client.ssid_id,
             
@@ -381,6 +483,7 @@
             updateTowerData() {
                 const tower = this.towers.find(t => t.id == this.selectedTowerId);
                 this.ssids = tower ? tower.ssids : [];
+                this.towerDevices = tower ? tower.devices || [] : [];
                 // Center Map if changed manually? Maybe not for Edit.
             },
             loadPackageDefaults() {
@@ -391,6 +494,13 @@
                 }
                 if (option.dataset.limit) {
                     this.customDataLimit = (option.dataset.limit / 1024).toFixed(0);
+                }
+            },
+
+            updateCpeModel() {
+                const model = this.deviceModels.find(m => m.id == this.selectedDeviceModelId);
+                if (model) {
+                    this.cpeModel = model.name;
                 }
             },
 

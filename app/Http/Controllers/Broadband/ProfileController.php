@@ -29,6 +29,7 @@ class ProfileController extends Controller
             'price' => 'required|numeric',
             'duration_days' => 'nullable|integer',
             'data_limit_mb' => 'nullable|integer',
+            'technology_type' => 'required|in:fiber,wireless,dsl,cable',
             'targets' => 'nullable|array', // e.g., ['router_1', 'server_2']
         ]);
 
@@ -75,6 +76,7 @@ class ProfileController extends Controller
             'price' => 'required|numeric',
             'duration_days' => 'nullable|integer',
             'data_limit_mb' => 'nullable|integer',
+            'technology_type' => 'required|in:fiber,wireless,dsl,cable',
             'targets' => 'nullable|array',
         ]);
 

@@ -88,6 +88,24 @@
                             <input type="email" name="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none" placeholder="example@mail.com">
                         </div>
 
+                        <!-- Address -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">العنوان بالتفصيل</label>
+                            <input type="text" name="address" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none" placeholder="الشارع، البناء، الشقة">
+                        </div>
+
+                        <!-- City & District -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">المدينة</label>
+                                <input type="text" name="city" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none" placeholder="دمشق">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">المنطقة</label>
+                                <input type="text" name="district" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none" placeholder="المزة">
+                            </div>
+                        </div>
+
                         <!-- Portal Password -->
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase mb-1">كلمة مرور البوابة</label>
@@ -161,13 +179,25 @@
                             <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">تفاصيل فنية (Hardware)</h4>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">نوع الربط</label>
-                                    <select name="connection_mode" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm">
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">نوع الربط (Core Technology)</label>
+                                    <select name="connection_mode" x-model="connectionMode" class="w-full px-3 py-2 border border-blue-100 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm bg-blue-50 font-bold">
                                         <option value="wireless">لاسلكي (Wireless)</option>
-                                        <option value="cable">كبل (Cable)</option>
+                                        <option value="tower_switch">سويتش مباشر (Direct Switch)</option>
+                                        <option value="fiber">فايبر (Fiber / FTTH)</option>
+                                        <option value="cable">كبل (Cable / Ethernet)</option>
+                                        <option value="dsl">دي اس ال (DSL / VDSL)</option>
                                     </select>
                                 </div>
-                                <div>
+                                <div x-show="connectionMode === 'tower_switch'">
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">السويتش (Switch) المنتسب له</label>
+                                    <select name="tower_device_id" x-model="selectedTowerDeviceId" class="w-full px-3 py-2 border border-emerald-100 rounded-lg focus:ring-1 focus:ring-emerald-500 outline-none text-sm bg-emerald-50 font-bold">
+                                        <option value="">-- اختر السويتش --</option>
+                                        <template x-for="device in towerDevices.filter(d => d.device_type === 'switch')" :key="device.id">
+                                            <option :value="device.id" x-text="device.name + ' (' + (device.ports_count || '?') + ' Port)'"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <div x-show="connectionMode !== 'tower_switch'">
                                     <label class="block text-xs font-bold text-gray-500 uppercase mb-1">موديل الجهاز (Dropdown)</label>
                                     <select x-model="selectedDeviceModelId" @change="updateCpeModel()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm">
                                         <option value="">أخرى / يدوي</option>
@@ -176,24 +206,28 @@
                                         </template>
                                     </select>
                                 </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">اسم/موديل الجهاز</label>
+                                <div x-show="connectionMode !== 'tower_switch'">
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1" x-text="connectionMode === 'fiber' ? 'موديل الـ ONU / ONT' : (connectionMode === 'dsl' ? 'موديل المودم' : 'اسم/موديل الجهاز')"></label>
                                     <input type="text" name="cpe_model" x-model="cpeModel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm" placeholder="e.g. LiteBeam M5">
                                 </div>
+                                <div x-show="connectionMode === 'wireless'">
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">عنوان IP الخاص بالجهاز</label>
+                                    <input type="text" name="cpe_ip" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm font-mono" placeholder="10.x.x.x">
+                                </div>
+                                <div x-show="connectionMode !== 'tower_switch'">
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">عنوان الـ MAC (الجهاز)</label>
+                                    <input type="text" name="cpe_mac" @input="$el.value = $el.value.toUpperCase().replace(/[^0-9A-F]/g, '').match(/.{1,2}/g)?.join(':').substr(0, 17) || $el.value" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm font-mono" placeholder="AA:BB:CC:DD:EE:FF">
+                                </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">عنوان IP (Static)</label>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">رقم المنفذ (Port/Slot)</label>
+                                    <input type="text" name="switch_port" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm" placeholder="e.g. Port 5 / Slot 2">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">عنوان IP المشترك (الخدمة)</label>
                                     <input type="text" name="ip_address" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm font-mono" placeholder="10.x.x.x">
                                     <template x-if="lastIp">
                                         <p class="text-[10px] text-gray-400 mt-1">آخر IP مستخدم: <span class="font-bold text-blue-600" x-text="lastIp"></span></p>
                                     </template>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">MAC Address</label>
-                                    <input type="text" name="cpe_mac" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm font-mono" placeholder="AA:BB:CC:DD:EE:FF">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">رقم المنفذ (Port)</label>
-                                    <input type="text" name="switch_port" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm" placeholder="e.g. Eth1 / Port 5">
                                 </div>
                             </div>
                         </div>
@@ -342,6 +376,7 @@
     document.addEventListener('alpine:init', () => {
         Alpine.data('clientForm', (data) => ({
             connectionType: 'pppoe',
+            connectionMode: 'wireless',
             servers: data.servers,
             selectedServerId: '',
             towers: [],

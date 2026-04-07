@@ -15,16 +15,22 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
-        body { font-family: 'Rubik', sans-serif; }
+        body { font-family: 'Rubik', sans-serif; background: radial-gradient(circle at top right, #f8fafc, #f1f5f9); }
         .font-inter { font-family: 'Inter', sans-serif; }
         
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #1f2937; }
-        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+        /* Premium Translucent Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.05); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.1); }
 
-        /* Safety rule for icons */
+        /* Glassmorphism Utilities */
+        .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .glass-sidebar { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-left: 1px solid rgba(255, 255, 255, 0.2); }
+        
+        /* Subtle Glow */
+        .nav-active-glow { box-shadow: 0 0 20px -5px rgba(79, 70, 229, 0.3); }
+
         img { max-width: 100%; height: auto; }
 
         /* Fallback sizes if Tailwind CSS fails to load */
@@ -36,20 +42,22 @@
         .w-8 { width: 2rem; } .h-8 { height: 2rem; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900 antialiased font-inter" x-data="{ sidebarOpen: true }">
-    <div class="min-h-screen flex">
+    <div class="min-h-screen flex selection:bg-indigo-100 selection:text-indigo-900 overflow-hidden" x-data="{ sidebarOpen: true }">
         
         <!-- Sidebar -->
-        <aside class="fixed inset-y-0 right-0 z-50 w-64 bg-white border-l border-gray-200 transition-transform duration-300 ease-in-out transform lg:translate-x-0 lg:static lg:inset-0 shadow-lg lg:shadow-none"
+        <aside class="fixed inset-y-0 right-0 z-50 w-72 glass-sidebar transition-transform duration-500 ease-in-out transform lg:translate-x-0 lg:static lg:inset-0 shadow-[20px_0_50px_-30px_rgba(0,0,0,0.05)]"
                :class="sidebarOpen ? 'translate-x-0' : 'translate-x-full'">
             
-            <!-- Logo -->
-            <div class="h-16 flex items-center justify-center border-b border-gray-200 bg-white">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded bg-gradient-to-br from-indigo-600 to-blue-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-200">
-                        A
+            <!-- Logo Section -->
+            <div class="h-20 flex items-center px-8 border-b border-white/20 bg-white/30">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-blue-600 flex items-center justify-center text-white font-black shadow-lg shadow-indigo-200/50 transform -rotate-3">
+                        M
                     </div>
-                    <span class="text-lg font-bold tracking-wide text-gray-800">Admin<span class="text-indigo-600">Panel</span></span>
+                    <div>
+                        <span class="text-xl font-black tracking-tight text-gray-900">Madaa<span class="text-indigo-600 font-extrabold italic">Q</span></span>
+                        <p class="text-[9px] uppercase tracking-widest text-indigo-400 font-bold -mt-1 font-inter">Control Panel</p>
+                    </div>
                 </div>
             </div>
 
@@ -58,8 +66,8 @@
                 <p class="px-3 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">النظام</p>
                 
                 <a href="{{ route('admin.dashboard') }}" 
-                   class="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' }}">
-                    <svg class="w-5 h-5 ml-3 {{ request()->routeIs('admin.dashboard') ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                   class="flex items-center px-4 py-3 rounded-xl text-sm font-bold transition-all duration-300 group {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-600 text-white nav-active-glow translate-x-[-4px]' : 'text-gray-500 hover:text-indigo-600 hover:bg-white/50' }}">
+                    <svg class="w-5 h-5 ml-3 {{ request()->routeIs('admin.dashboard') ? 'text-white' : 'text-gray-400 group-hover:text-indigo-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                     لوحة القيادة
                 </a>
 
@@ -117,29 +125,36 @@
         </aside>
 
         <!-- Content Wrapper -->
-        <div class="flex-1 flex flex-col min-h-screen bg-gray-50 overflow-hidden">
+        <div class="flex-1 flex flex-col min-h-screen overflow-hidden">
             
             <!-- Mobile Header -->
-            <header class="h-16 flex items-center justify-between px-4 lg:hidden bg-white border-b border-gray-200 shadow-sm">
+            <header class="h-16 flex items-center justify-between px-6 lg:hidden bg-white/70 backdrop-blur-md border-b border-white/20">
                 <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded bg-gradient-to-br from-indigo-600 to-blue-600 flex items-center justify-center text-white font-bold">A</div>
-                    <span class="text-lg font-bold text-gray-800">Admin</span>
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">M</div>
+                    <span class="text-lg font-black text-gray-900 tracking-tight">MadaaQ</span>
                 </div>
-                <button @click="sidebarOpen = !sidebarOpen" class="text-gray-500 hover:text-gray-700">
+                <button @click="sidebarOpen = !sidebarOpen" class="p-2 text-gray-500 hover:text-indigo-600 transition-colors">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
             </header>
 
             <!-- Main Scrollable Area -->
-            <main class="flex-1 overflow-y-auto p-4 lg:p-8">
+            <main class="flex-1 overflow-y-auto p-4 lg:p-10">
                 @if(session('success'))
-                    <div class="mb-6 px-4 py-3 rounded-lg bg-green-50 border border-green-200 text-green-700 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        <span>{{ session('success') }}</span>
+                    <div class="mb-8 px-6 py-4 rounded-2xl glass-panel text-gray-800 flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
+                        <div class="w-10 h-10 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                        <div>
+                            <p class="font-bold text-sm">تمت العملية بنجاح</p>
+                            <p class="text-xs text-gray-500">{{ session('success') }}</p>
+                        </div>
                     </div>
                 @endif
                 
-                @yield('content')
+                <div class="max-w-7xl mx-auto">
+                    @yield('content')
+                </div>
             </main>
         </div>
     </div>

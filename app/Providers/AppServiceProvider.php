@@ -49,13 +49,16 @@ class AppServiceProvider extends ServiceProvider
         \Illuminate\Support\Facades\Blade::directive('money', function ($expression) {
             return "<?php 
                 \$val = floatval($expression);
-                \$curr = \$currency ?? '';
+                \$curr = \$currency ?? '$';
                 
-                if(\$curr == 'ل.س.ج') {
+                if(\$curr === '$' || \$curr === 'USD' || \$curr === '€' || \$curr === '£') {
+                    echo \$curr . ' ' . number_format(\$val, 2);
+                } elseif(\$curr === 'ل.س.ج') {
                     echo number_format(\$val, 2) . ' ل.س.ج';
-                } elseif (\$curr == 'ل.س') {
+                } elseif (\$curr === 'ل.س') {
                     echo number_format(\$val, 0) . ' ل.س';
                 } else {
+                    // RTL currencies or others
                     echo number_format(\$val, 2) . ' ' . \$curr;
                 }
             ?>";

@@ -22,19 +22,21 @@ class TowerDeviceController extends Controller
         
         // Create new device
         $validated = $request->validate([
+            'device_type' => 'required|in:wireless,switch',
             'name' => 'required|string|max:255',
             'device_model_id' => 'nullable|exists:device_models,id',
             'ip' => 'nullable|ip',
             'mac_address' => 'nullable|string',
+            'ports_count' => 'nullable|integer|min:1',
             'ssid' => 'nullable|string',
             'frequency' => 'nullable|string',
-            'mode' => 'required|string',
+            'mode' => 'nullable|string',
         ]);
 
         $device = $tower->devices()->create($validated);
 
-        // If SSID was provided, create a TowerSSID record for it
-        if (!empty($validated['ssid'])) {
+        // If it's wireless and SSID was provided, create a TowerSSID record for it
+        if ($validated['device_type'] === 'wireless' && !empty($validated['ssid'])) {
             \App\Models\TowerSSID::create([
                 'tower_id' => $tower->id,
                 'tower_device_id' => $device->id,

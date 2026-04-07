@@ -23,6 +23,7 @@
             <thead class="bg-gray-50">
                 <tr>
                     <th scope="col" class="py-3.5 pl-4 pr-4 text-right text-sm font-semibold text-gray-900 sm:pr-6">اسم الباقة</th>
+                    <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">التكنولوجيا</th>
                     <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">السرعة (Download/Upload)</th>
                     <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">سعة التحميل</th>
                     <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">المدة</th>
@@ -42,6 +43,20 @@
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                             </div>
                             {{ $profile->name }}
+                        </div>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        <div class="flex items-center gap-1.5 uppercase font-bold text-[10px]">
+                            @if($profile->technology_type === 'fiber')
+                                <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-100">🌐 Fiber</span>
+                            @elseif($profile->technology_type === 'wireless')
+                                <span class="bg-orange-50 text-orange-700 px-2 py-0.5 rounded border border-orange-100">📡 Wireless</span>
+                            @elseif($profile->technology_type === 'dsl')
+                                <span class="bg-gray-50 text-gray-700 px-2 py-0.5 rounded border border-gray-100">🔌 DSL</span>
+                            @elseif($profile->technology_type === 'cable')
+                                <span class="bg-purple-50 text-purple-700 px-2 py-0.5 rounded border border-purple-100">📺 Cable</span>
+                            @else
+                                <span class="text-gray-400">---</span>
+                            @endif
                         </div>
                     </td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500" dir="ltr">

@@ -27,6 +27,7 @@ class ProfileController extends Controller
             'speed_down' => 'required|integer',
             'speed_up' => 'required|integer',
             'price' => 'required|numeric',
+            'technology_type' => 'required|in:fiber,wireless,dsl,cable',
             'targets' => 'nullable|array',
         ]);
 
@@ -70,6 +71,7 @@ class ProfileController extends Controller
             'speed_down' => 'required|integer',
             'speed_up' => 'required|integer',
             'price' => 'required|numeric',
+            'technology_type' => 'required|in:fiber,wireless,dsl,cable',
             'targets' => 'nullable|array',
         ]);
 

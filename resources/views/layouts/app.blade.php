@@ -6,6 +6,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'MadaaQ') }}</title>
     
+    <!-- Google Font - Rubik & Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -13,30 +17,50 @@
 
     <style>
         [x-cloak] { display: none !important; }
-        .sidebar-scroll::-webkit-scrollbar { width: 4px; }
-        .sidebar-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
-        .sidebar-scroll::-webkit-scrollbar-track { background-color: transparent; }
+        body { font-family: 'Rubik', 'Tajawal', sans-serif; background: radial-gradient(circle at top left, #f8fafc, #f1f5f9); min-height: 100vh; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+        
+        /* Premium Translucent Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.05); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.1); }
+
+        /* Glassmorphism Utilities */
+        .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .glass-sidebar { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-left: 1px solid rgba(255, 255, 255, 0.2); }
+        
+        /* Subtle Glow */
+        .nav-active-glow { box-shadow: 0 0 20px -5px rgba(79, 70, 229, 0.3); }
     </style>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
-<body class="h-full font-tajawal text-gray-900 antialiased lg:flex" x-data="{ sidebarOpen: false }">
+<body class="h-full selection:bg-indigo-100 selection:text-indigo-900 antialiased lg:flex relative overflow-x-hidden" x-data="{ sidebarOpen: false }">
+    <!-- Floating Background Orbs -->
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-200/20 rounded-full blur-[120px] -z-10 animate-pulse"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-blue-200/20 rounded-full blur-[100px] -z-10"></div>
+    <div class="fixed top-[20%] right-[5%] w-[15%] h-[15%] bg-purple-200/10 rounded-full blur-[80px] -z-10"></div>
+
 
     <!-- Mobile Sidebar Backdrop -->
-    <div x-show="sidebarOpen" x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-900/80 z-40 lg:hidden" @click="sidebarOpen = false"></div>
+    <div x-show="sidebarOpen" x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-40 lg:hidden" @click="sidebarOpen = false"></div>
 
     <!-- Sidebar -->
-    <div :class="sidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'" class="fixed inset-y-0 right-0 z-50 w-72 bg-white border-l border-gray-200 transition-transform duration-300 ease-in-out shadow-xl lg:static lg:inset-auto lg:flex lg:flex-col lg:shadow-none">
+    <div :class="sidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'" class="fixed inset-y-0 right-0 z-50 w-72 glass-sidebar transition-transform duration-500 ease-in-out shadow-[20px_0_50px_-30px_rgba(0,0,0,0.05)] lg:static lg:inset-auto lg:flex lg:flex-col">
         
         <!-- Logo -->
-        <div class="flex h-16 shrink-0 items-center gap-3 px-6 border-b border-gray-100">
-            <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-600 text-white shadow-sm shadow-indigo-200">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        <div class="flex h-20 shrink-0 items-center gap-3 px-6 border-b border-white/20 bg-white/30">
+            <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-blue-600 text-white shadow-lg shadow-indigo-200/50 transform rotate-3">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             </div>
-            <span class="text-xl font-bold tracking-tight text-gray-900">MadaaQ <span class="text-indigo-600">Admin</span></span>
+            <div>
+                <span class="text-xl font-black tracking-tight text-gray-900">Madaa<span class="text-indigo-600 font-extrabold italic">Q</span></span>
+                <p class="text-[9px] uppercase tracking-widest text-indigo-400 font-bold -mt-1 font-inter">ISP Control</p>
+            </div>
             
-            <button @click="sidebarOpen = false" class="mr-auto lg:hidden text-gray-500">
+            <button @click="sidebarOpen = false" class="mr-auto lg:hidden text-gray-500 hover:text-indigo-600 transition-colors">
                 <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
@@ -44,8 +68,8 @@
         <!-- Navigation -->
         <nav class="flex-1 overflow-y-auto sidebar-scroll px-4 py-6 space-y-1">
             
-            <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600' }} group flex items-center gap-x-3 rounded-md px-3 py-2 text-sm font-semibold leading-6 transition-all duration-200">
-                <svg class="h-6 w-6 shrink-0 {{ request()->routeIs('dashboard') ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'bg-indigo-600 text-white nav-active-glow translate-x-[-4px]' : 'text-gray-500 hover:bg-white/50 hover:text-indigo-600' }} group flex items-center gap-x-3 rounded-xl px-4 py-3 text-sm font-bold leading-6 transition-all duration-300">
+                <svg class="h-5 w-5 shrink-0 {{ request()->routeIs('dashboard') ? 'text-white' : 'text-gray-400 group-hover:text-indigo-600' }}" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                 </svg>
                 لوحة التحكم
@@ -65,9 +89,9 @@
                 <div x-show="open" x-collapse x-cloak class="mt-1 space-y-1 pr-11">
                     <a href="{{ route('servers.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('servers.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">سيرفرات مايكروتك</a>
                     <a href="{{ route('network.internet-sources.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('network.internet-sources.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">مصادر الانترنت</a>
-                    <a href="{{ route('network.towers.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('network.towers.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">الأبراج</a>
+                    <a href="{{ route('network.towers.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('network.towers.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">مواقع الشبكة (Sites)</a>
                     <a href="{{ route('maps.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('maps.index') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">الخريطة الجغرافية</a>
-                    <a href="{{ route('routers.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('routers.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">معدات الشبكة</a>
+                    <a href="{{ route('routers.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('routers.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">تجهيزات الشبكة</a>
                     <a href="{{ route('network.backups.index') }}" class="block rounded-md py-2 pr-2 text-sm font-medium {{ request()->routeIs('network.backups.*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">النسخ الاحتياطية</a>
                 </div>
             </div>

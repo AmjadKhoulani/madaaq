@@ -5,7 +5,8 @@
     name: '',
     speed_down: '',
     speed_up: '',
-    price: ''
+    price: '',
+    technology_type: 'wireless'
 }">
     <div class="flex items-center justify-between mb-6">
         <div>
@@ -28,9 +29,41 @@
                 <!-- Basic Info & Speed -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
                     <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        تفاصيل الباقة والسرعة
+                        تفاصيل الباقة والتكنولوجيا
                     </h3>
+                    <div class="mb-6 p-4 bg-purple-50 rounded-xl border border-purple-100">
+                        <label class="block text-xs font-bold text-purple-800 uppercase mb-3">فئة تكنولوجيا الاتصال (Technology Selection)</label>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <label class="cursor-pointer group">
+                                <input type="radio" name="technology_type" value="fiber" x-model="technology_type" class="peer sr-only">
+                                <div class="text-center py-2 border-2 border-gray-100 rounded-lg peer-checked:border-purple-500 peer-checked:bg-white group-hover:border-purple-200 transition bg-white shadow-sm">
+                                    <div class="text-xl mb-1">🌐</div>
+                                    <div class="text-[10px] font-bold text-gray-700 uppercase">Fiber (FTTH)</div>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer group">
+                                <input type="radio" name="technology_type" value="wireless" x-model="technology_type" class="peer sr-only" checked>
+                                <div class="text-center py-2 border-2 border-gray-100 rounded-lg peer-checked:border-purple-500 peer-checked:bg-white group-hover:border-purple-200 transition bg-white shadow-sm">
+                                    <div class="text-xl mb-1">📡</div>
+                                    <div class="text-[10px] font-bold text-gray-700 uppercase">Wireless (PMP)</div>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer group">
+                                <input type="radio" name="technology_type" value="dsl" x-model="technology_type" class="peer sr-only">
+                                <div class="text-center py-2 border-2 border-gray-100 rounded-lg peer-checked:border-purple-500 peer-checked:bg-white group-hover:border-blue-200 transition bg-white shadow-sm">
+                                    <div class="text-xl mb-1">🔌</div>
+                                    <div class="text-[10px] font-bold text-gray-700 uppercase">DSL / Copper</div>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer group">
+                                <input type="radio" name="technology_type" value="cable" x-model="technology_type" class="peer sr-only">
+                                <div class="text-center py-2 border-2 border-gray-100 rounded-lg peer-checked:border-purple-500 peer-checked:bg-white group-hover:border-purple-200 transition bg-white shadow-sm">
+                                    <div class="text-xl mb-1">📺</div>
+                                    <div class="text-[10px] font-bold text-gray-700 uppercase">Cable TV</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
                     <div class="space-y-4">
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase mb-1">اسم الباقة</label>
@@ -105,6 +138,15 @@
                         </div>
 
                         <div class="mt-6 pt-6 border-t border-gray-100 space-y-3">
+                            <div class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                                <span class="text-xs font-medium text-gray-500">التكنولوجيا</span>
+                                <div class="flex items-center gap-1 font-bold text-gray-700 uppercase text-[10px]">
+                                    <span x-show="technology_type === 'fiber'">🌐 Fiber</span>
+                                    <span x-show="technology_type === 'wireless'">📡 Wireless</span>
+                                    <span x-show="technology_type === 'dsl'">🔌 DSL</span>
+                                    <span x-show="technology_type === 'cable'">📺 Cable</span>
+                                </div>
+                            </div>
                             <div class="flex justify-between items-center bg-gray-50 p-2 rounded">
                                 <span class="text-xs font-medium text-gray-500">السرعة</span>
                                 <div class="text-sm font-bold dir-ltr text-gray-700">

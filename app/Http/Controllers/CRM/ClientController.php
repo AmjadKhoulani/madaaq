@@ -80,12 +80,10 @@ class ClientController extends Controller
             'hotspot_username' => 'nullable|string|max:255',
             'ssid' => 'nullable|string|max:255',
             // Connection Details
-            'connection_mode' => 'nullable|in:wireless,cable',
+            'connection_mode' => 'nullable|in:wireless,cable,fiber,dsl,tower_switch',
             'cpe_model' => 'nullable|string|max:255',
             'switch_port' => 'nullable|string',
-            'cpe_ip' => 'nullable|ip',
-            'cpe_mac' => 'nullable|string',
-            'tower_device_id' => 'nullable|integer',
+            'tower_device_id' => 'nullable|exists:tower_devices,id',
             // IP & Limits
             'ip_address' => 'nullable|ip',
             'data_limit' => 'nullable|numeric', // GB input
@@ -226,11 +224,9 @@ class ClientController extends Controller
             'ssid_id' => 'nullable|exists:tower_ssids,id', 
             'expires_at' => 'nullable|date',
             // Connection Details
-            'connection_mode' => 'nullable|in:wireless,cable',
+            'connection_mode' => 'nullable|in:wireless,cable,fiber,dsl,tower_switch',
             'cpe_model' => 'nullable|string|max:255',
             'switch_port' => 'nullable|string',
-            'cpe_ip' => 'nullable|ip',
-            'cpe_mac' => 'nullable|string',
             'tower_device_id' => 'nullable|exists:tower_devices,id',
             // IP & Limits
             'ip_address' => 'nullable|ip',

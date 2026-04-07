@@ -13,6 +13,7 @@ class Package extends Model
         'tenant_id',
         'name',
         'type',
+        'technology_type',
         'speed_down',
         'speed_up',
         'price',
