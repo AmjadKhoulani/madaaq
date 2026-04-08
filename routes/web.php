@@ -312,6 +312,11 @@ Route::group([], function () {
             Route::get('payment/paypal/success', [\App\Http\Controllers\Payment\PaymentController::class, 'paypalSuccess'])->name('payment.paypal.success');
             Route::get('payment/paypal/cancel', [\App\Http\Controllers\Payment\PaymentController::class, 'paypalCancel'])->name('payment.paypal.cancel');
     
+            // WhatsApp Chat
+            Route::get('whatsapp', [\App\Http\Controllers\WhatsAppController::class, 'index'])->name('whatsapp.index');
+            Route::get('whatsapp/{client}', [\App\Http\Controllers\WhatsAppController::class, 'show'])->name('whatsapp.show');
+            Route::post('whatsapp/{client}', [\App\Http\Controllers\WhatsAppController::class, 'store'])->name('whatsapp.store');
+
             // Support & Contact
             Route::get('support', [\App\Http\Controllers\SupportController::class, 'index'])->name('support.index');
             Route::post('support/send', [\App\Http\Controllers\SupportController::class, 'sendMessage'])->name('support.send');
