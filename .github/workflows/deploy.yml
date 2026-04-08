@@ -19,7 +19,8 @@ jobs:
         script: |
           su -s /bin/bash madaaq -c "
             cd /home/madaaq/public_html &&
-            git pull origin master &&
+            git fetch origin master &&
+            git reset --hard origin/master &&
             composer install --no-dev --optimize-autoloader &&
             php artisan migrate --force &&
             php artisan optimize
