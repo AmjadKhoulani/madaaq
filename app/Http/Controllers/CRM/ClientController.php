@@ -497,11 +497,15 @@ class ClientController extends Controller
         }
     }
 
+    public function showRenew(Client $client, \App\Models\Package $packages)
+    {
+        $packages = \App\Models\Package::where('type', $client->type)->get();
         return \Inertia\Inertia::render('CRM/Clients/Renew', [
             'client' => $client,
             'packages' => $packages,
             'currency' => '$', // Hardcoding for now or fetching from config if available
         ]);
+    }
 
     public function renew(Request $request, Client $client)
     {
