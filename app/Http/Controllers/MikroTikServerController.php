@@ -164,11 +164,14 @@ class MikroTikServerController extends Controller
         }
     }
 
+    public function show(MikroTikServer $server)
+    {
         $server->load(['deviceModel', 'backups']);
         
         return \Inertia\Inertia::render('Servers/Show', [
             'server' => $server,
         ]);
+    }
 
     public function getSetupScript(MikroTikServer $server)
     {
