@@ -34,6 +34,10 @@ jobs:
             composer install --no-dev --optimize-autoloader &&
             
             echo 'Finalizing system optimization...' &&
+            rm -f public/hot || true &&
+            php artisan config:clear &&
+            php artisan cache:clear &&
+            php artisan view:clear &&
             php artisan migrate --force &&
             php artisan optimize &&
             
