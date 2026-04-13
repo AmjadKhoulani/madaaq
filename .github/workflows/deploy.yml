@@ -19,17 +19,21 @@ jobs:
         script: |
           su -s /bin/bash madaaq -c "
             cd /home/madaaq/public_html &&
+            echo 'Clearing previous optimizations...' &&
+            php artisan optimize:clear || true &&
+            
             echo 'Updating code from master...' &&
             git fetch origin master &&
             git reset --hard origin/master &&
             
             echo 'Ensuring directory permissions...' &&
-            chmod -R 775 public/build storage bootstrap/cache &&
+            chmod -R 775 public/build storage bootstrap/cache || true &&
             
-            echo 'Installing dependencies & Optimizing...' &&
+            echo 'Installing dependencies...' &&
             composer install --no-dev --optimize-autoloader &&
+            
+            echo 'Finalizing system optimization...' &&
             php artisan migrate --force &&
-            php artisan optimize:clear &&
             php artisan optimize &&
             
             echo 'Deployment successful for MadaaQ v2.'
