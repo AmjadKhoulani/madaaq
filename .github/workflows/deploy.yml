@@ -29,7 +29,8 @@ jobs:
             echo 'Ensuring directory permissions...' &&
             chmod -R 775 public/build storage bootstrap/cache || true &&
             
-            echo 'Installing dependencies...' &&
+            echo 'Installing dependencies & Updating Lock...' &&
+            composer update tightenco/ziggy --no-dev --no-interaction --optimize-autoloader &&
             composer install --no-dev --optimize-autoloader &&
             
             echo 'Finalizing system optimization...' &&
