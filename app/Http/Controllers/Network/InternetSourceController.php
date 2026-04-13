@@ -14,7 +14,9 @@ class InternetSourceController extends Controller
     public function index()
     {
         $sources = InternetSource::latest()->get();
-        return view('network.internet_sources.index', compact('sources'));
+        return \Inertia\Inertia::render('Network/InternetSources/Index', [
+            'sources' => $sources
+        ]);
     }
 
     /**
@@ -40,7 +42,9 @@ class InternetSourceController extends Controller
      */
     public function edit(InternetSource $internetSource)
     {
-        return view('network.internet_sources.edit', compact('internetSource'));
+        return \Inertia\Inertia::render('Network/InternetSources/Edit', [
+            'internetSource' => $internetSource
+        ]);
     }
 
     public function update(Request $request, InternetSource $internetSource)

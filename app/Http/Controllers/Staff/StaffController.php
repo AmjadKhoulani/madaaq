@@ -13,13 +13,17 @@ class StaffController extends Controller
     public function index()
     {
         $staff = User::with('roles')->latest()->paginate(20);
-        return view('staff.index', compact('staff'));
+        return \Inertia\Inertia::render('Staff/Index', [
+            'staff' => $staff
+        ]);
     }
 
     public function create()
     {
         $roles = Role::all();
-        return view('staff.create', compact('roles'));
+        return \Inertia\Inertia::render('Staff/Create', [
+            'roles' => $roles
+        ]);
     }
 
     public function store(Request $request)
@@ -51,7 +55,11 @@ class StaffController extends Controller
     public function edit(User $staff)
     {
         $roles = Role::all();
-        return view('staff.edit', compact('staff', 'roles'));
+        $staff->load('roles');
+        return \Inertia\Inertia::render('Staff/Edit', [
+            'staff' => $staff,
+            'roles' => $roles
+        ]);
     }
 
     public function update(Request $request, User $staff)

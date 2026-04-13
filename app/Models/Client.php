@@ -44,6 +44,14 @@ class Client extends Authenticatable
         'connection_mode',
         'device_model_id',
         'cpe_model',
+        'cpe_username',
+        'cpe_password',
+        'cpe_port',
+        'receiver_ip',
+        'receiver_username',
+        'receiver_password',
+        'receiver_model',
+        'receiver_port',
         'switch_port',
         'cpe_ip',
         'cpe_mac',
@@ -59,6 +67,10 @@ class Client extends Authenticatable
     {
         return [
             'expires_at' => 'datetime',
+            'cpe_username' => 'encrypted',
+            'cpe_password' => 'encrypted',
+            'receiver_username' => 'encrypted',
+            'receiver_password' => 'encrypted',
         ];
     }
 

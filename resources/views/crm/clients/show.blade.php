@@ -156,6 +156,101 @@
                 </div>
             </div>
 
+            <!-- Network & CPE Access (Premium) -->
+            <div class="glass-panel rounded-[2rem] p-8 relative overflow-hidden group border border-indigo-500/10 shadow-2xl shadow-indigo-500/5">
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl transition-all group-hover:bg-indigo-500/20"></div>
+                
+                <div class="flex items-center justify-between mb-8">
+                    <h3 class="text-xl font-black text-gray-900 flex items-center gap-3">
+                        <span class="w-1.5 h-8 bg-indigo-600 rounded-full"></span>
+                        Equipment Intelligence & Remote Access
+                    </h3>
+                    @if($client->mikrotik_server_id)
+                        <span class="px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-lg text-[9px] font-black uppercase tracking-widest border border-emerald-500/10">Edge Node Connected</span>
+                    @else
+                        <span class="px-3 py-1 bg-gray-500/10 text-gray-400 rounded-lg text-[9px] font-black uppercase tracking-widest border border-gray-500/10">No Management Node</span>
+                    @endif
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- 1. Interior Router (CPE) -->
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="p-2 bg-indigo-600/10 text-indigo-600 rounded-lg uppercase text-[10px] font-black tracking-widest">Device 1: Interior Router</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 bg-gray-900/5 rounded-2xl border border-gray-900/5">
+                                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1">Model / Vendor</span>
+                                <span class="text-sm font-black text-gray-900">{{ $client->cpe_model ?? 'Generic CPE' }}</span>
+                            </div>
+                            <div class="p-4 bg-gray-900/5 rounded-2xl border border-gray-900/5">
+                                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1">Network IP</span>
+                                <span class="text-sm font-black text-indigo-600 font-mono">{{ $client->cpe_ip ?? 'Not Set' }}</span>
+                            </div>
+                        </div>
+
+                        @if($client->cpe_ip && $client->mikrotik_server_id)
+                        <div class="p-4 bg-indigo-600/5 rounded-2xl border border-indigo-600/10 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ $client->cpe_username ?? 'admin' }}</p>
+                                    <p class="text-[10px] font-bold text-gray-900">Encrypted Auth</p>
+                                </div>
+                            </div>
+                            <a href="{{ route('crm.clients.cpe-proxy', ['client' => $client, 'type' => 'cpe']) }}" target="_blank" class="px-5 py-2 bg-indigo-600 text-white text-[9px] font-black uppercase tracking-widest rounded-xl shadow-lg hover:bg-indigo-700 transition-all">
+                                Open Webfig
+                            </a>
+                        </div>
+                        @endif
+                    </div>
+
+                    <!-- 2. Exterior Receiver (Radio) -->
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="p-2 bg-emerald-600/10 text-emerald-600 rounded-lg uppercase text-[10px] font-black tracking-widest">Device 2: Outdoor Radio</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 bg-gray-900/5 rounded-2xl border border-gray-900/5">
+                                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1">Radio Model</span>
+                                <span class="text-sm font-black text-gray-900">{{ $client->receiver_model ?? 'Generic Radio' }}</span>
+                            </div>
+                            <div class="p-4 bg-gray-900/5 rounded-2xl border border-gray-900/5">
+                                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1">Radio IP</span>
+                                <span class="text-sm font-black text-emerald-600 font-mono">{{ $client->receiver_ip ?? 'Not Set' }}</span>
+                            </div>
+                        </div>
+
+                        @if($client->receiver_ip && $client->mikrotik_server_id)
+                        <div class="p-4 bg-emerald-600/5 rounded-2xl border border-emerald-600/10 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ $client->receiver_username ?? 'admin' }}</p>
+                                    <p class="text-[10px] font-bold text-gray-900">Encrypted Auth</p>
+                                </div>
+                            </div>
+                            <a href="{{ route('crm.clients.cpe-proxy', ['client' => $client, 'type' => 'receiver']) }}" target="_blank" class="px-5 py-2 bg-emerald-600 text-white text-[9px] font-black uppercase tracking-widest rounded-xl shadow-lg hover:bg-emerald-700 transition-all">
+                                Open Dashboard
+                            </a>
+                        </div>
+                        @else
+                        <div class="p-4 bg-gray-50 rounded-2xl border border-dashed border-gray-200 text-center">
+                            <p class="text-[10px] font-bold text-gray-400 italic">No Outdoor Equipment Registered</p>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
+                <p class="mt-8 text-[9px] text-gray-400 font-bold px-2 italic text-left">
+                    Network nodes managed via: <span class="text-indigo-600">{{ $client->mikrotikServer->name ?? 'Primary Infrastructure' }}</span>
+                </p>
+            </div>
+
             <!-- Client Portal Access -->
             @if(auth()->user()->tenant->is_subdomain_enabled)
             <!-- Client Portal Access -->

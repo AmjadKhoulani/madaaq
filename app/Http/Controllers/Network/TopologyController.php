@@ -63,6 +63,11 @@ class TopologyController extends Controller
             ];
         });
 
-        return view('network.topology.index', compact('routers', 'towers', 'servers', 'internetSources'));
+        return \Inertia\Inertia::render('Network/Topology/Index', [
+            'routers' => $routers,
+            'towers' => $towers,
+            'servers' => $servers,
+            'internetSources' => $internetSources
+        ]);
     }
 }

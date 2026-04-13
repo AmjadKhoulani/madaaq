@@ -10,6 +10,8 @@ use App\Models\Package;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
+use Inertia\Inertia;
+
 class DashboardController extends Controller
 {
     public function index()
@@ -35,7 +37,7 @@ class DashboardController extends Controller
                 'total_packages' => Package::count(),
             ];
 
-            // Network Monitoring Stats - Optimized
+            // Network Monitoring Stats
             $routers = Router::all();
             $towers = Tower::all();
             
@@ -43,28 +45,15 @@ class DashboardController extends Controller
             $totalDevices = $routers->count() + $towers->count();
 
             foreach($routers as $router) {
-                if ($router->is_reachable) {
-                    $onlineCount++;
-                } else {
-                    // Fallback to latest log if reachability field isn't trusted or just updated
-                    $latestLog = \App\Models\DeviceStatusLog::where('device_type', Router::class)
-                        ->where('device_id', $router->id)
-                        ->latest('checked_at')
-                        ->first();
-                    if ($latestLog?->status === 'online') $onlineCount++;
-                }
+                if ($router->is_reachable) $onlineCount++;
             }
 
             foreach($towers as $tower) {
-                // Towers are "online" if their associated router is online (if they have one)
-                // Or check their specific logs
                 $latestLog = \App\Models\DeviceStatusLog::where('device_type', Tower::class)
                     ->where('device_id', $tower->id)
                     ->latest('checked_at')
                     ->first();
-                if ($latestLog?->status === 'online') {
-                    $onlineCount++;
-                }
+                if ($latestLog?->status === 'online') $onlineCount++;
             }
             
             $networkStats = [
@@ -96,13 +85,11 @@ class DashboardController extends Controller
             $recentClients = Client::with('package')->latest()->take(5)->get();
             $recentInvoices = Invoice::with('client')->latest()->take(5)->get();
 
-            // Chart data - Revenue last 7 days
+            // Chart data
             $revenueChart = $this->getRevenueChartData();
-            
-            // Chart data - Clients growth
             $clientsChart = $this->getClientsChartData();
 
-            // Expiring soon (Next 7 days, excluding today)
+            // Expiring soon
             $expiringClients = Client::where('status', 'active')
                 ->whereDate('expires_at', '>', now())
                 ->whereDate('expires_at', '<=', now()->addDays(7))
@@ -116,34 +103,26 @@ class DashboardController extends Controller
                 'has_server' => \App\Models\MikroTikServer::exists(),
                 'has_package' => Package::exists(),
                 'has_client' => Client::exists(),
-                'has_whatsapp' => !empty(\App\Models\Setting::getValue('twilio_account_sid')),
             ];
-            $setupComplete = $setupChecklist['has_tower'] && 
-                            $setupChecklist['has_server'] && 
-                            $setupChecklist['has_package'] && 
-                            $setupChecklist['has_client'];
+            $setupComplete = !in_array(false, array_values($setupChecklist));
 
-            return view('dashboard', compact(
-                'stats',
-                'networkStats',
-                'activeAlerts',
-                'bandwidthToday',
-                'topWebsites',
-                'recentClients',
-                'recentInvoices',
-                'revenueChart',
-                'clientsChart',
-                'expiringClients',
-                'setupChecklist',
-                'setupComplete'
-            ));
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error('Dashboard Error: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString()
+            return Inertia::render('Vendor/Dashboard', [
+                'stats' => $stats,
+                'networkStats' => $networkStats,
+                'activeAlerts' => $activeAlerts,
+                'bandwidthToday' => $bandwidthToday,
+                'topWebsites' => $topWebsites,
+                'recentClients' => $recentClients,
+                'recentInvoices' => $recentInvoices,
+                'revenueChart' => $revenueChart,
+                'clientsChart' => $clientsChart,
+                'expiringClients' => $expiringClients,
+                'setupChecklist' => $setupChecklist,
+                'setupComplete' => $setupComplete
             ]);
-            
-            // Return a safe view or error message
-            return response()->view('errors.500', ['exception' => $e], 500);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Dashboard Error: ' . $e->getMessage());
+            return back()->with('error', 'Intelligence handshake failed.');
         }
     }
 

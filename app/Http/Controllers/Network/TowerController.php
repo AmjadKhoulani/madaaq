@@ -42,7 +42,12 @@ class TowerController extends Controller
             'totalMonthlyMaintenance' => Tower::sum('monthly_maintenance'),
         ];
         
-        return view('network.towers.index', compact('towers', 'cities', 'stats'));
+        return \Inertia\Inertia::render('Network/Towers/Index', [
+            'towers' => $towers,
+            'cities' => $cities,
+            'stats' => $stats,
+            'filters' => $request->only(['city', 'status', 'type']),
+        ]);
     }
 
     public function create()
@@ -54,7 +59,12 @@ class TowerController extends Controller
         $activeRouters = Router::whereIn('device_type', ['access_point', 'transmitter', 'router'])->get();
         $currency = \App\Models\Setting::getValue('currency_symbol', '$');
         
-        return view('network.towers.create', compact('servers', 'deviceModels', 'currency', 'towers', 'activeRouters'));
+        return \Inertia\Inertia::render('Network/Towers/Create', [
+            'servers' => $servers,
+            'deviceModels' => $deviceModels,
+            'activeRouters' => $activeRouters,
+            'currency' => $currency,
+        ]);
     }
 
     public function store(Request $request)
@@ -189,7 +199,11 @@ class TowerController extends Controller
     {
         $tower->load(['routers', 'clients', 'monthlyCosts.tower', 'ssids', 'devices.deviceModel', 'devices.ssids', 'mikrotikServer', 'transmitterModel', 'receiverModel']);
         $currency = \App\Models\Setting::getValue('currency_symbol', '$');
-        return view('network.towers.show', compact('tower', 'currency'));
+        
+        return \Inertia\Inertia::render('Network/Towers/Show', [
+            'tower' => $tower,
+            'currency' => $currency,
+        ]);
     }
 
     public function edit(Tower $tower)
@@ -201,7 +215,15 @@ class TowerController extends Controller
         $currency = \App\Models\Setting::getValue('currency_symbol', '$');
         
         $tower->load(['devices.deviceModel', 'devices.ssids']);
-        return view('network.towers.edit', compact('tower', 'deviceModels', 'currency', 'servers', 'towers', 'activeRouters'));
+        
+        return \Inertia\Inertia::render('Network/Towers/Edit', [
+            'tower' => $tower,
+            'deviceModels' => $deviceModels,
+            'servers' => $servers,
+            'towers' => $towers,
+            'activeRouters' => $activeRouters,
+            'currency' => $currency,
+        ]);
     }
 
     public function update(Request $request, Tower $tower)

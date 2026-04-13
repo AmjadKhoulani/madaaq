@@ -47,11 +47,56 @@ class ProxyController extends Controller
         return $this->doProxy($request, $ip, "remote-{$server->id}-" . str_replace('.', '-', $ip), $socksProxy, $path);
     }
 
-    protected function doProxy(Request $request, $targetIp, $contextId, $proxy = null, $path = null)
+    /**
+     * CPE / Equipment proxy via a MikroTik server (using SOCKS)
+     */
+    public function cpeProxy(Request $request, \App\Models\Client $client, $type = 'cpe', $path = null)
+    {
+        // Pick fields based on type
+        if ($type === 'pppoe') {
+            if (!$client->mikrotik_server_id) {
+                 abort(400, "سيرفر المايكروتك غير محدد لهذا العميل.");
+            }
+            $server = $client->mikrotikServer;
+            try {
+                $service = new \App\Services\MikroTikService($server);
+                $activeUser = $service->query('/ppp/active/print', [['name', $client->username]]);
+                if (empty($activeUser) || !isset($activeUser[0]['address'])) {
+                     abort(404, "العميل غير متصل حالياً، لا يمكن الاتصال بالراوتر (PPPoE).");
+                }
+                $targetIp = $activeUser[0]['address'];
+                $targetPort = 80; // Defaults
+            } catch (\Exception $e) {
+                 abort(502, "فشل الاتصال بالمايكروتك لجلب الـ IP: " . $e->getMessage());
+            }
+        } else {
+            $targetIp = ($type === 'receiver') ? $client->receiver_ip : $client->cpe_ip;
+            $targetPort = ($type === 'receiver') ? ($client->receiver_port ?? 80) : ($client->cpe_port ?? 80);
+            $server = $client->mikrotikServer;
+
+            if (!$targetIp || !$client->mikrotik_server_id) {
+                abort(400, "بيانات الجهاز ({$type}) غير مكتملة (IP أو السيرفر غير موجود).");
+            }
+        }
+        
+        try {
+            $service = new \App\Services\MikroTikService($server);
+            $service->enableSocks();
+        } catch (\Exception $e) {
+            \Log::error("SOCKS Enable Error: " . $e->getMessage());
+        }
+
+        $socksProxy = "socks5h://{$server->ip}:1080";
+        $contextId = "cpe-{$client->id}-{$type}";
+        
+        return $this->doProxy($request, $targetIp, $contextId, $socksProxy, $path, $targetPort);
+    }
+
+    protected function doProxy(Request $request, $targetIp, $contextId, $proxy = null, $path = null, $port = 80)
     {
         // Build Target URL
         $path = $path ? ltrim($path, '/') : '';
-        $targetUrl = "http://{$targetIp}/{$path}";
+        $targetUrl = ($port == 443 ? "https" : "http") . "://{$targetIp}:{$port}/{$path}";
         
         \Log::channel('single')->info("[PROXY START] Target: {$targetIp} | Path: {$path} | Proxy: " . ($proxy ?? 'NONE'));
 
@@ -115,6 +160,12 @@ class ProxyController extends Controller
                 // Determine proxy base route
                 if (is_numeric($contextId)) {
                     $proxyBase = route('routers.webfig', ['router' => $contextId]);
+                } elseif (str_starts_with($contextId, 'cpe-')) {
+                    // Extract clientId and type from "cpe-{clientId}-{type}"
+                    $parts = explode('-', $contextId);
+                    $clientId = $parts[1];
+                    $type = $parts[2] ?? 'cpe';
+                    $proxyBase = route('crm.clients.cpe-proxy', ['client' => $clientId, 'type' => $type]);
                 } else {
                     // For remote access, extract server id and ip from contextId "remote-{serverId}-{ip}"
                     preg_match('/remote-(\d+)-(.*)/', $contextId, $matches);
@@ -128,27 +179,19 @@ class ProxyController extends Controller
                 $proxyBase = rtrim($proxyBase, '/');
 
                 // 5a. Specific Fix for MikroTik Webfig redirect and Meta Refresh
-                // It often uses explicit strings like "/webfig" or "webfig/"
                 $content = str_replace('"/webfig"', '"' . $proxyBase . '/webfig"', $content);
                 $content = str_replace("'/webfig'", "'" . $proxyBase . "/webfig'", $content);
-                
-                // Fix for assignment to root '/'
                 $content = str_replace('window.location="/"', 'window.location="' . $proxyBase . '/"', $content);
                 $content = str_replace("window.location='/'", "window.location='" . $proxyBase . "/'", $content);
 
-                // Meta Refresh Rewriting
-                // <meta http-equiv="refresh" content="0; url=/">
                 $patternMeta = '/(<meta[^>]+http-equiv=["\']refresh["\'][^>]+content=["\']\d+;\s*url=)(\/)([^"\']*["\'])/i';
                 $content = preg_replace_callback($patternMeta, function($matches) use ($proxyBase) {
                      return $matches[1] . $proxyBase . '/' . $matches[3];
                 }, $content);
                 
-                // Fix for possible assignment to root or webfig
                 $content = preg_replace('/(window\.|document\.)?location(\.href)?\s*=\s*(["\'])\/webfig\/?(["\'])/', '$1location$2=$3' . $proxyBase . '/webfig/$4', $content);
                 
-                // 5b. HTML Attribute Rewriting
                 if ($isHtml) {
-                    // Inject <base> tag to force all relative links to go through proxy
                     $baseTag = '<base href="' . $proxyBase . '/">';
                     if (str_contains($content, '<head>')) {
                         $content = str_replace('<head>', '<head>' . $baseTag, $content);
@@ -162,7 +205,6 @@ class ProxyController extends Controller
                     }, $content);
                 }
                 
-                // 5c. JSON Redirect Rewriting
                 if ($isJson) {
                      $content = preg_replace_callback('/"(\/[^"]+)"/', function($matches) use ($proxyBase) {
                         $path = $matches[1];
@@ -178,7 +220,6 @@ class ProxyController extends Controller
                     }, $content);
                 }
 
-                // 5d. CSS URL Rewriting
                 if ($isCss) {
                     $content = preg_replace_callback('/url\((["\']?)\/([^)]+)\1\)/i', function($matches) use ($proxyBase) {
                         return 'url(' . $matches[1] . $proxyBase . '/' . $matches[2] . $matches[1] . ')';
@@ -203,23 +244,19 @@ class ProxyController extends Controller
 
             // 7. Forward Response Headers
             foreach ($response->headers() as $name => $values) {
-                // Skip headers that should be regenerated by our server
                 if (in_array(strtolower($name), ['transfer-encoding', 'content-encoding', 'content-length', 'connection', 'host'])) {
                     continue;
                 }
 
                 foreach ($values as $value) {
-                    // Rewrite Location header for redirects
                     if (strtolower($name) === 'location') {
                         if (str_starts_with($value, '/')) {
                             $value = rtrim($proxyBase, '/') . $value;
                         }
                     }
                     
-                    // Rewrite Set-Cookie Path
                     if (strtolower($name) === 'set-cookie') {
                          $value = preg_replace('/path=\/[^;]*/i', 'path=/', $value);
-                         // Optional: Add SameSite=None and Secure if needed for iframe (but usually accessed directly)
                     }
                     
                     $laravelResponse->header($name, $value);
@@ -234,39 +271,30 @@ class ProxyController extends Controller
         }
     }
 
-    /**
-     * Handle requests that escaped the proxy (e.g. /webfig/...)
-     * and redirect them back to the correct router proxy url.
-     */
     public function handleTrap(Request $request, $path = null)
     {
         $userId = auth()->id();
-        $sessionId = session()->getId();
-        
-        file_put_contents(storage_path('logs/proxy_debug.txt'), date("Y-m-d H:i:s") . " [TRAP HIT] Path: $path | User: " . ($userId ?? 'NULL') . " | Session: $sessionId\n", FILE_APPEND);
-
-        // Use Cache + Auth ID for 100% reliability keying to the user
         $routerId = null;
         if ($userId) {
             $routerId = \Illuminate\Support\Facades\Cache::get('webfig_context_' . $userId);
-            file_put_contents(storage_path('logs/proxy_debug.txt'), " [TRAP CACHE] Key: webfig_context_$userId | Result: " . ($routerId ?? 'MISS') . "\n", FILE_APPEND);
-            
-            // Allow fallback to session if cache misses (legacy/guest?)
             if (!$routerId) {
                 $routerId = session('current_router_context');
             }
         } else {
              $routerId = session('current_router_context');
-             file_put_contents(storage_path('logs/proxy_debug.txt'), " [TRAP NO AUTH] Fallback to Session. Result: " . ($routerId ?? 'MISS') . "\n", FILE_APPEND);
         }
 
         if (!$routerId) {
-            file_put_contents(storage_path('logs/proxy_debug.txt'), " [TRAP FAILED] Redirecting to index.\n", FILE_APPEND);
             return redirect()->route('routers.index')->with('error', 'فقدنا الاتصال بجلسة الجهاز. يرجى المحاولة مرة أخرى.');
         }
 
         if (is_numeric($routerId)) {
             return redirect()->route('routers.webfig', ['router' => $routerId, 'path' => $path]);
+        } elseif (str_starts_with($routerId, 'cpe-')) {
+            $parts = explode('-', $routerId);
+            $clientId = $parts[1];
+            $type = $parts[2] ?? 'cpe';
+            return redirect()->route('crm.clients.cpe-proxy', ['client' => $clientId, 'type' => $type, 'path' => $path]);
         } else {
              preg_match('/remote-(\d+)-(.*)/', $routerId, $matches);
              return redirect()->route('network.discovery.webfig', [
@@ -276,37 +304,17 @@ class ProxyController extends Controller
             ]);
         }
     }
-    /**
-     * Handle Mobile App Webfig Token
-     * Authenticates the user and redirects to the appropriate Webfig proxy.
-     */
+
     public function handleMobileToken($token)
     {
         $data = \Illuminate\Support\Facades\Cache::get('webfig_token_' . $token);
+        if (!$data) return response('❌ Invalid token.', 403);
         
-        if (!$data) {
-            return response('❌ Invalid or expired token. Please try again from the app.', 403);
-        }
-        
-        // Log in the user for this session (WebView)
         \Illuminate\Support\Facades\Auth::loginUsingId($data['user_id']);
-        
         $server = MikroTikServer::find($data['server_id']);
-        
-        if (!$server) {
-            return response('Server not found.', 404);
-        }
+        if (!$server) return response('Server not found.', 404);
 
-        // Redirect to the remote webfig proxy
-        // This will now work because we have an active session
-        // We use the server's wireguard IP for stability if available, else standard IP
         $targetIp = $server->wireguard_ip ?? $server->ip;
-        
-        // Sanitize IP for route parameter (replace dots with dashes if needed by route regex, 
-        // but network.discovery.webfig usually accepts dots if regex permits, checking route definition...)
-        // Route definition: Route::any('/network/discovery/webfig/{server}/{ip}/{path?}', ...)
-        // There is no regex constraint on {ip} in the definition I saw earlier, except implicit segment.
-        // But usually dots are fine in segments unless at the end.
         
         return redirect()->route('network.discovery.webfig', [
             'server' => $server->id,

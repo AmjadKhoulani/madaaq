@@ -195,17 +195,17 @@
                                 </select>
                             </div>
                             <div class="space-y-2">
-                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">البرج</label>
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">الموقع (برج / علبة توزيع)</label>
                                 <select name="tower_id" x-model="selectedTowerId" @change="updateTowerData()" class="w-full py-3.5 px-6 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-bold text-gray-700 appearance-none text-sm" :disabled="!selectedServerId">
-                                    <option value="">اختر البرج...</option>
+                                    <option value="">اختر الموقع...</option>
                                     <template x-for="tower in towers" :key="tower.id">
-                                        <option :value="tower.id" x-text="tower.name" :selected="tower.id == selectedTowerId"></option>
+                                        <option :value="tower.id" x-text="(tower.type === 'cabinet' || tower.type === 'pole' ? '📦 ' : '🗼 ') + tower.name" :selected="tower.id == selectedTowerId"></option>
                                     </template>
                                 </select>
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">الشبكة (SSID)</label>
-                                <select name="ssid_id" x-model="selectedSSID" class="w-full py-3.5 px-6 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-bold text-gray-700 appearance-none text-sm" :disabled="!selectedTowerId">
+                                <select name="ssid_id" x-model="selectedSSID" class="w-full py-3.5 px-6 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-bold text-gray-700 appearance-none text-sm" :disabled="!selectedTowerId || connectionMode !== 'wireless'">
                                     <option value="">اختر الشبكة...</option>
                                     <template x-for="ssid in ssids" :key="ssid.id">
                                         <option :value="ssid.id" x-text="ssid.ssid_name" :selected="ssid.id == selectedSSID"></option>
@@ -231,60 +231,110 @@
                                        placeholder="Keep blank to retain existing key" 
                                        value="{{ old('service_password') }}"> 
                                 <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-1 ml-1">Active Key: <span class="text-indigo-600 select-all">{{ $client->service_password }}</span></p>
-                            </div>
-                        </div>
-                        
-                        <!-- Hardware Details -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-8 border-t border-gray-900/5">
-                             <div class="space-y-2">
-                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">نوع الربط (Core Technology)</label>
+                                                  <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">نوع الربط (Core Technology)</label>
                                 <select name="connection_mode" x-model="connectionMode" class="w-full py-3.5 px-6 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-bold text-gray-900 appearance-none text-sm">
                                     <option value="wireless">لاسلكي (Wireless)</option>
                                     <option value="tower_switch">سويتش مباشر (Direct Switch)</option>
-                                    <option value="fiber">فايبر (Fiber / FTTH)</option>
-                                    <option value="cable">كبل (Cable / Ethernet)</option>
-                                    <option value="dsl">دي اس ال (DSL / VDSL)</option>
-                                </select>
+                                               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div x-show="connectionMode === 'tower_switch' || connectionMode === 'wireless'" class="space-y-2">
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1" x-text="connectionMode === 'wireless' ? 'جهاز البث (AP)' : 'السويتش (Switch)'"></label>
+                                    <select name="tower_device_id" x-model="selectedTowerDeviceId" class="w-full py-3.5 px-6 bg-emerald-50/50 backdrop-blur-md border border-emerald-100 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:bg-white focus:border-emerald-500/30 transition-all font-black text-emerald-600 appearance-none text-sm" :disabled="!selectedTowerId">
+                                        <option value="">-- Choose Hardware --</option>
+                                        <template x-for="device in towerDevices" :key="device.id">
+                                            <option :value="device.id" x-text="device.name + (device.ports_count ? ' (' + device.ports_count + ' Port)' : '')" :selected="device.id == selectedTowerDeviceId"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">رقم المنفذ (Access Port)</label>
+                                    <input type="text" name="switch_port" value="{{ old('switch_port', $client->switch_port) }}" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-black text-gray-900 text-sm" placeholder="e.g. Port 5">
+                                </div>
                             </div>
-                             <div x-show="connectionMode === 'tower_switch'" class="space-y-2">
-                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">الطرفية (Switch)</label>
-                                <select name="tower_device_id" x-model="selectedTowerDeviceId" class="w-full py-3.5 px-6 bg-emerald-50/50 backdrop-blur-md border border-emerald-100 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:bg-white focus:border-emerald-500/30 transition-all font-black text-emerald-600 appearance-none text-sm">
-                                    <option value="">-- Choose Hardware --</option>
-                                    <template x-for="device in towerDevices.filter(d => d.device_type === 'switch')" :key="device.id">
-                                        <option :value="device.id" x-text="device.name + ' (' + (device.ports_count || '?') + ' P)'" :selected="device.id == selectedTowerDeviceId"></option>
-                                    </template>
-                                </select>
+
+                            <!-- 1. Interior Hub (Home Router) -->
+                            <div class="p-6 bg-indigo-500/5 rounded-3xl border border-indigo-500/10 space-y-6 mt-4">
+                                <h4 class="text-[10px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
+                                    إعدادات الراوتر المنزلي (Home Router)
+                                </h4>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div class="space-y-2">
+                                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">موديل الجهاز</label>
+                                        <select x-model="selectedDeviceModelId" @change="updateCpeModel()" class="w-full py-3.5 px-6 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-700 appearance-none text-sm">
+                                            <option value="">أخرى / يدوي</option>
+                                            <template x-for="model in deviceModels" :key="model.id">
+                                                <option :value="model.id" x-text="model.name" :selected="model.id == selectedDeviceModelId"></option>
+                                            </template>
+                                        </select>
+                                        <input type="hidden" name="device_model_id" :value="selectedDeviceModelId">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">اسم الموديل (كتابة)</label>
+                                        <input type="text" name="cpe_model" x-model="cpeModel" class="w-full px-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 transition-all font-black text-gray-900 text-sm">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">عنوان IP الداخلي</label>
+                                        <input type="text" name="cpe_ip" value="{{ old('cpe_ip', $client->cpe_ip) }}" class="w-full px-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 transition-all font-mono text-sm font-black text-gray-900" placeholder="10.x.x.x">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div class="space-y-2">
+                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">منفذ الويب</label>
+                                            <input type="number" name="cpe_port" value="{{ old('cpe_port', $client->cpe_port ?? 80) }}" class="w-full px-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900 text-sm">
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">يوزر الدخول</label>
+                                            <input type="text" name="cpe_username" value="{{ old('cpe_username', $client->cpe_username) }}" class="w-full px-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900 text-sm" placeholder="admin">
+                                        </div>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">باسورد الجهاز</label>
+                                        <input type="password" name="cpe_password" value="{{ old('cpe_password', $client->cpe_password) }}" class="w-full px-6 py-4 bg-white border border-indigo-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900 text-sm" placeholder="••••••••">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">MAC Identity</label>
+                                        <input type="text" name="cpe_mac" @input="$el.value = $el.value.toUpperCase().replace(/[^0-9A-F]/g, '').match(/.{1,2}/g)?.join(':').substr(0, 17) || $el.value" value="{{ old('cpe_mac', $client->cpe_mac) }}" class="w-full px-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 transition-all font-mono text-sm font-black text-gray-900" placeholder="AA:BB:CC:DD:EE:FF">
+                                    </div>
+                                </div>
                             </div>
-                            <div x-show="connectionMode !== 'tower_switch'" class="space-y-2">
-                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">موديل الجهاز (Selection)</label>
-                                <select x-model="selectedDeviceModelId" @change="updateCpeModel()" class="w-full py-3.5 px-6 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-bold text-gray-700 appearance-none text-sm">
-                                    <option value="">أخرى / يدوي</option>
-                                    <template x-for="model in deviceModels" :key="model.id">
-                                        <option :value="model.id" x-text="model.name" :selected="model.id == selectedDeviceModelId"></option>
-                                    </template>
-                                </select>
+
+                            <!-- 2. Exterior Radio (Receiver) -->
+                            <div x-show="connectionMode === 'wireless'" class="p-6 bg-emerald-500/5 rounded-3xl border border-emerald-500/10 space-y-6 mt-6 transition-all">
+                                <h4 class="text-[10px] font-black text-emerald-500 uppercase tracking-widest flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                                    إعدادات جهاز الاستقبال الخارجي (Radio/Receiver)
+                                </h4>
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                                    <div class="space-y-2">
+                                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">موديل اللاقط</label>
+                                        <input type="text" name="receiver_model" value="{{ old('receiver_model', $client->receiver_model) }}" class="w-full px-6 py-4 bg-white border border-emerald-100 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 transition-all font-black text-gray-900 text-sm" placeholder="e.g. LiteBeam 5AC">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">عنوان IP اللاقط</label>
+                                        <input type="text" name="receiver_ip" value="{{ old('receiver_ip', $client->receiver_ip) }}" class="w-full px-6 py-4 bg-white border border-emerald-100 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 transition-all font-mono text-sm font-black text-emerald-600" placeholder="10.x.x.x">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div class="space-y-2">
+                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">منفذ الويب</label>
+                                            <input type="number" name="receiver_port" value="{{ old('receiver_port', $client->receiver_port ?? 80) }}" class="w-full px-6 py-4 bg-white border border-emerald-100 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 transition-all font-bold text-gray-900 text-sm">
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">يوزر اللاقط</label>
+                                            <input type="text" name="receiver_username" value="{{ old('receiver_username', $client->receiver_username) }}" class="w-full px-6 py-4 bg-white border border-emerald-100 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 transition-all font-bold text-gray-900 text-sm" placeholder="admin">
+                                        </div>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">باسورد اللاقط</label>
+                                        <input type="password" name="receiver_password" value="{{ old('receiver_password', $client->receiver_password) }}" class="w-full px-6 py-4 bg-white border border-emerald-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 transition-all font-bold text-gray-900 text-sm" placeholder="••••••••">
+                                    </div>
+                                </div>
                             </div>
-                            <div x-show="connectionMode !== 'tower_switch'" class="space-y-2">
-                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1" x-text="connectionMode === 'fiber' ? 'ONT Model' : (connectionMode === 'dsl' ? 'Modem Model' : 'Unit Architecture')"></label>
-                                <input type="text" name="cpe_model" x-model="cpeModel" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-black text-gray-900 text-sm">
-                            </div>
-                            <div x-show="connectionMode === 'wireless'" class="space-y-2">
-                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">عنوان IP (Radio)</label>
-                                <input type="text" name="cpe_ip" value="{{ old('cpe_ip', $client->cpe_ip) }}" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-mono text-sm font-black text-gray-900" placeholder="10.x.x.x">
-                            </div>
-                            <div x-show="connectionMode !== 'tower_switch'" class="space-y-2">
-                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">MAC Identity</label>
-                                <input type="text" name="cpe_mac" 
-                                       @input="$el.value = $el.value.toUpperCase().replace(/[^0-9A-F]/g, '').match(/.{1,2}/g)?.join(':').substr(0, 17) || $el.value" 
-                                       value="{{ old('cpe_mac', $client->cpe_mac) }}" 
-                                       class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-mono text-sm font-black text-gray-900" placeholder="AA:BB:CC:DD:EE:FF">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">رقم المنفذ (Access Port)</label>
-                                <input type="text" name="switch_port" value="{{ old('switch_port', $client->switch_port) }}" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-black text-gray-900 text-sm" placeholder="e.g. Port 5">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">عنوان IP (Subscriber)</label>
+
+                            <div class="space-y-2 pt-6">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">عنوان IP المشترك (الخدمة)</label>
+                                <input type="text" name="ip_address" value="{{ old('ip', $client->ip) }}" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-mono text-sm font-black text-indigo-600" placeholder="10.x.x.x">
+                            </div>-1">عنوان IP (Subscriber)</label>
                                 <input type="text" name="ip_address" value="{{ old('ip', $client->ip) }}" class="w-full px-6 py-4 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500/30 transition-all font-mono text-sm font-black text-indigo-600" placeholder="172.x.x.x">
                             </div>
                         </div>
@@ -473,7 +523,7 @@
                 const oldTower = this.selectedTowerId;
                 this.ssids = [];
                 const server = this.servers.find(s => s.id == this.selectedServerId);
-                this.towers = server ? (server.all_towers || server.towers) : [];
+                this.towers = server ? server.towers : []; // Unified towers array from backend
                 
                 // If the currently selected tower isn't in the new list, clear it
                 if (!this.towers.find(t => t.id == oldTower)) {

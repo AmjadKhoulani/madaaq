@@ -118,7 +118,12 @@ class MonitoringController extends Controller
             'active_alerts' => $activeAlerts->count(),
         ];
 
-        return view('network.monitoring.index', compact('devices', 'activeAlerts', 'recentAlerts', 'stats'));
+        return \Inertia\Inertia::render('Network/Monitoring/Index', [
+            'devices' => $devices,
+            'activeAlerts' => $activeAlerts,
+            'recentAlerts' => $recentAlerts,
+            'stats' => $stats
+        ]);
     }
 
     public function resolveAlert($id)
@@ -173,6 +178,11 @@ class MonitoringController extends Controller
             ];
         });
         
-        return view('network.monitoring.bandwidth', compact('chartData', 'period', 'availableInterfaces', 'interface'));
+        return \Inertia\Inertia::render('Network/Monitoring/Bandwidth', [
+            'chartData' => $chartData,
+            'period' => $period,
+            'availableInterfaces' => $availableInterfaces,
+            'interface' => $interface
+        ]);
     }
 }

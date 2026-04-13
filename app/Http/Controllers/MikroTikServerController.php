@@ -12,7 +12,9 @@ class MikroTikServerController extends Controller
     public function index()
     {
         $servers = MikroTikServer::where('tenant_id', auth()->user()->tenant_id ?? 1)->latest()->get();
-        return view('servers.index', compact('servers'));
+        return \Inertia\Inertia::render('Servers/Index', [
+            'servers' => $servers,
+        ]);
     }
 
     public function create()
@@ -20,7 +22,12 @@ class MikroTikServerController extends Controller
         $internetSources = \App\Models\InternetSource::all();
         $towers = Tower::where('tenant_id', auth()->user()->tenant_id ?? 1)->get();
         $products = \App\Models\DeviceModel::where('manufacturer', 'MikroTik')->get();
-        return view('servers.create', compact('internetSources', 'towers', 'products'));
+        
+        return \Inertia\Inertia::render('Servers/Create', [
+            'internetSources' => $internetSources,
+            'towers' => $towers,
+            'products' => $products,
+        ]);
     }
 
     public function store(Request $request)
@@ -157,10 +164,11 @@ class MikroTikServerController extends Controller
         }
     }
 
-    public function show(MikroTikServer $server)
-    {
-        return view('servers.show', compact('server'));
-    }
+        $server->load(['deviceModel', 'backups']);
+        
+        return \Inertia\Inertia::render('Servers/Show', [
+            'server' => $server,
+        ]);
 
     public function getSetupScript(MikroTikServer $server)
     {

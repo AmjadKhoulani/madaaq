@@ -41,10 +41,10 @@ class SettingController extends Controller
             }
         }
         
-        // Pass current tenant to view
-        $tenant = auth()->user()->tenant;
-        
-        return view('settings.index', compact('settings', 'tenant')); // Passing array instead of individual vars
+        return \Inertia\Inertia::render('Settings/Index', [
+            'settings' => $settings,
+            'tenant' => $tenant
+        ]);
     }
 
     public function update(Request $request)

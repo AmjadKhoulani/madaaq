@@ -37,7 +37,9 @@ class ClientController extends Controller
 
         $clients = $query->latest()->paginate(20);
 
-        return view('crm.clients.index', compact('clients'));
+        return \Inertia\Inertia::render('CRM/Clients/Index', [
+            'clients' => $clients,
+        ]);
     }
 
     public function create()
@@ -46,21 +48,55 @@ class ClientController extends Controller
         $routers = \App\Models\Router::all();
         
         // Load servers with both administrative towers and uplink (hierarchy) towers
-        $servers = \App\Models\MikroTikServer::with([
-            'towers.ssids', 'towers.routers', 'towers.devices',
-            'uplinkTowers.ssids', 'uplinkTowers.routers', 'uplinkTowers.devices'
+        $serversData = \App\Models\MikroTikServer::with([
+            'towers.ssids', 'towers.devices.deviceModel',
+            'uplinkTowers.ssids', 'uplinkTowers.devices.deviceModel'
         ])->get();
 
-        // Merge towers for each server so the view sees them all in one list
-        $servers->each(function($server) {
-            $server->all_towers = $server->towers->merge($server->uplinkTowers)->unique('id');
+        // Map to clean array for Alpine.js
+        $servers = $serversData->map(function($server) {
+            $allTowers = $server->towers->merge($server->uplinkTowers)->unique('id');
+            
+            return [
+                'id' => $server->id,
+                'name' => $server->name,
+                'towers' => $allTowers->map(function($tower) {
+                    return [
+                        'id' => $tower->id,
+                        'name' => $tower->name,
+                        'type' => $tower->type,
+                        'lat' => (float)$tower->lat,
+                        'lng' => (float)$tower->lng,
+                        'devices' => $tower->devices->map(function($device) {
+                            return [
+                                'id' => $device->id,
+                                'name' => $device->name,
+                                'type' => $device->device_type,
+                                'ports_count' => $device->ports_count,
+                            ];
+                        })->values()->all(),
+                        'ssids' => $tower->ssids->map(function($ssid) {
+                            return [
+                                'id' => $ssid->id,
+                                'ssid_name' => $ssid->ssid_name,
+                            ];
+                        })->values()->all(),
+                    ];
+                })->values()->all(),
+            ];
         });
 
         $deviceModels = \App\Models\DeviceModel::all();
         
         $lastIp = Client::latest()->whereNotNull('ip')->value('ip');
 
-        return view('crm.clients.create', compact('packages', 'routers', 'servers', 'deviceModels', 'lastIp'));
+        return \Inertia\Inertia::render('CRM/Clients/Create', [
+            'packages' => $packages,
+            'routers' => $routers,
+            'servers' => $servers,
+            'deviceModels' => $deviceModels,
+            'lastIp' => $lastIp,
+        ]);
     }
 
     public function store(Request $request)
@@ -82,6 +118,8 @@ class ClientController extends Controller
             // Connection Details
             'connection_mode' => 'nullable|in:wireless,cable,fiber,dsl,tower_switch',
             'cpe_model' => 'nullable|string|max:255',
+            'cpe_username' => 'nullable|string|max:255',
+            'cpe_password' => 'nullable|string|max:255',
             'switch_port' => 'nullable|string',
             'tower_device_id' => 'nullable|exists:tower_devices,id',
             // IP & Limits
@@ -147,16 +185,72 @@ class ClientController extends Controller
 
     public function show(Client $client)
     {
-        $client->load(['package', 'router', 'invoices', 'clientNotes', 'activities']);
+        $client->load(['package', 'router', 'clientNotes.user', 'activities', 'mikrotikServer']);
 
         $stats = [
-            'total_invoices' => $client->invoices->count(),
-            'paid_invoices' => $client->invoices->where('status', 'paid')->count(),
-            'total_paid' => $client->invoices->where('status', 'paid')->sum('amount'),
-            'pending_amount' => $client->invoices->where('status', 'unpaid')->sum('amount'),
+            'total_invoices' => \App\Models\Invoice::where('client_id', $client->id)->count(),
+            'total_paid' => \App\Models\Invoice::where('client_id', $client->id)->where('status', 'paid')->sum('amount'),
+            'pending_amount' => \App\Models\Invoice::where('client_id', $client->id)->where('status', 'pending')->sum('amount'),
         ];
 
-        return view('crm.clients.show', compact('client', 'stats'));
+        $usage = [
+            'status' => 'offline',
+            'uptime' => '00:00:00',
+            'download_speed' => 0,
+            'upload_speed' => 0,
+            'bytes_in' => 0,
+            'bytes_out' => 0,
+        ];
+
+        $activeIp = null;
+
+        if ($client->mikrotikServer) {
+            try {
+                $service = new \App\Services\MikroTikService($client->mikrotikServer);
+                if ($client->type === 'pppoe') {
+                    $activeUser = $service->query('/ppp/active/print', [['name', $client->username]]);
+                    if (!empty($activeUser) && isset($activeUser[0])) {
+                        $activeUser = $activeUser[0];
+                        $usage['status'] = 'online';
+                        $usage['uptime'] = $activeUser['uptime'] ?? '00:00:00';
+                        $usage['bytes_in'] = $activeUser['bytes-in'] ?? 0;
+                        $usage['bytes_out'] = $activeUser['bytes-out'] ?? 0;
+                        $activeIp = $activeUser['address'] ?? null;
+                        
+                        if (isset($activeUser['name'])) {
+                            $interfaceName = "<pppoe-{$activeUser['name']}>";
+                            $traffic = $service->query('/interface/monitor-traffic', [
+                                ['interface', $interfaceName],
+                                ['once', '']
+                            ]);
+                            if (!empty($traffic) && isset($traffic[0])) {
+                                $usage['download_speed'] = isset($traffic[0]['tx-bits-per-second']) ? round($traffic[0]['tx-bits-per-second'] / 1024 / 1024, 2) : 0;
+                                $usage['upload_speed'] = isset($traffic[0]['rx-bits-per-second']) ? round($traffic[0]['rx-bits-per-second'] / 1024 / 1024, 2) : 0;
+                            }
+                        }
+                    }
+                } elseif ($client->type === 'hotspot') {
+                    $activeUser = $service->query('/ip/hotspot/active/print', [['user', $client->username]]);
+                    if (!empty($activeUser) && isset($activeUser[0])) {
+                         $activeUser = $activeUser[0];
+                         $usage['status'] = 'online';
+                         $usage['uptime'] = $activeUser['uptime'] ?? '00:00:00';
+                         $usage['bytes_in'] = $activeUser['bytes-in'] ?? 0;
+                         $usage['bytes_out'] = $activeUser['bytes-out'] ?? 0;
+                         $activeIp = $activeUser['address'] ?? null;
+                    }
+                }
+            } catch (\Exception $e) {
+                // Ignore API connection failures for stats
+            }
+        }
+
+        return \Inertia\Inertia::render('CRM/Clients/Show', [
+            'client' => $client,
+            'stats' => $stats,
+            'usage' => $usage,
+            'activeIp' => $activeIp,
+        ]);
     }
 
     public function edit(Client $client)
@@ -179,12 +273,15 @@ class ClientController extends Controller
                     return [
                         'id' => $tower->id,
                         'name' => $tower->name,
+                        'type' => $tower->type,
                         'lat' => (float)$tower->lat,
                         'lng' => (float)$tower->lng,
                         'devices' => $tower->devices->map(function($device) {
                             return [
                                 'id' => $device->id,
                                 'name' => $device->name,
+                                'type' => $device->device_type,
+                                'ports_count' => $device->ports_count,
                                 'ip' => $device->ip,
                             ];
                         })->values()->all(),
@@ -202,7 +299,13 @@ class ClientController extends Controller
 
         $deviceModels = \App\Models\DeviceModel::all();
 
-        return view('crm.clients.edit', compact('client', 'packages', 'routers', 'servers', 'deviceModels'));
+        return \Inertia\Inertia::render('CRM/Clients/Edit', [
+            'client' => $client,
+            'packages' => $packages,
+            'routers' => $routers,
+            'servers' => $servers,
+            'deviceModels' => $deviceModels,
+        ]);
     }
 
     public function update(Request $request, Client $client)
@@ -226,6 +329,8 @@ class ClientController extends Controller
             // Connection Details
             'connection_mode' => 'nullable|in:wireless,cable,fiber,dsl,tower_switch',
             'cpe_model' => 'nullable|string|max:255',
+            'cpe_username' => 'nullable|string|max:255',
+            'cpe_password' => 'nullable|string|max:255',
             'switch_port' => 'nullable|string',
             'tower_device_id' => 'nullable|exists:tower_devices,id',
             // IP & Limits
@@ -392,11 +497,11 @@ class ClientController extends Controller
         }
     }
 
-    public function renewForm(Client $client)
-    {
-        $packages = \App\Models\Package::all();
-        return view('crm.clients.renew', compact('client', 'packages'));
-    }
+        return \Inertia\Inertia::render('CRM/Clients/Renew', [
+            'client' => $client,
+            'packages' => $packages,
+            'currency' => '$', // Hardcoding for now or fetching from config if available
+        ]);
 
     public function renew(Request $request, Client $client)
     {

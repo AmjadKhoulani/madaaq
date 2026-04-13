@@ -200,6 +200,9 @@ Route::group([], function () {
                 Route::post('clients/{client}/notes', [\App\Http\Controllers\CRM\ClientController::class, 'addNote'])->name('clients.notes.store');
                 Route::post('clients/{client}/activities', [\App\Http\Controllers\CRM\ClientController::class, 'addActivity'])->name('clients.activities.store');
                 Route::patch('clients/{client}/toggle-status', [\App\Http\Controllers\CRM\ClientController::class, 'toggleStatus'])->name('clients.toggle-status');
+                Route::any('clients/{client}/cpe-proxy/{type?}/{path?}', [\App\Http\Controllers\Network\ProxyController::class, 'cpeProxy'])
+                    ->where('path', '.*')
+                    ->name('clients.cpe-proxy');
                 
                 Route::get('campaigns/create', [\App\Http\Controllers\CRM\CampaignController::class, 'create'])->name('campaigns.create');
                 Route::post('campaigns', [\App\Http\Controllers\CRM\CampaignController::class, 'store'])->name('campaigns.store');

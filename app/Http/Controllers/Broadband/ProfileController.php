@@ -10,14 +10,21 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        $profiles = Package::where('type', 'pppoe')->get();
-        return view('broadband.profiles.index', compact('profiles'));
+        $profiles = Package::where('type', 'pppoe')->with(['routers', 'mikrotikServers'])->get();
+        return \Inertia\Inertia::render('Broadband/Profiles/Index', [
+            'profiles' => $profiles
+        ]);
     }
 
     public function create()
     {
         $servers = \App\Models\MikroTikServer::where('tenant_id', auth()->user()->tenant_id ?? 1)->get();
-        return view('broadband.profiles.create', compact('servers'));
+        $routers = \App\Models\Router::where('tenant_id', auth()->user()->tenant_id ?? 1)->get();
+        
+        return \Inertia\Inertia::render('Broadband/Profiles/Create', [
+            'servers' => $servers,
+            'routers' => $routers
+        ]);
     }
 
     public function store(Request $request)
@@ -60,11 +67,16 @@ class ProfileController extends Controller
     public function edit(Package $profile)
     {
         $servers = \App\Models\MikroTikServer::where('tenant_id', auth()->user()->tenant_id ?? 1)->get();
+        $routers = \App\Models\Router::where('tenant_id', auth()->user()->tenant_id ?? 1)->get();
         
         // Load existing targets
         $profile->load(['routers', 'mikrotikServers']);
         
-        return view('broadband.profiles.edit', compact('profile', 'servers'));
+        return \Inertia\Inertia::render('Broadband/Profiles/Edit', [
+            'profile' => $profile,
+            'servers' => $servers,
+            'routers' => $routers
+        ]);
     }
 
     public function update(Request $request, Package $profile)

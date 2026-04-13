@@ -14,19 +14,23 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = Client::where('type', 'hotspot')->with(['router', 'package'])->get();
-        return view('hotspot.users.index', compact('users'));
+        $users = Client::where('type', 'hotspot')->with(['mikrotikServer', 'package'])->latest()->get();
+        return \Inertia\Inertia::render('Hotspot/Users/Index', [
+            'users' => $users
+        ]);
     }
 
     public function create()
     {
-        $routers = Router::all();
         $servers = \App\Models\MikroTikServer::all();
         $packages = Package::where('type', 'hotspot')->get();
-        // Fetch existing customers
         $customers = \App\Models\Customer::select('id', 'name', 'phone')->get();
         
-        return view('hotspot.users.create', compact('routers', 'servers', 'packages', 'customers'));
+        return \Inertia\Inertia::render('Hotspot/Users/Create', [
+            'servers' => $servers,
+            'packages' => $packages,
+            'customers' => $customers
+        ]);
     }
 
     public function store(Request $request)
@@ -108,6 +112,9 @@ class UserController extends Controller
 
     public function print(Client $user)
     {
-        return view('hotspot.users.print', compact('user'));
+        $user->load(['package', 'mikrotikServer']);
+        return \Inertia\Inertia::render('Hotspot/Users/Print', [
+            'user' => $user
+        ]);
     }
 }

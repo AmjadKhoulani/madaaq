@@ -75,14 +75,14 @@ class DashboardController extends Controller
             ->orderBy('trial_ends_at')
             ->get();
 
-        return view('admin.dashboard', compact(
-            'stats', 
-            'recent_tenants', 
-            'recent_invoices', 
-            'months', 
-            'chart_revenue', 
-            'chart_tenants',
-            'trial_users'
-        ));
+        return \Inertia\Inertia::render('Dashboard', [
+            'stats' => $stats,
+            'recent_tenants' => $recent_tenants,
+            'recent_invoices' => $recent_invoices,
+            'months' => $months,
+            'chart_revenue' => $chart_revenue,
+            'chart_tenants' => $chart_tenants,
+            'trial_users' => $trial_users,
+        ]);
     }
 }

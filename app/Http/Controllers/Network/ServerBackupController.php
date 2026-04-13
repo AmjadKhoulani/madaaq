@@ -19,7 +19,9 @@ class ServerBackupController extends Controller
             ->latest()
             ->paginate(20);
             
-        return view('network.backups.index', compact('backups'));
+        return \Inertia\Inertia::render('Network/Backups/Index', [
+            'backups' => $backups
+        ]);
     }
 
     public function upload(Request $request, MikroTikServer $server)

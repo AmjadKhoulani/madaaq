@@ -45,7 +45,7 @@ class VoucherController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
         
-        $vouchers = $query->latest()->paginate(20);
+        $vouchers = $query->latest()->paginate(20)->withQueryString();
         $packages = \App\Models\Package::where('type', 'hotspot')->get();
         
         // Statistics
@@ -55,14 +55,23 @@ class VoucherController extends Controller
             'inactive' => Client::where('type', 'hotspot')->where('name', 'like', 'Voucher %')->where('status', 'inactive')->count(),
         ];
         
-        return view('hotspot.vouchers.index', compact('vouchers', 'packages', 'stats'));
+        return \Inertia\Inertia::render('Hotspot/Vouchers/Index', [
+            'vouchers' => $vouchers,
+            'packages' => $packages,
+            'stats' => $stats,
+            'filters' => $request->only(['search', 'status', 'package_id', 'date_from', 'date_to'])
+        ]);
     }
 
     public function create()
     {
-        $servers = \App\Models\MikroTikServer::all();
+        $servers = \App\Models\MikroTikServer::where('tenant_id', auth()->user()->tenant_id ?? 1)->get();
         $packages = Package::where('type', 'hotspot')->get();
-        return view('hotspot.vouchers.create', compact('servers', 'packages'));
+        
+        return \Inertia\Inertia::render('Hotspot/Vouchers/Create', [
+            'servers' => $servers,
+            'packages' => $packages
+        ]);
     }
 
     public function store(Request $request)
@@ -158,7 +167,9 @@ class VoucherController extends Controller
             return redirect()->route('hotspot.vouchers.index')->with('error', 'لا توجد كروت للطباعة.');
         }
 
-        return view('hotspot.vouchers.print_batch', compact('users'));
+        return \Inertia\Inertia::render('Hotspot/Vouchers/PrintBatch', [
+            'users' => $users
+        ]);
     }
     
     public function reprintLast()

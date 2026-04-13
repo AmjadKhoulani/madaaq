@@ -11,15 +11,20 @@ class RoleController extends Controller
 {
     public function index()
     {
-        // BelongsToTenant scope is applied automatically
         $roles = Role::withCount('users')->latest()->paginate(20);
-        return view('staff.roles.index', compact('roles'));
+        return \Inertia\Inertia::render('Staff/Roles/Index', [
+            'roles' => $roles
+        ]);
     }
 
     public function create()
     {
         $permissions = Permission::all()->groupBy('guard_name');
-        return view('staff.roles.create', compact('permissions'));
+        $baseRoles = Role::where('tenant_id', auth()->user()->tenant_id)->get();
+        return \Inertia\Inertia::render('Staff/Roles/Create', [
+            'permissions' => $permissions,
+            'baseRoles' => $baseRoles
+        ]);
     }
 
     public function store(Request $request)
@@ -71,7 +76,10 @@ class RoleController extends Controller
     {
         $role->load('permissions');
         $permissions = Permission::all();
-        return view('staff.roles.edit', compact('role', 'permissions'));
+        return \Inertia\Inertia::render('Staff/Roles/Edit', [
+            'role' => $role,
+            'permissions' => $permissions
+        ]);
     }
 
     public function update(Request $request, Role $role)

@@ -15,7 +15,9 @@ class CommandController extends Controller
     public function index()
     {
         $servers = MikroTikServer::all();
-        return view('network.commands.index', compact('servers'));
+        return \Inertia\Inertia::render('Network/Commands/Index', [
+            'servers' => $servers
+        ]);
     }
 
     public function execute(Request $request)

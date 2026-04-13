@@ -18,7 +18,7 @@ class InvoiceController extends Controller
             $query->where('status', $request->status);
         }
 
-        $invoices = $query->paginate(15);
+        $invoices = $query->paginate(15)->withQueryString();
         
         $stats = [
             'total_revenue' => Invoice::where('status', 'paid')->sum('amount'),
@@ -27,14 +27,22 @@ class InvoiceController extends Controller
             'unpaid_count' => Invoice::where('status', 'unpaid')->count(),
         ];
 
-        return view('accounting.invoices.index', compact('invoices', 'stats'));
+        return \Inertia\Inertia::render('Accounting/Invoices/Index', [
+            'invoices' => $invoices,
+            'stats' => $stats,
+            'filters' => $request->only(['status'])
+        ]);
     }
 
     public function create()
     {
-        $clients = Client::all();
-        $nextInvoiceNumber = 'INV-' . strtoupper(Str::random(8)); // Simple generation for now
-        return view('accounting.invoices.create', compact('clients', 'nextInvoiceNumber'));
+        $clients = Client::select('id', 'username', 'name', 'type')->get();
+        $nextInvoiceNumber = 'INV-' . strtoupper(Str::random(8));
+        
+        return \Inertia\Inertia::render('Accounting/Invoices/Create', [
+            'clients' => $clients,
+            'nextInvoiceNumber' => $nextInvoiceNumber
+        ]);
     }
 
     public function store(Request $request)
@@ -62,14 +70,21 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
-        $invoice->load('client');
-        return view('accounting.invoices.show', compact('invoice'));
+        $invoice->load(['client.router', 'client.package']);
+        return \Inertia\Inertia::render('Accounting/Invoices/Show', [
+            'invoice' => $invoice
+        ]);
     }
 
     public function edit(Invoice $invoice)
     {
-        $clients = Client::all();
-        return view('accounting.invoices.edit', compact('invoice', 'clients'));
+        $clients = Client::select('id', 'username', 'name')->get();
+        $invoice->load('client');
+        
+        return \Inertia\Inertia::render('Accounting/Invoices/Edit', [
+            'invoice' => $invoice,
+            'clients' => $clients
+        ]);
     }
 
     public function update(Request $request, Invoice $invoice)

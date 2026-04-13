@@ -29,6 +29,10 @@ class MapController extends Controller
         $clients = Client::whereNotNull('lat')->whereNotNull('lng')->get();
         $towers = Tower::with('routers')->whereNotNull('lat')->whereNotNull('lng')->get();
 
-        return view('maps.index', compact('routers', 'clients', 'towers'));
+        return \Inertia\Inertia::render('Maps/Index', [
+            'routers' => $routers,
+            'clients' => $clients,
+            'towers' => $towers
+        ]);
     }
 }

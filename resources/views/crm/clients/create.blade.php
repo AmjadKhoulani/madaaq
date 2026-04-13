@@ -146,17 +146,17 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">البرج</label>
-                                <select name="tower_id" x-model="selectedTowerId" @change="updateTowerData()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm" :disabled="!selectedServerId">
-                                    <option value="">اختر البرج...</option>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">الموقع (برج / علبة توزيع)</label>
+                                <select name="tower_id" x-model="selectedTowerId" @change="updateTowerData()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm font-bold" :disabled="!selectedServerId">
+                                    <option value="">اختر الموقع...</option>
                                     <template x-for="tower in towers" :key="tower.id">
-                                        <option :value="tower.id" x-text="tower.name"></option>
+                                        <option :value="tower.id" x-text="(tower.type === 'cabinet' || tower.type === 'pole' ? '📦 ' : '🗼 ') + tower.name"></option>
                                     </template>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-500 uppercase mb-1">الشبكة (SSID)</label>
-                                <select name="ssid" x-model="selectedSSID" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm" :disabled="!selectedTowerId">
+                                <select name="ssid" x-model="selectedSSID" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm" :disabled="!selectedTowerId || connectionMode !== 'wireless'">
                                     <option value="">اختر الشبكة...</option>
                                     <template x-for="ssid in ssids" :key="ssid.id">
                                         <option :value="ssid.ssid_name" x-text="ssid.ssid_name"></option>
@@ -164,11 +164,11 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">جهاز البث (AP)</label>
-                                <select name="tower_device_id" x-model="selectedTowerDeviceId" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm" :disabled="!selectedTowerId">
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1" x-text="connectionMode === 'wireless' ? 'جهاز البث (AP)' : 'السويتش (Switch)'"></label>
+                                <select name="tower_device_id" x-model="selectedTowerDeviceId" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm font-black" :disabled="!selectedTowerId">
                                     <option value="">اختر الجهاز...</option>
-                                    <template x-for="device in towerDevices" :key="device.id">
-                                        <option :value="device.id" x-text="device.name"></option>
+                                    <template x-for="device in towerDevices.filter(d => (connectionMode === 'wireless' ? d.type === 'wireless' : d.type === 'switch'))" :key="device.id">
+                                        <option :value="device.id" x-text="device.name + (device.ports_count ? ' (' + device.ports_count + ' Ports)' : '')"></option>
                                     </template>
                                 </select>
                             </div>
@@ -188,46 +188,102 @@
                                         <option value="dsl">دي اس ال (DSL / VDSL)</option>
                                     </select>
                                 </div>
-                                <div x-show="connectionMode === 'tower_switch'">
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">السويتش (Switch) المنتسب له</label>
-                                    <select name="tower_device_id" x-model="selectedTowerDeviceId" class="w-full px-3 py-2 border border-emerald-100 rounded-lg focus:ring-1 focus:ring-emerald-500 outline-none text-sm bg-emerald-50 font-bold">
-                                        <option value="">-- اختر السويتش --</option>
-                                        <template x-for="device in towerDevices.filter(d => d.device_type === 'switch')" :key="device.id">
-                                            <option :value="device.id" x-text="device.name + ' (' + (device.ports_count || '?') + ' Port)'"></option>
-                                        </template>
-                                    </select>
+                            </div>
+
+                            <!-- Hardware Deployment Group -->
+                            <div class="space-y-6 mt-6">
+                                <div class="p-4 bg-indigo-50/30 rounded-2xl border border-indigo-100/50">
+                                    <h4 class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                        <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
+                                        Interior Hub (Home Router / CPE)
+                                    </h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                        <div>
+                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1">Model Selection</label>
+                                            <select x-model="selectedDeviceModelId" @change="updateCpeModel()" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none text-xs font-bold">
+                                                <option value="">أخرى / يدوي</option>
+                                                <template x-for="model in deviceModels" :key="model.id">
+                                                    <option :value="model.id" x-text="model.name"></option>
+                                                </template>
+                                            </select>
+                                            <input type="hidden" name="device_model_id" :value="selectedDeviceModelId">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1">Architecture Name</label>
+                                            <input type="text" name="cpe_model" x-model="cpeModel" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none text-xs font-black" placeholder="e.g. hAP ax2">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1">Interior IP</label>
+                                            <input type="text" name="cpe_ip" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none text-xs font-mono font-bold" placeholder="10.x.x.x">
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <div>
+                                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1">Port (Web)</label>
+                                                <input type="number" name="cpe_port" value="80" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none text-xs font-bold">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1">Auth User</label>
+                                                <input type="text" name="cpe_username" value="admin" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none text-xs font-bold">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                        <div>
+                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1">Equipment Password</label>
+                                            <input type="password" name="cpe_password" class="w-full px-3 py-2 bg-white border border-indigo-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none text-xs font-bold" placeholder="••••••••">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1">Equipment MAC</label>
+                                            <input type="text" name="cpe_mac" @input="$el.value = $el.value.toUpperCase().replace(/[^0-9A-F]/g, '').match(/.{1,2}/g)?.join(':').substr(0, 17) || $el.value" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none text-xs font-mono font-bold" placeholder="AA:BB:CC:DD:EE:FF">
+                                        </div>
+                                    </div>
                                 </div>
-                                <div x-show="connectionMode !== 'tower_switch'">
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">موديل الجهاز (Dropdown)</label>
-                                    <select x-model="selectedDeviceModelId" @change="updateCpeModel()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm">
-                                        <option value="">أخرى / يدوي</option>
-                                        <template x-for="model in deviceModels" :key="model.id">
-                                            <option :value="model.id" x-text="model.name"></option>
-                                        </template>
-                                    </select>
+
+                                <div x-show="connectionMode === 'wireless'" class="p-4 bg-emerald-50/30 rounded-2xl border border-emerald-100/50">
+                                    <h4 class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                                        Exterior Radio (Outdoor Receiver)
+                                    </h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                        <div>
+                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1">Radio Model</label>
+                                            <input type="text" name="receiver_model" class="w-full px-3 py-2 bg-white border border-emerald-100 rounded-xl focus:ring-2 focus:ring-emerald-500/20 outline-none text-xs font-black" placeholder="e.g. LiteBeam 5AC">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1">Management IP</label>
+                                            <input type="text" name="receiver_ip" class="w-full px-3 py-2 bg-white border border-emerald-100 rounded-xl focus:ring-2 focus:ring-emerald-500/20 outline-none text-xs font-mono font-bold" placeholder="10.x.x.x">
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <div>
+                                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1">Port</label>
+                                                <input type="number" name="receiver_port" value="80" class="w-full px-3 py-2 bg-white border border-emerald-100 rounded-xl focus:ring-2 focus:ring-emerald-500/20 outline-none text-xs font-bold">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1">Radio User</label>
+                                                <input type="text" name="receiver_username" value="admin" class="w-full px-3 py-2 bg-white border border-emerald-100 rounded-xl focus:ring-2 focus:ring-emerald-500/20 outline-none text-xs font-bold">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1">Radio Password</label>
+                                            <input type="password" name="receiver_password" class="w-full px-3 py-2 bg-white border border-emerald-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 outline-none text-xs font-bold" placeholder="••••••••">
+                                        </div>
+                                    </div>
                                 </div>
-                                <div x-show="connectionMode !== 'tower_switch'">
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1" x-text="connectionMode === 'fiber' ? 'موديل الـ ONU / ONT' : (connectionMode === 'dsl' ? 'موديل المودم' : 'اسم/موديل الجهاز')"></label>
-                                    <input type="text" name="cpe_model" x-model="cpeModel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm" placeholder="e.g. LiteBeam M5">
-                                </div>
-                                <div x-show="connectionMode === 'wireless'">
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">عنوان IP الخاص بالجهاز</label>
-                                    <input type="text" name="cpe_ip" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm font-mono" placeholder="10.x.x.x">
-                                </div>
-                                <div x-show="connectionMode !== 'tower_switch'">
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">عنوان الـ MAC (الجهاز)</label>
-                                    <input type="text" name="cpe_mac" @input="$el.value = $el.value.toUpperCase().replace(/[^0-9A-F]/g, '').match(/.{1,2}/g)?.join(':').substr(0, 17) || $el.value" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm font-mono" placeholder="AA:BB:CC:DD:EE:FF">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">رقم المنفذ (Port/Slot)</label>
-                                    <input type="text" name="switch_port" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm" placeholder="e.g. Port 5 / Slot 2">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">عنوان IP المشترك (الخدمة)</label>
-                                    <input type="text" name="ip_address" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm font-mono" placeholder="10.x.x.x">
-                                    <template x-if="lastIp">
-                                        <p class="text-[10px] text-gray-400 mt-1">آخر IP مستخدم: <span class="font-bold text-blue-600" x-text="lastIp"></span></p>
-                                    </template>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div x-show="connectionMode === 'tower_switch'">
+                                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1">Distribution Switch</label>
+                                        <select name="tower_device_id" x-model="selectedTowerDeviceId" class="w-full px-3 py-2 border border-emerald-100 rounded-xl focus:ring-2 focus:ring-emerald-500/20 outline-none text-xs bg-emerald-50/50 font-black text-emerald-700">
+                                            <option value="">-- Select Hub --</option>
+                                            <template x-for="device in towerDevices" :key="device.id">
+                                                <option :value="device.id" x-text="device.name + (device.ports_count ? ' (' + device.ports_count + ' Port)' : '')"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1">Assign Service IP</label>
+                                        <input type="text" name="ip_address" class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none text-xs font-black text-indigo-700 font-mono" placeholder="10.x.x.x">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -416,12 +472,15 @@
                 this.selectedTowerId = '';
                 this.ssids = [];
                 const server = this.servers.find(s => s.id == this.selectedServerId);
-                this.towers = server ? (server.all_towers || server.towers) : [];
+                this.towers = server ? server.towers : []; // Unified towers array from backend
             },
             updateTowerData() {
                 const tower = this.towers.find(t => t.id == this.selectedTowerId);
                 this.ssids = tower ? tower.ssids : [];
+                
+                // Filter devices based on connection mode if needed, or just provide full list for UI filtering
                 this.towerDevices = tower ? tower.devices : [];
+                
                 this.selectedTowerDeviceId = '';
                 if (tower && tower.lat && this.map) {
                      this.map.setView([tower.lat, tower.lng], 14);

@@ -108,14 +108,21 @@ class ReportController extends Controller
         // E. Assets (Structure Costs)
         $totalStructureCost = \App\Models\Tower::sum('structure_cost');
 
-        return view('accounting.reports.index', compact(
-            'thisMonthRevenue', 'thisYearRevenue', 
-            'thisMonthExpenses', 'thisYearExpenses', 'thisYearProfit',
-            'totalDebts',
-            'revenueData', 'expensesData', 'profitData', 'months',
-            'revenuePieData', 'expenseBreakdown',
-            'topTowers',
-            'totalStructureCost'
-        ));
+        return \Inertia\Inertia::render('Accounting/Reports/Index', [
+            'thisMonthRevenue' => $thisMonthRevenue,
+            'thisYearRevenue' => $thisYearRevenue,
+            'thisMonthExpenses' => $thisMonthExpenses,
+            'thisYearExpenses' => $thisYearExpenses,
+            'thisYearProfit' => $thisYearProfit,
+            'totalDebts' => $totalDebts,
+            'revenueData' => $revenueData,
+            'expensesData' => $expensesData,
+            'profitData' => $profitData,
+            'months' => $months,
+            'revenuePieData' => $revenuePieData,
+            'expenseBreakdown' => $expenseBreakdown,
+            'topTowers' => $topTowers,
+            'totalStructureCost' => $totalStructureCost
+        ]);
     }
 }

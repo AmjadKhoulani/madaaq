@@ -27,8 +27,10 @@ class WebsiteController extends Controller
             ->limit(100)
             ->get();
 
-        
-        return view('network.website.analytics', compact('topWebsites', 'period'));
+        return \Inertia\Inertia::render('Network/Website/Analytics', [
+            'topWebsites' => $topWebsites,
+            'period' => $period
+        ]);
     }
 
     public function blocked()

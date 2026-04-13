@@ -14,19 +14,25 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = Client::where('type', 'pppoe')->with(['router', 'package'])->get();
-        return view('broadband.users.index', compact('users'));
+        $users = Client::where('type', 'pppoe')->with(['router', 'package', 'customer', 'tower', 'ssid'])->get();
+        return \Inertia\Inertia::render('Broadband/Users/Index', [
+            'users' => $users
+        ]);
     }
 
     public function create()
     {
-        $routers = Router::all();
+        $routers = Router::where('tenant_id', auth()->user()->tenant_id ?? 1)->get();
         $towers = \App\Models\Tower::with(['ssids.router'])->get(); 
         $packages = Package::where('type', 'pppoe')->get();
-        // Fetch existing customers for selection
         $customers = \App\Models\Customer::select('id', 'name', 'phone')->get();
         
-        return view('broadband.users.create', compact('routers', 'towers', 'packages', 'customers'));
+        return \Inertia\Inertia::render('Broadband/Users/Create', [
+            'routers' => $routers,
+            'towers' => $towers,
+            'packages' => $packages,
+            'customers' => $customers
+        ]);
     }
 
     public function store(Request $request)
