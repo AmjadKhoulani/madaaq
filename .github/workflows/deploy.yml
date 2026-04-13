@@ -19,9 +19,18 @@ jobs:
         script: |
           su -s /bin/bash madaaq -c "
             cd /home/madaaq/public_html &&
+            echo 'Updating code from master...' &&
             git fetch origin master &&
             git reset --hard origin/master &&
+            
+            echo 'Ensuring directory permissions...' &&
+            chmod -R 775 public/build storage bootstrap/cache &&
+            
+            echo 'Installing dependencies & Optimizing...' &&
             composer install --no-dev --optimize-autoloader &&
             php artisan migrate --force &&
-            php artisan optimize
+            php artisan optimize:clear &&
+            php artisan optimize &&
+            
+            echo 'Deployment successful for MadaaQ v2.'
           "
