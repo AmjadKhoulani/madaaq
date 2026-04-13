@@ -19,8 +19,12 @@ jobs:
         script: |
           su -s /bin/bash madaaq -c "
             cd /home/madaaq/public_html &&
-            echo 'Clearing previous optimizations...' &&
-            php artisan optimize:clear || true &&
+            
+            echo 'Force cleaning stale configuration...' &&
+            rm -f public/hot || true &&
+            php artisan config:clear || true &&
+            php artisan cache:clear || true &&
+            php artisan view:clear || true &&
             
             echo 'Updating code from master...' &&
             git fetch origin master &&
@@ -29,15 +33,12 @@ jobs:
             echo 'Ensuring directory permissions...' &&
             chmod -R 775 public/build storage bootstrap/cache || true &&
             
-            echo 'Installing dependencies & Updating Lock...' &&
-            composer update tightenco/ziggy --no-dev --no-interaction --optimize-autoloader &&
+            echo 'Installing dependencies...' &&
+            # Force update Ziggy to fix the Lock mismatch, but allow it to fail
+            composer update tightenco/ziggy --no-dev --no-interaction --optimize-autoloader || true &&
             composer install --no-dev --optimize-autoloader &&
             
             echo 'Finalizing system optimization...' &&
-            rm -f public/hot || true &&
-            php artisan config:clear &&
-            php artisan cache:clear &&
-            php artisan view:clear &&
             php artisan migrate --force &&
             php artisan optimize &&
             
