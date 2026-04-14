@@ -72,6 +72,8 @@
 
 body {
     @apply bg-background text-on-surface font-body antialiased;
+    font-weight: 500;
+    font-size: 1.025rem;
 }
 
 /* The "No-Line" Rule Layer System */
