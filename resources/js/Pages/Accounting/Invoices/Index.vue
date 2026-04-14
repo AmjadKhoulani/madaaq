@@ -1,26 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import AppleLayout from '@/Layouts/AppleLayout.vue';
-import { 
-    FileText, 
-    Search, 
-    Plus, 
-    DollarSign, 
-    Calendar, 
-    TrendingUp, 
-    TrendingDown, 
-    CheckCircle2, 
-    XCircle, 
-    Clock, 
-    MoreHorizontal,
-    Eye,
-    Edit3,
-    Trash2,
-    Download,
-    CreditCard
-} from 'lucide-vue-next';
-import Pagination from '@/Components/Pagination.vue';
+import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 import { pickBy, throttle } from 'lodash';
 
 const props = defineProps({
@@ -40,152 +21,182 @@ watch(filters, throttle(() => {
     });
 }, 300), { deep: true });
 
-const getStatusBadge = (status) => {
+const getStatusDetails = (status) => {
     switch (status) {
-        case 'paid': return { label: 'Settled', color: 'text-emerald-600 bg-emerald-50 border-emerald-100', icon: CheckCircle2 };
-        case 'unpaid': return { label: 'Outstanding', color: 'text-amber-600 bg-amber-50 border-amber-100', icon: Clock };
-        case 'overdue': return { label: 'Overdue', color: 'text-rose-600 bg-rose-50 border-rose-100', icon: XCircle };
-        default: return { label: status, color: 'text-gray-600 bg-gray-50 border-gray-100', icon: FileText };
+        case 'paid': return { label: 'تم التحصيل', color: 'bg-secondary-container/20 text-on-secondary-container border-secondary-container/30', icon: 'check_circle' };
+        case 'unpaid': return { label: 'معلق', color: 'bg-amber-50 text-amber-700 border-amber-100', icon: 'schedule' };
+        case 'overdue': return { label: 'متأخر', color: 'bg-error-container/10 text-error border-error-container/20', icon: 'warning' };
+        default: return { label: status, color: 'bg-slate-50 text-slate-600 border-slate-100', icon: 'description' };
     }
 };
 
+const formatCurrency = (value) => {
+    return new Intl.NumberFormat('ar-SA', {
+        style: 'currency',
+        currency: 'SAR',
+    }).format(value);
+};
+
+const formatDate = (date) => {
+    return new Date(date).toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' });
+};
 </script>
 
 <template>
-    <AppleLayout title="Fiscal Registry">
-        <Head title="Invoice Ledger" />
+    <InstitutionalLayout title="السجل المالي">
+        <Head title="الفواتير والتحصيل" />
 
-        <div class="max-w-[1400px] mx-auto pb-20">
-            <!-- Strategic Fiscal Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-                <div class="apple-card p-8 bg-black text-white relative overflow-hidden group">
-                    <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
-                    <div class="relative z-10">
-                        <p class="text-[10px] font-black text-white/40 uppercase tracking-widest mb-2">Settled Revenue</p>
-                        <h3 class="text-4xl font-bold tracking-tight">${{ stats.total_revenue.toLocaleString() }}</h3>
-                        <p class="text-[9px] font-bold text-emerald-400 mt-2 flex items-center gap-1">
-                            <TrendingUp class="w-3 h-3" /> System Lifetime Extraction
-                        </p>
-                    </div>
+        <!-- Strategic Fiscal Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            <div class="surface-card p-6 rounded-lg bg-primary text-white shadow-xl shadow-primary/20">
+                <p class="text-[10px] font-black text-white/50 uppercase tracking-widest mb-1">إجمالي الإيرادات المحصلة</p>
+                <div class="flex items-baseline gap-2">
+                    <h3 class="text-3xl font-black font-headline tracking-tighter">{{ stats.total_revenue.toLocaleString() }}</h3>
+                    <span class="text-xs font-bold text-white/50">ر.س</span>
                 </div>
-                <div class="apple-card p-8 bg-white border border-black/5 group">
-                    <p class="text-[10px] font-black text-[#86868b] uppercase tracking-widest mb-2">Receivables (Outstanding)</p>
-                    <h3 class="text-4xl font-bold tracking-tight text-amber-600">${{ stats.unpaid_amount.toLocaleString() }}</h3>
-                    <p class="text-[9px] font-bold text-[#86868b] mt-2 flex items-center gap-1">
-                        <Clock class="w-3 h-3" /> Pending Commitment
-                    </p>
-                </div>
-                <div class="apple-card p-8 bg-white border border-black/5 group">
-                    <p class="text-[10px] font-black text-[#86868b] uppercase tracking-widest mb-2">Paid Volume</p>
-                    <h3 class="text-4xl font-bold tracking-tight text-black">{{ stats.paid_count }}</h3>
-                    <p class="text-[9px] font-bold text-emerald-600 mt-2">Successful Handshakes</p>
-                </div>
-                <div class="apple-card p-8 bg-white border border-black/5 group">
-                    <p class="text-[10px] font-black text-[#86868b] uppercase tracking-widest mb-2">Unpaid Artifacts</p>
-                    <h3 class="text-4xl font-bold tracking-tight text-rose-600">{{ stats.unpaid_count }}</h3>
-                    <p class="text-[9px] font-bold text-rose-500 mt-2">Critical Delta</p>
+                <div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-white/70 bg-white/10 w-fit px-2 py-1 rounded">
+                    <span class="material-symbols-outlined text-[14px]">trending_up</span>
+                    نمو مستقر
                 </div>
             </div>
 
-            <!-- Management Header -->
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-8">
-                <div class="flex items-center gap-4">
-                    <div class="relative group">
-                        <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#86868b] group-focus-within:text-black transition-colors" />
-                        <input type="text" placeholder="Search by Invoice # or Batch..." class="apple-input pl-11 h-12 w-64 lg:w-80 bg-black/[0.02] border-transparent focus:bg-white focus:border-black/5">
-                    </div>
-                    <div class="flex bg-black/[0.03] p-1.5 rounded-2xl">
-                         <button @click="filters.status = 'all'" class="px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all" :class="filters.status === 'all' ? 'bg-white text-black shadow-lg' : 'text-[#86868b]'">All Protocols</button>
-                         <button @click="filters.status = 'paid'" class="px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all" :class="filters.status === 'paid' ? 'bg-white text-black shadow-lg' : 'text-[#86868b]'">Settled</button>
-                         <button @click="filters.status = 'unpaid'" class="px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all" :class="filters.status === 'unpaid' ? 'bg-white text-black shadow-lg' : 'text-[#86868b]'">Outstanding</button>
-                    </div>
+            <div class="surface-card p-6 rounded-lg">
+                <p class="metric-label mb-1">المبالغ المستحقة (معلقة)</p>
+                <div class="flex items-baseline gap-2">
+                    <h3 class="text-3xl font-black font-headline text-amber-600 tracking-tighter">{{ stats.unpaid_amount.toLocaleString() }}</h3>
+                    <span class="text-xs font-bold text-slate-400">ر.س</span>
                 </div>
-                <div class="flex items-center gap-4">
-                     <Link 
-                        :href="route('accounting.invoices.create')" 
-                        class="px-8 py-3.5 bg-black text-white rounded-2xl font-bold text-[11px] uppercase tracking-[0.2em] shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
-                     >
-                        <Plus class="w-4 h-4" /> Initialize Ledger
-                     </Link>
-                </div>
+                <p class="text-[10px] font-bold text-slate-400 mt-2">بانتظار التحصيل</p>
             </div>
 
-            <!-- Ledger Table -->
-            <div class="apple-card overflow-hidden bg-white/50 backdrop-blur-xl border border-black/5">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-black/[0.02] bg-black/[0.01]">
-                                <th class="px-8 py-5 text-[10px] font-black text-[#86868b] uppercase tracking-widest">Protocol Artifact (Invoice)</th>
-                                <th class="px-8 py-5 text-[10px] font-black text-[#86868b] uppercase tracking-widest">Subscriber Identity</th>
-                                <th class="px-8 py-5 text-[10px] font-black text-[#86868b] uppercase tracking-widest">Fiscal Pulse (Amount)</th>
-                                <th class="px-8 py-5 text-[10px] font-black text-[#86868b] uppercase tracking-widest">Horizon (Due Date)</th>
-                                <th class="px-8 py-5 text-[10px] font-black text-[#86868b] uppercase tracking-widest">Status</th>
-                                <th class="px-8 py-5 text-[10px] font-black text-[#86868b] uppercase tracking-widest text-right">Commitment</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-black/[0.01]">
-                            <tr v-for="inv in invoices.data" :key="inv.id" class="group hover:bg-black/[0.01] transition-all">
-                                <td class="px-8 py-6">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-10 h-10 rounded-xl bg-black shadow-inner flex items-center justify-center text-white shrink-0 group-hover:scale-110 transition-transform">
-                                            <FileText class="w-4 h-4" />
-                                        </div>
-                                        <div>
-                                            <p class="font-bold text-sm tracking-widest font-mono uppercase group-hover:text-indigo-600 transition-colors">{{ inv.invoice_number }}</p>
-                                            <p class="text-[8px] font-black text-[#86868b] uppercase tracking-widest mt-0.5">Minted: {{ new Date(inv.created_at).toLocaleDateString() }}</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-8 py-6">
-                                    <p class="text-[11px] font-bold text-black uppercase tracking-tight">{{ inv.client?.name || 'Anonymous Peer' }}</p>
-                                    <p class="text-[9px] font-mono text-[#86868b] mt-1">{{ inv.client?.username || 'SYSTEM_LEASE' }}</p>
-                                </td>
-                                <td class="px-8 py-6">
-                                    <p class="text-lg font-black tracking-tight text-black">${{ inv.amount.toLocaleString() }}</p>
-                                    <p class="text-[8px] font-black text-emerald-600 uppercase mt-0.5">Commercial Commit</p>
-                                </td>
-                                <td class="px-8 py-6">
-                                    <div class="flex items-center gap-2">
-                                        <Calendar class="w-3 h-3 text-[#86868b]" />
-                                        <span class="text-[10px] font-bold uppercase">{{ new Date(inv.due_date).toLocaleDateString() }}</span>
-                                    </div>
-                                </td>
-                                <td class="px-8 py-6">
-                                    <span 
-                                        class="px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border flex items-center justify-center gap-2 w-fit"
-                                        :class="getStatusBadge(inv.status).color"
-                                    >
-                                        <component :is="getStatusBadge(inv.status).icon" class="w-3 h-3" />
-                                        {{ getStatusBadge(inv.status).label }}
-                                    </span>
-                                </td>
-                                <td class="px-8 py-6 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                         <Link 
-                                            :href="route('accounting.invoices.show', inv.id)" 
-                                            class="w-10 h-10 apple-card flex items-center justify-center text-[#86868b] hover:text-indigo-600 hover:bg-white transition-all shadow-sm"
-                                         >
-                                            <Eye class="w-4 h-4" />
-                                         </Link>
-                                         <Link 
-                                            :href="route('accounting.invoices.edit', inv.id)" 
-                                            class="w-10 h-10 apple-card flex items-center justify-center text-[#86868b] hover:text-amber-600 hover:bg-white transition-all shadow-sm"
-                                         >
-                                            <Edit3 class="w-4 h-4" />
-                                         </Link>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="surface-card p-6 rounded-lg">
+                <p class="metric-label mb-1">العمليات الناجحة</p>
+                <h3 class="metric-value text-3xl tracking-tighter">{{ stats.paid_count }}</h3>
+                <p class="text-[10px] font-bold text-secondary mt-2">تسوية مكتملة</p>
+            </div>
 
-                <!-- Final Pagination -->
-                <div class="px-8 py-6 border-t border-black/[0.02] bg-black/[0.01]">
-                    <Pagination :links="invoices.links" />
-                </div>
+            <div class="surface-card p-6 rounded-lg">
+                <p class="metric-label mb-1">الفواتير غير المدفوعة</p>
+                <h3 class="text-3xl font-black font-headline text-error tracking-tighter">{{ stats.unpaid_count }}</h3>
+                <p class="text-[10px] font-bold text-error/60 mt-2">تنبيه مالي</p>
             </div>
         </div>
-    </AppleLayout>
+
+        <!-- Analytical Header & Filters -->
+        <div class="flex flex-col lg:flex-row justify-between items-center gap-8 mb-8">
+            <div class="flex flex-col md:flex-row items-center gap-4 w-full lg:w-auto">
+                <div class="relative flex-1 md:w-80">
+                    <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
+                    <input type="text" placeholder="ابحث برقم الفاتورة أو اسم المشترك..." class="w-full h-12 bg-surface-container-low border-none rounded-lg pr-12 pl-4 text-sm focus:ring-2 focus:ring-primary transition-all">
+                </div>
+                <div class="flex bg-surface-container-low p-1 rounded-lg border border-outline-variant/10">
+                     <button @click="filters.status = 'all'" class="px-6 py-2 rounded-md text-[11px] font-black uppercase tracking-wider transition-all" :class="filters.status === 'all' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'">كافة السجلات</button>
+                     <button @click="filters.status = 'paid'" class="px-6 py-2 rounded-md text-[11px] font-black uppercase tracking-wider transition-all" :class="filters.status === 'paid' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'">المحصلة</button>
+                     <button @click="filters.status = 'unpaid'" class="px-6 py-2 rounded-md text-[11px] font-black uppercase tracking-wider transition-all" :class="filters.status === 'unpaid' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'">المعلقة</button>
+                </div>
+            </div>
+            <Link 
+                :href="route('accounting.invoices.create')" 
+                class="inline-flex items-center gap-3 px-8 py-3.5 bg-primary text-white rounded-lg font-bold shadow-xl shadow-primary/20 hover:bg-primary-container transition-all active:scale-95 whitespace-nowrap"
+            >
+                <span class="material-symbols-outlined text-[20px]">add_card</span>
+                <span class="text-sm">إنشاء فاتورة جديدة</span>
+            </Link>
+        </div>
+
+        <!-- Ledger Table Layer -->
+        <div class="surface-card rounded-lg overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                    <thead>
+                        <tr class="bg-surface-container/30 border-b border-outline-variant/10">
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">بيانات الفاتورة</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">اسم المشترك</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none text-center">المبلغ المستحق</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none text-center">تاريخ الاستحقاق</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none text-center">حالة السداد</th>
+                            <th class="px-8 py-5"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant/5">
+                        <tr v-for="inv in invoices.data" :key="inv.id" class="group hover:bg-surface-container-low transition-all">
+                            <td class="px-8 py-6">
+                                <div class="flex items-center gap-5">
+                                    <div class="w-11 h-11 rounded-lg bg-surface-container flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform shadow-inner border border-outline-variant/10">
+                                        <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1">description</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-headline font-black text-sm tracking-tight text-primary leading-tight uppercase">{{ inv.invoice_number }}</p>
+                                        <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-wider">صدرت في: {{ formatDate(inv.created_at) }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-8 py-6">
+                                <p class="text-[13px] font-black text-primary leading-tight">{{ inv.client?.name || 'مشترك عام' }}</p>
+                                <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">{{ inv.client?.username || 'SYSTEM_INTERNAL' }}</p>
+                            </td>
+                            <td class="px-8 py-6 text-center">
+                                <p class="text-base font-headline font-extrabold tracking-tight text-primary">{{ inv.amount?.toLocaleString() }} <span class="text-[10px] font-bold text-slate-400">ر.س</span></p>
+                            </td>
+                            <td class="px-8 py-6 text-center">
+                                <div class="flex items-center justify-center gap-2 text-slate-500">
+                                    <span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                                    <span class="text-[11px] font-headline font-black tracking-tight">{{ formatDate(inv.due_date) }}</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-6 text-center">
+                                <div class="inline-flex items-center justify-center gap-2 px-4 py-1.5 rounded text-[10px] font-black uppercase tracking-widest border"
+                                     :class="getStatusDetails(inv.status).color">
+                                    <span class="material-symbols-outlined text-[16px]">{{ getStatusDetails(inv.status).icon }}</span>
+                                    {{ getStatusDetails(inv.status).label }}
+                                </div>
+                            </td>
+                            <td class="px-8 py-6 text-left">
+                                <div class="flex items-center justify-end gap-3">
+                                     <Link 
+                                        :href="route('accounting.invoices.show', inv.id)" 
+                                        class="w-10 h-10 bg-white shadow-sm border border-outline-variant/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all group-hover:translate-x-[-4px]"
+                                     >
+                                        <span class="material-symbols-outlined text-[20px]">visibility</span>
+                                     </Link>
+                                     <Link 
+                                        :href="route('accounting.invoices.edit', inv.id)" 
+                                        class="w-10 h-10 bg-white shadow-sm border border-outline-variant/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-amber-600 hover:border-amber-600 transition-all group-hover:translate-x-[-4px]"
+                                     >
+                                        <span class="material-symbols-outlined text-[20px]">edit</span>
+                                     </Link>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Monolith Empty State -->
+            <div v-if="invoices.data.length === 0" class="py-24 flex flex-col items-center gap-6">
+                <div class="w-20 h-20 rounded-full bg-surface-container-low flex items-center justify-center text-slate-200">
+                    <span class="material-symbols-outlined text-[40px]">history_edu</span>
+                </div>
+                <div class="text-center">
+                    <h3 class="text-lg font-black text-primary">لا توجد سجلات مالية</h3>
+                    <p class="text-[11px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-2">لم يتم إصدار أي فواتير ضمن معايير البحث الحالية</p>
+                </div>
+            </div>
+
+            <!-- Precision Pagination -->
+            <div v-if="invoices.links.length > 3" class="px-8 py-6 border-t border-outline-variant/10 flex items-center justify-center gap-2 bg-surface-container/10">
+                <Link 
+                    v-for="(link, k) in invoices.links" 
+                    :key="k"
+                    :href="link.url || '#'"
+                    v-html="link.label"
+                    class="h-10 px-4 flex items-center justify-center rounded-lg text-[11px] font-black transition-all font-headline"
+                    :class="[
+                        link.active ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'hover:bg-primary-fixed/20 text-slate-500',
+                        !link.url ? 'opacity-30 cursor-not-allowed' : ''
+                    ]"
+                />
+            </div>
+        </div>
+    </InstitutionalLayout>
 </template>
