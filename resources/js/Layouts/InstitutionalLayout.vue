@@ -7,7 +7,7 @@ defineProps({
 });
 
 const navigation = [
-    { name: 'لوحة القيادة', href: route('vendor.dashboard'), icon: 'dashboard', current: route().current('vendor.dashboard') },
+    { name: 'لوحة القيادة', href: route('dashboard'), icon: 'dashboard', current: route().current('dashboard') },
     { name: 'إدارة العملاء', href: route('crm.clients.index'), icon: 'group', current: route().current('crm.clients.*') },
     { name: 'الشبكة', href: '#', icon: 'router', current: false },
     { name: 'الفوترة', href: route('accounting.invoices.index'), icon: 'account_balance_wallet', current: route().current('accounting.*') },
@@ -69,13 +69,13 @@ const navigation = [
 
                 <!-- Identity Context -->
                 <div class="flex items-center gap-4">
-                    <div class="text-left">
+                    <div class="text-left" v-if="$page.props.auth.user">
                         <p class="text-sm font-bold text-primary leading-tight">{{ $page.props.auth.user.name }}</p>
-                        <p class="text-[10px] text-slate-500 font-headline uppercase tracking-widest mt-0.5">مسؤول المدوّنة</p>
+                        <p class="text-[10px] text-slate-500 font-headline uppercase tracking-widest mt-0.5">مسؤول النظام</p>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold border-2 border-white shadow-sm overflow-hidden">
+                    <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold border-2 border-white shadow-sm overflow-hidden" v-if="$page.props.auth.user">
                         <img v-if="$page.props.auth.user.profile_photo_url" :src="$page.props.auth.user.profile_photo_url" class="w-full h-full object-cover" />
-                        <span v-else>{{ $page.props.auth.user.name.substring(0,2) }}</span>
+                        <span v-else>{{ $page.props.auth.user.name?.substring(0,2) || 'AD' }}</span>
                     </div>
                 </div>
             </header>
