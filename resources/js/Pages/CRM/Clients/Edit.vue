@@ -1,26 +1,7 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { useForm, Head, Link } from '@inertiajs/vue3';
-import AppleLayout from '@/Layouts/AppleLayout.vue';
-import { 
-    User, 
-    Smartphone, 
-    Mail, 
-    MapPin, 
-    ShieldCheck, 
-    Wifi, 
-    Server, 
-    Radio, 
-    Monitor,
-    CreditCard,
-    Zap,
-    Clock,
-    History,
-    Save,
-    ChevronLeft,
-    Box,
-    ExternalLink
-} from 'lucide-vue-next';
+import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 
 const props = defineProps({
     client: Object,
@@ -34,8 +15,8 @@ const form = useForm({
     name: props.client.name || props.client.username,
     phone: props.client.phone || props.client.username,
     email: props.client.email || '',
-    password: '', // Kept empty for edit
-    service_password: '', // Kept empty or original if needed
+    password: '', 
+    service_password: '', 
     type: props.client.type,
     mikrotik_server_id: props.client.mikrotik_server_id || '',
     package_id: props.client.package_id || '',
@@ -55,15 +36,14 @@ const form = useForm({
     receiver_ip: props.client.receiver_ip || '',
     receiver_username: props.client.receiver_username || 'admin',
     receiver_password: props.client.receiver_password || '',
-    switch_port: props.client.switch_port || '',
     tower_device_id: props.client.tower_device_id || '',
     ip_address: props.client.ip || '',
     data_limit: props.client.custom_data_limit_mb ? (props.client.custom_data_limit_mb / 1024).toFixed(0) : '',
     lat: props.client.lat || '',
     lng: props.client.lng || '',
+    device_model_id: props.client.device_model_id || '',
 });
 
-// Computed Data for Dynamic Filters
 const availableTowers = computed(() => {
     if (!form.mikrotik_server_id) return [];
     const server = props.servers.find(s => s.id == form.mikrotik_server_id);
@@ -74,17 +54,6 @@ const availableSSIDs = computed(() => {
     if (!form.tower_id) return [];
     const tower = availableTowers.value.find(t => t.id == form.tower_id);
     return tower ? tower.ssids : [];
-});
-
-const availableDevices = computed(() => {
-    if (!form.tower_id) return [];
-    const tower = availableTowers.value.find(t => t.id == form.tower_id);
-    if (!tower) return [];
-    
-    return tower.devices.filter(d => {
-        if (form.connection_mode === 'wireless') return d.type === 'wireless' || d.type === 'ap';
-        return d.type === 'switch';
-    });
 });
 
 const updatePackageDefaults = () => {
@@ -105,279 +74,253 @@ const updateCpeModelName = () => {
 const submit = () => {
     form.put(route('crm.clients.update', props.client.id), {
         onSuccess: () => {},
+        preserveScroll: true,
     });
 };
-
 </script>
 
 <template>
-    <AppleLayout :title="'Edit ' + client.username">
-        <Head :title="'Edit ' + client.username" />
+    <InstitutionalLayout :title="'تعديل: ' + client.username">
+        <Head :title="'تعديل المشترك: ' + client.username" />
 
-        <!-- Header -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+        <!-- Form Top Command Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-10 text-right">
             <div class="flex items-center gap-6">
                 <Link 
                     :href="route('crm.clients.show', client.id)" 
-                    class="w-12 h-12 apple-card flex items-center justify-center text-[#86868b] hover:text-black transition-all group"
+                    class="w-12 h-12 bg-white shadow-sm border border-outline-variant/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary transition-all group"
                 >
-                    <ChevronLeft class="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+                    <span class="material-symbols-outlined text-[24px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
                 </Link>
                 <div>
-                    <h1 class="text-3xl font-bold tracking-tight mb-2">Synchronizing {{ client.username }}</h1>
-                    <p class="text-[var(--app-secondary)] font-medium">Update subscriber parameters and network topology.</p>
+                    <h1 class="text-3xl font-black text-primary tracking-tight mb-2">تزامن البيانات: {{ client.username }}</h1>
+                    <p class="text-[12px] font-bold text-slate-400 uppercase tracking-widest leading-none">تعديل معايير الاتصال والهيكل المادي للشبكة</p>
                 </div>
             </div>
-            
             <div class="flex items-center gap-4">
-                 <Link 
-                    :href="route('crm.clients.show', client.id)" 
-                    class="px-6 py-3 apple-card font-bold text-sm hover:bg-black/5 transition-all active:scale-95"
-                >
-                    Discard Changes
-                </Link>
-                <div class="h-8 w-px bg-black/5 mx-2"></div>
-                <div 
-                    class="px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border"
-                    :class="client.status === 'active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-rose-50 text-rose-600 border-rose-100'"
-                >
-                    {{ client.status }}
+                 <div class="px-5 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest border shadow-sm"
+                    :class="client.status === 'active' ? 'bg-secondary-container/20 text-on-secondary-container border-secondary-container/30' : 'bg-error-container/10 text-error border-error-container/20'">
+                    الحالة الحالية: {{ client.status === 'active' ? 'نشط' : 'مجمد' }}
                 </div>
             </div>
         </div>
 
-        <form @submit.prevent="submit" class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            <!-- Left Column: Primary Config -->
+        <form @submit.prevent="submit" class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start text-right">
+            <!-- Central Form Column -->
             <div class="lg:col-span-2 space-y-8">
                 
-                <!-- 1. Identity Matrix -->
-                <div class="apple-card p-8">
-                    <div class="flex items-center gap-3 mb-8">
-                        <div class="w-1.5 h-6 bg-black rounded-full"></div>
-                        <h3 class="text-sm font-bold tracking-tight">Identity Matrix</h3>
-                    </div>
+                <!-- Section 1: Identity & Profile -->
+                <div class="surface-card p-10 rounded-lg relative overflow-hidden">
+                    <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary text-[20px]">id_card</span>
+                        مصفوفة الهوية والتعريف
+                    </h3>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-1">Assigned Identity</label>
-                            <input v-model="form.name" type="text" placeholder="John Doe" class="apple-input h-12" required>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest flex items-center gap-2">الاسم الاعتباري للمشترك</label>
+                            <input v-model="form.name" type="text" class="form-input-monolith" required />
                         </div>
 
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-1">Network Username</label>
-                            <input v-model="form.phone" type="tel" class="apple-input h-12 font-mono" required>
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest flex items-center gap-2">معرف الشبكة (رقم الهاتف)</label>
+                            <input v-model="form.phone" type="tel" class="form-input-monolith font-headline text-base" required />
                         </div>
 
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-1">Update Portal PassKey</label>
-                            <input v-model="form.password" type="text" placeholder="Leave empty to retain..." class="apple-input h-12">
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest flex items-center gap-2">كلمة مرور البوابة (Portal)</label>
+                            <input v-model="form.password" type="text" placeholder="اتركه فارغاً للحفاظ على الحالة..." class="form-input-monolith" />
                         </div>
 
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-1">Intelligence E-Mail</label>
-                            <input v-model="form.email" type="email" class="apple-input h-12">
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest flex items-center gap-2">البريد الإلكتروني الاستخباراتي</label>
+                            <input v-model="form.email" type="email" class="form-input-monolith font-headline" />
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. Infrastructure Deployment -->
-                <div class="apple-card p-8">
+                <!-- Section 2: ISP Logic & Equipment -->
+                <div class="surface-card p-10 rounded-lg">
                     <div class="flex items-center justify-between mb-8">
-                        <div class="flex items-center gap-3">
-                            <div class="w-1.5 h-6 bg-[var(--app-accent)] rounded-full"></div>
-                            <h3 class="text-sm font-bold tracking-tight">Infrastructure Alignment</h3>
-                        </div>
-                        <Link 
-                            :href="route('crm.clients.show', client.id)" 
-                            class="px-4 py-1.5 bg-black/5 rounded-full text-[9px] font-black uppercase tracking-widest text-[#86868b] flex items-center gap-2"
-                        >
-                            View Active Nodes <ExternalLink class="w-3 h-3" />
-                        </Link>
+                        <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-[20px]">settings_input_antenna</span>
+                            تموضع الهيكل التقني
+                        </h3>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-1">Management Server</label>
-                            <select v-model="form.mikrotik_server_id" class="apple-input h-12 text-sm bg-black/[0.01]">
-                                <option value="">Select Edge Node...</option>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest">سيرفر الإدارة (Edge Node)</label>
+                            <select v-model="form.mikrotik_server_id" class="form-select-monolith">
+                                <option value="">اختر عقدة الحافة...</option>
                                 <option v-for="server in servers" :key="server.id" :value="server.id">{{ server.name }}</option>
                             </select>
                         </div>
                         
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-1">Access Tower (Hub)</label>
-                            <select v-model="form.tower_id" class="apple-input h-12 text-sm" :disabled="!form.mikrotik_server_id">
-                                <option value="">Select Target Hub...</option>
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest">برج التغطية المرتبط</label>
+                            <select v-model="form.tower_id" class="form-select-monolith" :disabled="!form.mikrotik_server_id">
+                                <option value="">اختر البرج الهدف...</option>
                                 <option v-for="tower in availableTowers" :key="tower.id" :value="tower.id">
                                     {{ (tower.type === 'cabinet' ? '📦 ' : '🗼 ') + tower.name }}
                                 </option>
                             </select>
                         </div>
 
-                        <div class="space-y-2">
-                             <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-1">Provisioning Mode</label>
-                             <select v-model="form.connection_mode" class="apple-input h-12 text-sm bg-blue-50/50 border-blue-100 font-bold">
-                                <option value="wireless">Wireless Radio</option>
-                                <option value="tower_switch">Direct Switch Port</option>
-                                <option value="fiber">Optical Fiber (GPON)</option>
-                                <option value="cable">Ethernet LAN</option>
+                        <div class="space-y-3">
+                             <label class="text-[11px] font-black text-primary uppercase tracking-widest">بروتوكول الربط (Mode)</label>
+                             <select v-model="form.connection_mode" class="form-select-monolith font-black text-primary border-primary-fixed/30 bg-primary-fixed/5">
+                                <option value="wireless">ارتباط راديوي (Wireless)</option>
+                                <option value="tower_switch">ربط مباشر (Switch Port)</option>
+                                <option value="fiber">ألياف ضوئية (Fiber/GPON)</option>
+                                <option value="cable">شبكة محلية (LAN)</option>
                              </select>
                         </div>
                     </div>
 
-                    <!-- Hardware Intelligence (Hybrid View) -->
-                    <div class="space-y-8 pt-8 border-t border-black/5">
-                        
-                        <!-- Row 1: Primary Hardware -->
+                    <!-- Hardware Segment: Peripheral Nodes -->
+                    <div class="space-y-10 pt-10 border-t border-outline-variant/10">
+                        <!-- Primary Hardware Row -->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-1">CPE Model</label>
-                                <select v-model="form.device_model_id" @change="updateCpeModelName" class="apple-input h-10 text-xs">
-                                    <option value="">Custom Hardware...</option>
+                            <div class="space-y-3">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">طراز الراوتر الداخلي (CPE)</label>
+                                <select v-model="form.device_model_id" @change="updateCpeModelName" class="form-select-monolith h-11 text-[13px]">
+                                    <option value="">أجهزة مخصصة...</option>
                                     <option v-for="model in deviceModels" :key="model.id" :value="model.id">{{ model.name }}</option>
                                 </select>
-                                <input v-model="form.cpe_model" type="text" class="apple-input h-10 mt-2 text-xs font-bold" placeholder="Manual Override Name...">
+                                <input v-model="form.cpe_model" type="text" class="form-input-monolith h-10 mt-2 text-[12px] font-bold" placeholder="اسم الطراز يدوياً...">
                             </div>
 
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-1">Interior IP Address</label>
-                                <input v-model="form.cpe_ip" type="text" class="apple-input h-10 font-mono text-xs" placeholder="10.x.x.x">
+                            <div class="space-y-3">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">عنوان IP الداخلي</label>
+                                <input v-model="form.cpe_ip" type="text" class="form-input-monolith h-11 font-headline font-extrabold text-sm" placeholder="10.x.x.x" />
                             </div>
 
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-1">CPE MAC Identity</label>
-                                <input v-model="form.cpe_mac" type="text" class="apple-input h-10 font-mono text-xs" placeholder="AA:BB:CC:DD:EE:FF">
+                            <div class="space-y-3">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">معرف الـ MAC الفيزيائي</label>
+                                <input v-model="form.cpe_mac" type="text" class="form-input-monolith h-11 font-headline font-extrabold text-xs" placeholder="AA:BB:CC:DD:EE:FF" />
                             </div>
                         </div>
 
-                        <!-- Row 2: Secondary Hardware (Outdoor) -->
-                        <div v-show="form.connection_mode === 'wireless'" class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-emerald-50/30 rounded-2xl border border-emerald-100/50">
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-emerald-600 uppercase tracking-widest ml-1">Radio Model (External)</label>
-                                <input v-model="form.receiver_model" type="text" class="apple-input h-10 text-xs border-emerald-200" placeholder="e.g. SXT sq Lite5">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-emerald-600 uppercase tracking-widest ml-1">Management IP</label>
-                                <input v-model="form.receiver_ip" type="text" class="apple-input h-10 font-mono text-xs border-emerald-200" placeholder="10.x.x.x">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-emerald-600 uppercase tracking-widest ml-1">Radio Auth Pass</label>
-                                <input v-model="form.receiver_password" type="password" class="apple-input h-10 text-xs border-emerald-200" placeholder="••••••••">
+                        <!-- Secondary Radio Segment -->
+                        <div v-show="form.connection_mode === 'wireless'" class="p-8 bg-secondary-container/5 rounded-lg border border-secondary/15 space-y-6">
+                            <p class="text-[10px] font-black text-secondary uppercase tracking-[0.2em] mb-4">وحدة الاستقبال الخارجية (Radio Unit)</p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="space-y-3">
+                                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">طراز الراديو (SXT/LHG)</label>
+                                    <input v-model="form.receiver_model" type="text" class="form-input-monolith h-11" placeholder="مثلاً: SXT sq Lite5" />
+                                </div>
+                                <div class="space-y-3">
+                                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">IP إدارة الراديو</label>
+                                    <input v-model="form.receiver_ip" type="text" class="form-input-monolith h-11 font-headline font-extrabold text-sm" placeholder="10.x.x.x" />
+                                </div>
+                                <div class="space-y-3">
+                                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">كلمة مرور الراديو</label>
+                                    <input v-model="form.receiver_password" type="password" class="form-input-monolith h-11" placeholder="••••••••" />
+                                </div>
                             </div>
                         </div>
 
-                         <!-- Row 3: Final Provisioning -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 ">
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-1">Broadcast Target (SSID)</label>
-                                <select v-model="form.ssid_id" class="apple-input h-12 text-sm" :disabled="form.connection_mode !== 'wireless'">
-                                    <option value="">Select Broadcast Hub...</option>
+                        <!-- Service Logic Row -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+                            <div class="space-y-3">
+                                <label class="text-[11px] font-black text-primary uppercase tracking-widest">واجهة البث (SSID)</label>
+                                <select v-model="form.ssid_id" class="form-select-monolith" :disabled="form.connection_mode !== 'wireless'">
+                                    <option value="">اختر هدف البث...</option>
                                     <option v-for="ssid in availableSSIDs" :key="ssid.id" :value="ssid.id">{{ ssid.ssid_name }}</option>
                                 </select>
                             </div>
 
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-1">Network Service Password</label>
-                                <input v-model="form.service_password" type="text" class="apple-input h-12 font-mono text-xs bg-indigo-50/50 border-indigo-100" placeholder="Retain encrypted key...">
-                                <p class="text-[8px] font-black text-indigo-400 mt-1 ml-1 uppercase">Leave blank to keep existing</p>
+                            <div class="space-y-3">
+                                <label class="text-[11px] font-black text-primary uppercase tracking-widest">كلمة مرور الخدمة (Secret)</label>
+                                <input v-model="form.service_password" type="text" class="form-input-monolith font-headline font-extrabold bg-surface-container-low" placeholder="احتفظ بالمفتاح المشفر..." />
+                                <p class="text-[9px] font-black text-slate-400 opacity-70">اتركه فارغاً للحفاظ على الكلمة الحالية</p>
                             </div>
 
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-1">Assigned ISP IP</label>
-                                <input v-model="form.ip_address" type="text" class="apple-input h-12 font-mono text-xs text-indigo-600 border-indigo-100" placeholder="172.x.x.x">
+                            <div class="space-y-3">
+                                <label class="text-[11px] font-black text-primary uppercase tracking-widest">الـ IP المخصص (Static)</label>
+                                <input v-model="form.ip_address" type="text" class="form-input-monolith font-headline font-black text-primary border-primary-fixed/50" placeholder="172.x.x.x" />
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 3. Billing & Evaluation -->
-                <div class="apple-card p-8">
-                    <div class="flex items-center gap-3 mb-8">
-                        <div class="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                        <h3 class="text-sm font-bold tracking-tight">Billing Alignment</h3>
-                    </div>
+                <!-- Section 3: Subscription & Billing -->
+                <div class="surface-card p-10 rounded-lg border-2 border-secondary/10 bg-surface-container-low">
+                    <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-secondary text-[24px]">payments</span>
+                        محاذاة البيانات المالية
+                    </h3>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="lg:col-span-2 space-y-2">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-1">Service Tier (Package)</label>
-                            <select v-model="form.package_id" @change="updatePackageDefaults" class="apple-input h-12 text-sm font-bold">
-                                <option value="">Custom Plan (No Tier)</option>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div class="lg:col-span-2 space-y-3">
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest">باقة الاشتراك المخصصة</label>
+                            <select v-model="form.package_id" @change="updatePackageDefaults" class="form-select-monolith font-black text-primary">
+                                <option value="">باقة مخصصة (خارج الأطر)</option>
                                 <option v-for="pkg in packages" :key="pkg.id" :value="pkg.id">
-                                    {{ pkg.name }} — ${{ pkg.price }}
+                                    {{ pkg.name }} — {{ pkg.price }} ر.س
                                 </option>
                             </select>
                         </div>
 
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-1">Unit Valuation ($)</label>
-                            <input v-model="form.price" type="number" step="0.01" class="apple-input h-12 font-mono text-sm" placeholder="0.00">
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest">السعر المستقطع (ر.س)</label>
+                            <input v-model="form.price" type="number" step="0.01" class="form-input-monolith font-headline font-black text-secondary" placeholder="0.00" />
                         </div>
 
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-1">Quota (GB)</label>
-                            <input v-model="form.data_limit" type="number" class="apple-input h-12 text-sm" placeholder="Unlimited">
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest">الحصة المحددة (GB)</label>
+                            <input v-model="form.data_limit" type="number" class="form-input-monolith font-headline font-extrabold" placeholder="مفتوح" />
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Column: Summary & Confirmation -->
-            <div class="lg:col-span-1 space-y-6 sticky top-24">
-                <div class="apple-card bg-black text-white p-8 overflow-hidden relative">
-                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-3xl"></div>
+            <!-- Side Strategy Column -->
+            <div class="lg:col-span-1 space-y-8 sticky top-24">
+                <div class="surface-card bg-primary text-white p-10 rounded-lg shadow-2xl shadow-primary/30 relative overflow-hidden">
+                    <div class="absolute -top-16 -right-16 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
                     
-                    <div class="text-white/60 text-[10px] font-black uppercase tracking-widest mb-2">Subscriber Commitment</div>
-                    <div class="text-5xl font-bold tracking-tight mb-8">
-                        <span class="text-white/40 text-3xl font-medium">$</span>{{ form.price || '0.00' }}
+                    <p class="text-[10px] font-black uppercase tracking-[0.3em] text-white/50 mb-4">التزام مالي متوقع</p>
+                    <div class="text-6xl font-black font-headline tracking-tighter mb-10 flex items-baseline gap-3">
+                        {{ form.price || '0.00' }} <span class="text-2xl font-bold opacity-40">ر.س</span>
                     </div>
 
-                    <div class="space-y-4 pt-6 border-t border-white/10 mb-8">
+                    <div class="space-y-6 pt-8 border-t border-white/10 mb-10">
                         <div class="flex items-center justify-between">
-                            <span class="text-white/40 text-[10px] font-black uppercase tracking-widest">Subscriber ID</span>
-                            <span class="text-xs font-bold">{{ client.username }}</span>
+                            <span class="text-white/40 text-[10px] font-black uppercase tracking-widest">هوية المشترك</span>
+                            <span class="text-xs font-black font-headline">{{ client.username }}</span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-white/40 text-[10px] font-black uppercase tracking-widest">Network Mode</span>
-                            <span class="font-black text-[10px] uppercase text-[var(--app-accent)]">{{ form.connection_mode }}</span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-white/40 text-[10px] font-black uppercase tracking-widest">Termination</span>
-                            <span class="text-xs font-bold text-amber-500">{{ client.expires_at ? client.expires_at.split('T')[0] : 'Permanent' }}</span>
+                            <span class="text-white/40 text-[10px] font-black uppercase tracking-widest">نمط الارتباط</span>
+                            <span class="text-[10px] font-black uppercase px-2 py-0.5 bg-white/10 rounded border border-white/20">{{ form.connection_mode }}</span>
                         </div>
                     </div>
 
                     <button 
                         type="submit" 
-                        class="w-full py-4 bg-white text-black rounded-full font-bold shadow-xl shadow-white/10 hover:bg-gray-100 transition-all active:scale-95 flex items-center justify-center gap-2"
+                        class="w-full py-5 bg-white text-primary rounded-lg font-black text-[12px] uppercase tracking-[0.2em] shadow-xl hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50"
                         :disabled="form.processing"
                     >
-                        <Save class="w-4 h-4" />
-                        Save Sync Pulse
+                        <span class="material-symbols-outlined text-[20px]">save</span>
+                        تصدير وحفظ التزامن
                     </button>
                     
-                    <p class="mt-4 text-[8px] text-white/30 text-center uppercase tracking-widest">Updates will sync with MikroTik API instantly</p>
+                    <p class="mt-6 text-[9px] text-white/30 text-center uppercase tracking-widest font-bold">التعديلات تنعكس فوراً على خوادم MikroTik المركزية</p>
                 </div>
 
-                <div class="apple-card p-6 border-2 border-black/5">
-                    <h4 class="text-xs font-bold flex items-center gap-2 mb-2">
-                         <History class="w-4 h-4 text-[#86868b]" />
-                         Provisioning History
+                <div class="surface-card p-6 border-2 border-outline-variant/10 rounded-lg">
+                    <h4 class="text-[11px] font-black text-primary uppercase tracking-widest flex items-center gap-3 mb-6">
+                         <span class="material-symbols-outlined text-[18px]">history</span>
+                         آخر نبضات النشاط
                     </h4>
-                    <ul class="space-y-3 mt-4">
-                        <li v-for="activity in client.activities?.slice(0, 3)" :key="activity.id" class="text-[10px] font-medium text-[#86868b] flex gap-2">
-                            <span class="shrink-0">•</span>
-                            <span>{{ activity.description }}</span>
+                    <ul class="space-y-4 pr-3 border-r-2 border-outline-variant/5">
+                        <li v-for="activity in client.activities?.slice(0, 3)" :key="activity.id" class="text-[12px] font-bold text-slate-500 leading-snug">
+                            {{ activity.description }}
                         </li>
                     </ul>
                 </div>
             </div>
         </form>
-    </AppleLayout>
+    </InstitutionalLayout>
 </template>
-
-<style scoped>
-.apple-input:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-</style>

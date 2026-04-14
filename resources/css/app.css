@@ -123,3 +123,14 @@ h1, h2, h3, h4 { @apply font-headline; }
 ::-webkit-scrollbar-thumb {
     @apply bg-outline-variant/30 rounded-full hover:bg-outline-variant/50 transition-colors;
 }
+
+/* UI Forms */
+.form-input-monolith, .form-select-monolith {
+    @apply w-full px-6 py-4 bg-surface-container-low border border-outline-variant/10 rounded-lg text-sm font-bold text-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all shadow-inner;
+}
+.form-input-monolith::placeholder {
+    @apply text-slate-300 font-medium;
+}
+.form-input-monolith:disabled, .form-select-monolith:disabled {
+    @apply opacity-50 bg-slate-100 cursor-not-allowed;
+}

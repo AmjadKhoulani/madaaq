@@ -1,24 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useForm, Head, Link } from '@inertiajs/vue3';
-import AppleLayout from '@/Layouts/AppleLayout.vue';
-import { 
-    ChevronLeft, 
-    TowerControl as Tower, 
-    Building2, 
-    Box, 
-    Home, 
-    Navigation,
-    MapPin,
-    Sun,
-    Zap,
-    Battery,
-    DollarSign,
-    Shield,
-    CheckCircle2,
-    Save,
-    RotateCcw
-} from 'lucide-vue-next';
+import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 
 const props = defineProps({
     tower: Object,
@@ -60,202 +43,222 @@ const form = useForm({
 });
 
 const siteTypes = [
-    { value: 'tower', label: 'Tower', icon: Tower },
-    { value: 'building', label: 'Building', icon: Building2 },
-    { value: 'cabinet', label: 'Cabinet', icon: Box },
-    { value: 'pole', label: 'Pole', icon: Navigation },
-    { value: 'office', label: 'Office', icon: Home },
+    { value: 'tower', label: 'برج لاسلكي', icon: 'tower' },
+    { value: 'building', label: 'مبنى سكني', icon: 'apartment' },
+    { value: 'cabinet', label: 'خزانة توزيع', icon: 'box' },
+    { value: 'pole', label: 'سارية حافة', icon: 'navigation' },
+    { value: 'office', label: 'مكتب فني', icon: 'home' },
 ];
 
 const submit = () => {
-    form.put(route('network.towers.update', props.tower.id));
+    form.put(route('network.towers.update', props.tower.id), {
+        preserveScroll: true,
+    });
 };
-
 </script>
 
 <template>
-    <AppleLayout :title="'Modify ' + tower.name">
-        <Head :title="'Site Governance: ' + tower.name" />
+    <InstitutionalLayout :title="'تعديل: ' + tower.name">
+        <Head :title="'حوكمة الموقع: ' + tower.name" />
 
-        <div class="max-w-5xl mx-auto pb-24">
-            <!-- Navigation Header -->
+        <div class="max-w-6xl mx-auto pb-24 text-right">
+            <!-- Strategic Header -->
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
                 <div class="flex items-center gap-6">
                     <Link 
                         :href="route('network.towers.show', tower.id)" 
-                        class="w-12 h-12 apple-card flex items-center justify-center text-[#86868b] hover:text-black transition-all group"
+                        class="w-12 h-12 bg-white shadow-sm border border-outline-variant/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary transition-all group"
                     >
-                        <ChevronLeft class="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+                        <span class="material-symbols-outlined text-[24px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
                     </Link>
                     <div>
-                        <h1 class="text-3xl font-bold tracking-tight mb-1">Modify Hub Protocol</h1>
-                        <p class="text-[var(--app-secondary)] font-medium">Adjusting governance parameters for {{ tower.name }}</p>
+                        <h1 class="text-3xl font-black text-primary tracking-tight mb-2">تعديل بروتوكول الموقع</h1>
+                        <p class="text-[12px] font-bold text-slate-400 uppercase tracking-widest leading-none">تعديل معايير الحوكمة لـ {{ tower.name }}</p>
                     </div>
                 </div>
             </div>
 
             <form @submit.prevent="submit" class="space-y-8">
-                <!-- 1. Hub Identity Matrix -->
-                <div class="apple-card p-10">
-                    <div class="flex items-center gap-3 mb-10">
-                        <div class="w-1.5 h-6 bg-indigo-600 rounded-full"></div>
-                        <h3 class="text-sm font-bold tracking-tight uppercase">Hub Identity Matrix</h3>
-                    </div>
+                <!-- 1. Identity & Classification Matrix -->
+                <div class="surface-card p-10 rounded-lg">
+                    <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] mb-10 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary text-[20px]">fingerprint</span>
+                        مصفوفة هوية وتصنيف الموقع
+                    </h3>
 
-                    <div class="grid grid-cols-1 gap-10">
+                    <div class="space-y-10">
                         <div class="space-y-4">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Site Label / SSID Host</label>
-                            <input v-model="form.name" type="text" class="apple-input h-14 font-bold text-lg uppercase tracking-tight" required>
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest block mr-2">اسم الموقع / عنوان البث (SSID Host)</label>
+                            <input v-model="form.name" type="text" class="form-input-monolith text-xl font-black tracking-tight" required />
                         </div>
 
                         <div class="space-y-6">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Infrastructure Classification</label>
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest block mr-2">تصنيف البنية التحتية</label>
                             <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
                                 <button 
                                     v-for="type in siteTypes" 
                                     :key="type.value"
                                     type="button"
                                     @click="form.type = type.value"
-                                    class="p-6 rounded-3xl border-2 transition-all flex flex-col items-center gap-3 group"
-                                    :class="form.type === type.value ? 'bg-black text-white border-black shadow-xl scale-105' : 'bg-white border-black/5 text-[#86868b] hover:bg-black/5'"
+                                    class="p-6 rounded-lg border-2 transition-all flex flex-col items-center gap-4 group shadow-sm"
+                                    :class="form.type === type.value ? 'bg-primary text-white border-primary shadow-xl scale-105' : 'bg-white border-outline-variant/10 text-slate-400 hover:bg-slate-50'"
                                 >
-                                    <component :is="type.icon" class="w-8 h-8 group-hover:rotate-6 transition-transform" />
-                                    <span class="text-[9px] font-black uppercase tracking-widest">{{ type.label }}</span>
+                                    <span class="material-symbols-outlined text-[32px] group-hover:rotate-6 transition-transform" :style="form.type === type.value ? { 'font-variation-settings': '\'FILL\' 1' } : {}">{{ type.icon }}</span>
+                                    <span class="text-[10px] font-black uppercase tracking-widest">{{ type.label }}</span>
                                 </button>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="space-y-4">
-                                <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">City / Region</label>
-                                <input v-model="form.city" type="text" class="apple-input h-14 font-medium">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="space-y-3">
+                                <label class="text-[11px] font-black text-primary uppercase tracking-widest">المدينة / المنطقة</label>
+                                <input v-model="form.city" type="text" class="form-input-monolith" />
                             </div>
-                            <div class="space-y-4">
-                                <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">District</label>
-                                <input v-model="form.district" type="text" class="apple-input h-14 font-medium">
+                            <div class="space-y-3">
+                                <label class="text-[11px] font-black text-primary uppercase tracking-widest">الحي / القطاع</label>
+                                <input v-model="form.district" type="text" class="form-input-monolith" />
                             </div>
-                            <div class="space-y-4">
-                                <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Structural Height (m)</label>
-                                <input v-model="form.height" type="number" class="apple-input h-14 font-bold">
+                            <div class="space-y-3">
+                                <label class="text-[11px] font-black text-primary uppercase tracking-widest">ارتفاع الهيكل (متر)</label>
+                                <input v-model="form.height" type="number" class="form-input-monolith font-headline font-black text-primary" />
                             </div>
                         </div>
 
-                        <div class="space-y-4">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Physical Access Protocol</label>
-                            <textarea v-model="form.location" rows="3" class="apple-input p-6 font-medium resize-none"></textarea>
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest block mr-2">بروتوكول الوصول الفيزيائي (الوصف)</label>
+                            <textarea v-model="form.location" rows="3" class="form-input-monolith font-bold resize-none" placeholder="اكتب تفاصيل الوصول للموقع..."></textarea>
                         </div>
                     </div>
                 </div>
 
                 <!-- 2. Geospatial Registry -->
-                <div class="apple-card p-10">
-                    <div class="flex items-center gap-3 mb-10">
-                        <div class="w-1.5 h-6 bg-rose-500 rounded-full"></div>
-                        <h3 class="text-sm font-bold tracking-tight uppercase">Geospatial Registry</h3>
-                    </div>
+                <div class="surface-card p-10 rounded-lg">
+                    <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] mb-10 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary text-[20px]">location_on</span>
+                        سجل الإحداثيات الجغرافية (Geospatial)
+                    </h3>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                         <div class="space-y-2">
-                             <label class="text-[9px] font-black text-rose-500 uppercase tracking-widest ml-2">Latitude</label>
-                             <input v-model="form.lat" type="text" class="apple-input h-14 font-mono font-bold bg-rose-50/10 border-rose-100" placeholder="33.xxx">
+                         <div class="space-y-3">
+                             <label class="text-[10px] font-black text-error uppercase tracking-widest block mr-2">خط العرض (Latitude)</label>
+                             <input v-model="form.lat" type="text" class="form-input-monolith font-headline font-black text-primary border-error/20 bg-error/5" placeholder="33.xxx" />
                          </div>
-                         <div class="space-y-2">
-                             <label class="text-[9px] font-black text-emerald-500 uppercase tracking-widest ml-2">Longitude</label>
-                             <input v-model="form.lng" type="text" class="apple-input h-14 font-mono font-bold bg-emerald-50/10 border-emerald-100" placeholder="36.xxx">
+                         <div class="space-y-3">
+                             <label class="text-[10px] font-black text-secondary uppercase tracking-widest block mr-2">خط الطول (Longitude)</label>
+                             <input v-model="form.lng" type="text" class="form-input-monolith font-headline font-black text-primary border-secondary/20 bg-secondary/5" placeholder="36.xxx" />
                          </div>
                     </div>
                 </div>
 
-                <!-- 3. Pulse Systems (Energy) -->
+                <!-- 3. Pulse Systems (Energy Redundancy) -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="apple-card p-10 space-y-10">
-                         <div class="flex items-center gap-3 mb-4">
-                            <div class="w-1.5 h-6 bg-amber-500 rounded-full"></div>
-                            <h3 class="text-sm font-bold tracking-tight uppercase">Energy Redundancy Cluster</h3>
-                        </div>
+                    <!-- Energy Connectivity -->
+                    <div class="surface-card p-10 space-y-10">
+                         <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-[20px]">bolt</span>
+                            عنقودية تكرار الطاقة (Redundancy)
+                        </h3>
 
                         <div class="space-y-6">
                             <!-- Solar -->
-                            <div class="p-6 rounded-3xl border transition-all" :class="form.has_solar ? 'bg-amber-50/50 border-amber-200' : 'bg-black/[0.01] border-black/5'">
-                                <label class="flex items-center justify-between cursor-pointer mb-6">
-                                    <span class="text-xs font-bold uppercase tracking-widest flex items-center gap-3">
-                                        <Sun class="w-5 h-5 text-amber-500" /> Photovoltaic Intake
+                            <div class="p-8 rounded-lg border transition-all" :class="form.has_solar ? 'bg-amber-50/30 border-amber-200' : 'bg-surface-container-low border-outline-variant/10'">
+                                <label class="flex items-center justify-between cursor-pointer mb-8">
+                                    <span class="text-xs font-black uppercase tracking-widest flex items-center gap-4">
+                                        <span class="material-symbols-outlined text-amber-600 text-[28px]">wb_sunny</span>
+                                        الامتصاص الكهروضوئي (Solar)
                                     </span>
-                                    <input v-model="form.has_solar" type="checkbox" class="w-10 h-10 rounded-full border-black/10 text-black">
+                                    <input v-model="form.has_solar" type="checkbox" class="w-8 h-8 rounded border-outline-variant/30 text-primary focus:ring-primary shadow-sm" />
                                 </label>
-                                <div v-if="form.has_solar" class="grid grid-cols-2 gap-4 animate-in fade-in">
-                                    <input v-model="form.solar_panels_count" type="number" class="apple-input h-12" placeholder="Panel Units">
-                                    <input v-model="form.solar_panel_wattage" type="number" class="apple-input h-12" placeholder="Wattage (W)">
+                                <div v-if="form.has_solar" class="grid grid-cols-2 gap-6 animate-in fade-in">
+                                    <div class="space-y-2">
+                                        <label class="text-[9px] font-black text-slate-400 uppercase">وحدات الألواح</label>
+                                        <input v-model="form.solar_panels_count" type="number" class="form-input-monolith h-12" placeholder="عدد الخلايا" />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-[9px] font-black text-slate-400 uppercase">القدرة الاسمية (W)</label>
+                                        <input v-model="form.solar_panel_wattage" type="number" class="form-input-monolith h-12" placeholder="واط لكل لوح" />
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Generator -->
-                             <div class="p-6 rounded-3xl border transition-all" :class="form.has_generator ? 'bg-orange-50/50 border-orange-200' : 'bg-black/[0.01] border-black/5'">
-                                <label class="flex items-center justify-between cursor-pointer mb-6">
-                                    <span class="text-xs font-bold uppercase tracking-widest flex items-center gap-3">
-                                        <Zap class="w-5 h-5 text-orange-500" /> Combustion Backup
+                             <div class="p-8 rounded-lg border transition-all" :class="form.has_generator ? 'bg-error-container/5 border-error-container/20' : 'bg-surface-container-low border-outline-variant/10'">
+                                <label class="flex items-center justify-between cursor-pointer mb-8">
+                                    <span class="text-xs font-black uppercase tracking-widest flex items-center gap-4">
+                                        <span class="material-symbols-outlined text-error text-[28px]">bolt</span>
+                                        مولد الاحتراق الاحتياطي
                                     </span>
-                                    <input v-model="form.has_generator" type="checkbox" class="w-10 h-10 rounded-full border-black/10 text-black">
+                                    <input v-model="form.has_generator" type="checkbox" class="w-8 h-8 rounded border-outline-variant/30 text-primary focus:ring-primary shadow-sm" />
                                 </label>
-                                <div v-if="form.has_generator" class="animate-in fade-in">
-                                    <input v-model="form.generator_capacity" type="text" class="apple-input h-12" placeholder="e.g. 15 KVA / Diesel">
+                                <div v-if="form.has_generator" class="animate-in fade-in space-y-2">
+                                    <label class="text-[9px] font-black text-slate-400 uppercase">سعة التوليد / البروتوكول</label>
+                                    <input v-model="form.generator_capacity" type="text" class="form-input-monolith h-12" placeholder="مثلاً: 15 KVA / Diesel" />
                                 </div>
                             </div>
 
                             <!-- Grid Elec -->
-                            <div class="p-6 rounded-3xl border transition-all" :class="form.has_government_electricity ? 'bg-emerald-50/50 border-emerald-200' : 'bg-black/[0.01] border-black/5'">
+                            <div class="p-8 rounded-lg border transition-all" :class="form.has_government_electricity ? 'bg-secondary-container/10 border-secondary-container/30' : 'bg-surface-container-low border-outline-variant/10'">
                                 <label class="flex items-center justify-between cursor-pointer">
-                                    <span class="text-xs font-bold uppercase tracking-widest flex items-center gap-3">
-                                        <RotateCcw class="w-5 h-5 text-emerald-500" /> Utility Grid
+                                    <span class="text-xs font-black uppercase tracking-widest flex items-center gap-4">
+                                        <span class="material-symbols-outlined text-secondary text-[28px]">electric_bolt</span>
+                                        الشبكة الوطنية العامة
                                     </span>
-                                    <input v-model="form.has_government_electricity" type="checkbox" class="w-10 h-10 rounded-full border-black/10 text-black">
+                                    <input v-model="form.has_government_electricity" type="checkbox" class="w-8 h-8 rounded border-outline-variant/30 text-primary focus:ring-primary shadow-sm" />
                                 </label>
                             </div>
 
                             <!-- Batteries -->
-                            <div class="p-8 bg-black text-white rounded-[2.5rem] space-y-6">
-                                <label class="text-[10px] font-black text-white/40 uppercase tracking-widest flex items-center gap-3">
-                                    <Battery class="w-5 h-5 text-indigo-400" /> Chemical Energy Storage
+                            <div class="p-10 bg-primary text-white rounded-lg space-y-8 shadow-xl shadow-primary/20 relative overflow-hidden">
+                                <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
+                                <label class="text-[11px] font-black text-white/50 uppercase tracking-widest flex items-center gap-4">
+                                    <span class="material-symbols-outlined text-white/80 text-[24px]">battery_std</span>
+                                    تخزين الطاقة الكيميائية (Batteries)
                                 </label>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <input v-model="form.battery_count" type="number" class="bg-white/10 border border-white/10 rounded-xl h-12 px-5 text-white outline-none" placeholder="Cells">
-                                    <input v-model="form.battery_type" type="text" class="bg-white/10 border border-white/10 rounded-xl h-12 px-5 text-white outline-none" placeholder="Chemistry Profile">
+                                <div class="grid grid-cols-2 gap-6">
+                                    <div class="space-y-2">
+                                        <label class="text-[9px] font-black text-white/40 uppercase">عدد الخلايا</label>
+                                        <input v-model="form.battery_count" type="number" class="w-full h-12 bg-white/10 border border-white/20 rounded-lg px-5 text-white font-headline font-black outline-none focus:ring-2 focus:ring-white/30" placeholder="Cells" />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-[9px] font-black text-white/40 uppercase">بروفايل الكيمياء</label>
+                                        <input v-model="form.battery_type" type="text" class="w-full h-12 bg-white/10 border border-white/20 rounded-lg px-5 text-white font-black outline-none focus:ring-2 focus:ring-white/30" placeholder="مثلاً: Deep Cycle" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Capital Ledger -->
-                    <div class="apple-card p-10 space-y-10">
-                         <div class="flex items-center gap-3 mb-4">
-                            <div class="w-1.5 h-6 bg-emerald-600 rounded-full"></div>
-                            <h3 class="text-sm font-bold tracking-tight uppercase">Capital Ledger Evolution</h3>
-                        </div>
+                    <!-- Financial Ledger -->
+                    <div class="surface-card p-10 space-y-10">
+                         <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-[20px]">payments</span>
+                            تطور سجل الإنفاق الرأسمالي (Ledger)
+                        </h3>
 
                         <div class="space-y-8">
                              <div class="space-y-4">
-                                <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Structural Build CAPEX</label>
+                                <label class="text-[11px] font-black text-primary uppercase tracking-widest block mr-2">تكلفة التأسيس والهيكل (CAPEX)</label>
                                 <div class="relative">
-                                    <input v-model="form.structure_cost" type="number" step="0.01" class="apple-input h-14 pl-16 font-bold text-lg">
-                                    <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-emerald-600 font-bold text-xs uppercase">{{ currency }}</div>
+                                    <input v-model="form.structure_cost" type="number" step="0.01" class="form-input-monolith h-16 pr-16 font-headline font-black text-xl text-primary" />
+                                    <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none text-slate-400 font-bold text-xs uppercase">{{ currency }}</div>
                                 </div>
                             </div>
 
                             <div class="space-y-4">
-                                <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Node Monthly Lease Protocol</label>
+                                <label class="text-[11px] font-black text-primary uppercase tracking-widest block mr-2">بروتوكول الإيجار الشهري (OPEX)</label>
                                 <div class="relative">
-                                    <input v-model="form.monthly_rent" type="number" step="0.01" class="apple-input h-14 pl-16 font-bold text-lg">
-                                    <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-indigo-600 font-bold text-xs uppercase">{{ currency }}</div>
+                                    <input v-model="form.monthly_rent" type="number" step="0.01" class="form-input-monolith h-16 pr-16 font-headline font-black text-xl text-secondary" />
+                                    <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none text-slate-400 font-bold text-xs uppercase">{{ currency }}</div>
                                 </div>
                             </div>
 
-                            <div class="p-8 bg-emerald-600 text-white rounded-[2.5rem] relative overflow-hidden group">
-                                <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl transition-all group-hover:scale-125"></div>
+                            <div class="p-10 bg-secondary-container/10 border border-secondary/20 text-on-secondary-container rounded-lg shadow-inner relative overflow-hidden group">
+                                <div class="absolute -top-10 -right-10 w-40 h-40 bg-secondary/10 rounded-full blur-3xl transition-all group-hover:scale-125"></div>
                                 <div class="relative z-10 flex items-center gap-6">
-                                    <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl">💰</div>
-                                    <div>
-                                         <p class="text-[9px] font-black text-emerald-200 uppercase tracking-widest mb-1">Audit Ledger Maturity</p>
-                                         <p class="text-sm font-bold opacity-80 leading-relaxed">Adjusting structural overheads will reflect in the next billing cycle protocol.</p>
+                                    <div class="w-16 h-16 bg-white rounded-lg flex items-center justify-center text-3xl shadow-sm">💰</div>
+                                    <div class="text-right">
+                                         <p class="text-[10px] font-black text-secondary uppercase tracking-[0.2em] mb-2">إزاحة السجل المحاسبي</p>
+                                         <p class="text-[12px] font-bold text-slate-500 leading-relaxed italic opacity-80">أي تعديل في التكاليف التشغيلية سينعكس تلقائياً في دورة التحصيل القادمة للموقع.</p>
                                     </div>
                                 </div>
                             </div>
@@ -263,37 +266,38 @@ const submit = () => {
                     </div>
                 </div>
 
-                <!-- 4. Governance Commitment -->
-                <div class="flex flex-col md:flex-row items-center justify-between gap-10 apple-card p-12 bg-black text-white relative overflow-hidden">
-                    <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
-                    <div class="relative z-10 flex items-center gap-8">
-                        <div class="w-16 h-16 bg-white/10 rounded-[1.5rem] flex items-center justify-center text-3xl shrink-0">
-                            <Shield class="w-8 h-8 text-indigo-400" />
+                <!-- 4. Strategic Commitment & Sync -->
+                <div class="surface-card p-10 bg-primary text-white rounded-lg shadow-2xl shadow-primary/30 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-10">
+                    <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+                    <div class="relative z-10 flex items-center gap-8 text-right w-full">
+                        <div class="w-20 h-20 bg-white/10 rounded-lg flex items-center justify-center border border-white/20 shrink-0">
+                            <span class="material-symbols-outlined text-white/80 text-[40px]">security</span>
                         </div>
                         <div>
-                             <h4 class="text-lg font-bold uppercase tracking-tight">Maintenance Commitment</h4>
-                             <p class="text-[9px] font-black text-white/40 uppercase tracking-widest mt-1">
-                                Re-synchronizing site parameters to the global infrastructure registry.
+                             <h4 class="text-xl font-black uppercase tracking-tight">التزام الصيانة السحابية</h4>
+                             <p class="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mt-2">
+                                إعادة مزامنة معايير الموقع مع السجل المركزي للبنية التحتية.
                              </p>
                         </div>
                     </div>
-                    <div class="relative z-10 flex items-center gap-6">
+                    <div class="relative z-10 flex items-center gap-6 w-full md:w-auto shrink-0">
                         <Link 
                             :href="route('network.towers.show', tower.id)" 
-                            class="px-8 py-4 bg-white/10 text-white font-bold text-xs uppercase tracking-widest rounded-2xl hover:bg-white/20 transition-all active:scale-95"
+                            class="px-8 py-4 bg-white/10 text-white font-black text-[11px] uppercase tracking-widest rounded-lg hover:bg-white/20 transition-all active:scale-95"
                         >
-                            Discard Protocol
+                            إلغاء البروتوكول
                         </Link>
                         <button 
                             type="submit" 
-                            class="px-12 py-5 bg-white text-black font-bold text-xs uppercase tracking-[0.2em] rounded-2xl shadow-2xl hover:bg-emerald-500 hover:text-white transition-all hover:scale-105 active:scale-95 disabled:opacity-50 flex items-center gap-2"
+                            class="px-12 py-5 bg-white text-primary font-black text-[12px] uppercase tracking-[0.2em] rounded-lg shadow-2xl hover:bg-slate-50 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 flex items-center gap-3"
                             :disabled="form.processing"
                         >
-                            <Save class="w-4 h-4" /> Sync Hub Protocol
+                            <span class="material-symbols-outlined text-[20px]">save</span>
+                            مزامنة البروتوكول
                         </button>
                     </div>
                 </div>
             </form>
         </div>
-    </AppleLayout>
+    </InstitutionalLayout>
 </template>

@@ -1,21 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useForm, Head, Link } from '@inertiajs/vue3';
-import AppleLayout from '@/Layouts/AppleLayout.vue';
-import { 
-    ChevronLeft, 
-    FileText, 
-    User, 
-    DollarSign, 
-    Calendar, 
-    Shield, 
-    CheckCircle2,
-    Clock,
-    Search,
-    Wifi,
-    Zap,
-    Users
-} from 'lucide-vue-next';
+import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 
 const props = defineProps({
     clients: Array,
@@ -35,174 +21,178 @@ const selectedClient = computed(() => {
 });
 
 const submit = () => {
-    form.post(route('accounting.invoices.store'));
+    form.post(route('accounting.invoices.store'), {
+        preserveScroll: true,
+    });
 };
-
 </script>
 
 <template>
-    <AppleLayout title="Initialize Ledger">
-        <Head title="Mint New Invoice" />
+    <InstitutionalLayout title="إصدار فاتورة جديدة">
+        <Head title="سك وثيقة مالية جديدة" />
 
-        <div class="max-w-4xl mx-auto pb-24">
-            <!-- Navigation Header -->
+        <div class="max-w-5xl mx-auto pb-24 text-right">
+            <!-- Strategic Header -->
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
                 <div class="flex items-center gap-6">
                     <Link 
                         :href="route('accounting.invoices.index')" 
-                        class="w-12 h-12 apple-card flex items-center justify-center text-[#86868b] hover:text-black transition-all group"
+                        class="w-12 h-12 bg-white shadow-sm border border-outline-variant/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary transition-all group"
                     >
-                        <ChevronLeft class="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+                        <span class="material-symbols-outlined text-[24px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
                     </Link>
                     <div>
-                        <h1 class="text-3xl font-bold tracking-tight mb-1">Mint Ledger Artifact</h1>
-                        <p class="text-[var(--app-secondary)] font-medium">Initializing a new fiscal commitment record</p>
+                        <h1 class="text-3xl font-black text-primary tracking-tight mb-2">سك وثيقة مالية (Ledger Artifact)</h1>
+                        <p class="text-[12px] font-bold text-slate-400 uppercase tracking-widest leading-none">بدء بروتوكول الالتزام المالي الجديد</p>
                     </div>
                 </div>
             </div>
 
             <form @submit.prevent="submit" class="space-y-8">
-                <!-- 1. Subscriber Intelligence -->
-                <div class="apple-card p-10">
-                    <div class="flex items-center gap-3 mb-10">
-                        <div class="w-1.5 h-6 bg-indigo-600 rounded-full"></div>
-                        <h3 class="text-sm font-bold tracking-tight uppercase">Subscriber Discovery</h3>
-                    </div>
+                <!-- 1. Subscriber Identification Matrix -->
+                <div class="surface-card p-10 rounded-lg">
+                    <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] mb-10 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary text-[20px]">person_search</span>
+                        اكتشاف وتحديد المشترك المستهدف
+                    </h3>
 
-                    <div class="space-y-6">
+                    <div class="space-y-8">
                         <div class="space-y-4">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Select Targeted Subscriber</label>
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest block mr-2">اختيار المشترك من سجلات المركز</label>
                             <div class="relative group">
-                                <Users class="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-500" />
-                                <select v-model="form.client_id" class="apple-input h-14 pl-16 font-bold text-lg uppercase tracking-tight" required>
-                                    <option value="">Search Subscriber Registry...</option>
+                                <span class="material-symbols-outlined absolute right-6 top-1/2 -translate-y-1/2 text-primary">group</span>
+                                <select v-model="form.client_id" class="form-select-monolith h-16 pr-16 font-black text-lg text-primary tracking-tight" required>
+                                    <option value="">ابحث في قاعدة بيانات المشتركين...</option>
                                     <option v-for="c in clients" :key="c.id" :value="c.id">{{ c.name }} ({{ c.username }})</option>
                                 </select>
                             </div>
                         </div>
 
-                        <div v-if="selectedClient" class="p-8 bg-black/[0.02] border border-black/5 rounded-[2.5rem] flex items-center justify-between animate-in slide-in-from-top duration-500">
+                        <!-- Subscriber Validation Pulse -->
+                        <div v-if="selectedClient" class="p-8 bg-surface-container-low border border-outline-variant/10 rounded-lg flex items-center justify-between animate-in slide-in-from-top duration-500">
                              <div class="flex items-center gap-6">
-                                 <div class="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center shadow-lg">
-                                     <User class="w-6 h-6" />
+                                 <div class="w-14 h-14 rounded-lg bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20">
+                                     <span class="material-symbols-outlined text-[32px]">person</span>
                                  </div>
-                                 <div class="space-y-1">
-                                     <p class="text-sm font-bold tracking-tight uppercase">{{ selectedClient.name }}</p>
-                                     <p class="text-[9px] font-black text-[#86868b] uppercase tracking-widest">{{ selectedClient.type }} Protocol Peer</p>
+                                 <div class="space-y-1 text-right">
+                                     <p class="text-base font-black text-primary tracking-tight uppercase">{{ selectedClient.name }}</p>
+                                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">البروتوكول المعين: {{ selectedClient.type === 'pppoe' ? 'Broadband (PPPoE)' : 'Hotspot' }}</p>
                                  </div>
                              </div>
-                             <div class="flex items-center gap-2">
-                                 <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                                 <span class="text-[9px] font-black text-[#86868b] uppercase tracking-widest">Subscriber Validated</span>
+                             <div class="flex items-center gap-3 bg-secondary-container/10 px-4 py-2 rounded-full border border-secondary-container/20">
+                                 <div class="w-2 h-2 bg-secondary rounded-full animate-pulse shadow-[0_0_8px_rgba(var(--secondary-rgb),0.5)]"></div>
+                                 <span class="text-[10px] font-black text-secondary uppercase tracking-widest">المشترك موثق</span>
                              </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. Fiscal Parameters -->
+                <!-- 2. Fiscal Parameters & Status Layer -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Commercial Extraction -->
-                    <div class="apple-card p-10 space-y-10">
-                         <div class="flex items-center gap-3">
-                            <div class="w-1.5 h-6 bg-emerald-600 rounded-full"></div>
-                            <h3 class="text-sm font-bold tracking-tight uppercase">Commercial Extraction</h3>
-                        </div>
+                    <!-- Commercial Extraction Card -->
+                    <div class="surface-card p-10 space-y-10 rounded-lg">
+                         <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-[20px]">payments</span>
+                            الاستخراج المالي (Commercial)
+                        </h3>
 
-                        <div class="space-y-8">
+                        <div class="space-y-8 text-right">
                             <div class="space-y-4">
-                                <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Value Committed (Amount)</label>
+                                <label class="text-[11px] font-black text-primary uppercase tracking-widest block mr-2">القيمة الملتزم بها (Amount)</label>
                                 <div class="relative">
-                                    <input v-model="form.amount" type="number" step="0.01" class="apple-input h-14 pl-16 font-bold text-lg" placeholder="45.00" required>
-                                    <DollarSign class="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-emerald-600" />
+                                    <input v-model="form.amount" type="number" step="0.01" class="form-input-monolith h-16 pr-16 font-headline font-black text-2xl text-secondary" placeholder="0.00" required />
+                                    <span class="material-symbols-outlined absolute right-6 top-1/2 -translate-y-1/2 text-secondary text-[28px]">sell</span>
                                 </div>
                             </div>
                             <div class="space-y-4">
-                                <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Temporal Horizon (Due Date)</label>
+                                <label class="text-[11px] font-black text-primary uppercase tracking-widest block mr-2">الأفق الزمني للتسوية (Due Date)</label>
                                 <div class="relative">
-                                    <input v-model="form.due_date" type="date" class="apple-input h-14 pl-16 font-bold text-lg" required>
-                                    <Calendar class="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-[#86868b]" />
+                                    <input v-model="form.due_date" type="date" class="form-input-monolith h-16 pr-16 font-headline font-bold text-lg text-primary" required />
+                                    <span class="material-symbols-outlined absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 text-[28px]">calendar_today</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Status Protocol -->
-                    <div class="apple-card p-10 space-y-10">
-                         <div class="flex items-center gap-3">
-                            <div class="w-1.5 h-6 bg-amber-500 rounded-full"></div>
-                            <h3 class="text-sm font-bold tracking-tight uppercase">Status Protocol</h3>
-                        </div>
+                    <!-- Status Protocol Control -->
+                    <div class="surface-card p-10 space-y-10 rounded-lg">
+                         <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-[20px]">rule</span>
+                            بروتوكول حالة التسوية
+                        </h3>
 
                         <div class="space-y-8">
                             <div class="space-y-4">
-                                <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Initial Settlement State</label>
+                                <label class="text-[11px] font-black text-primary uppercase tracking-widest block mr-2">حالة التسوية الابتدائية</label>
                                 <div class="grid grid-cols-2 gap-4">
                                     <button 
                                         type="button" 
                                         @click="form.status = 'unpaid'"
-                                        class="p-6 rounded-3xl border-2 transition-all flex flex-col items-center gap-3 group"
-                                        :class="form.status === 'unpaid' ? 'bg-amber-50 text-amber-700 border-amber-500 shadow-xl' : 'bg-white border-black/5 text-[#86868b] hover:bg-black/5'"
+                                        class="p-6 rounded-lg border-2 transition-all flex flex-col items-center gap-4 group"
+                                        :class="form.status === 'unpaid' ? 'bg-amber-50 text-amber-700 border-amber-500 shadow-xl' : 'bg-white border-outline-variant/10 text-slate-400 hover:bg-slate-50'"
                                     >
-                                        <Clock class="w-7 h-7" :class="form.status === 'unpaid' ? 'text-amber-500' : 'text-[#86868b]'" />
-                                        <span class="text-[9px] font-black uppercase tracking-widest">Outstanding</span>
+                                        <span class="material-symbols-outlined text-[32px]" :style="form.status === 'unpaid' ? { 'font-variation-settings': '\'FILL\' 1' } : {}">pending_actions</span>
+                                        <span class="text-[10px] font-black uppercase tracking-widest">قيد الانتظار</span>
                                     </button>
                                     <button 
                                         type="button" 
                                         @click="form.status = 'paid'"
-                                        class="p-6 rounded-3xl border-2 transition-all flex flex-col items-center gap-3 group"
-                                        :class="form.status === 'paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-500 shadow-xl' : 'bg-white border-black/5 text-[#86868b] hover:bg-black/5'"
+                                        class="p-6 rounded-lg border-2 transition-all flex flex-col items-center gap-4 group"
+                                        :class="form.status === 'paid' ? 'bg-secondary-container/10 text-secondary-container border-secondary shadow-xl' : 'bg-white border-outline-variant/10 text-slate-400 hover:bg-slate-50'"
                                     >
-                                        <CheckCircle2 class="w-7 h-7" :class="form.status === 'paid' ? 'text-emerald-500' : 'text-[#86868b]'" />
-                                        <span class="text-[9px] font-black uppercase tracking-widest">Settled</span>
+                                        <span class="material-symbols-outlined text-[32px]" :style="form.status === 'paid' ? { 'font-variation-settings': '\'FILL\' 1' } : {}">check_circle</span>
+                                        <span class="text-[10px] font-black uppercase tracking-widest">تمت التسوية</span>
                                     </button>
                                 </div>
                             </div>
 
-                            <div class="p-8 bg-black text-white rounded-[2.5rem] relative overflow-hidden group">
-                                <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl transition-all group-hover:scale-125"></div>
-                                <div class="relative z-10 flex items-center gap-6">
-                                    <FileText class="w-12 h-12 text-white/40 rotate-12" />
-                                    <div>
-                                         <p class="text-[9px] font-black text-white/40 uppercase tracking-widest mb-1">Artifact Identity</p>
-                                         <p class="text-xl font-mono font-bold tracking-widest">{{ nextInvoiceNumber }}</p>
+                            <!-- Artifact Identifier Card -->
+                            <div class="p-10 bg-primary text-white rounded-lg relative overflow-hidden group shadow-xl shadow-primary/20">
+                                <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+                                <div class="relative z-10 flex items-center gap-8 justify-end">
+                                    <div class="text-right">
+                                         <p class="text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-2">هوية الوثيقة (Identity)</p>
+                                         <p class="text-2xl font-headline font-black tracking-widest">{{ nextInvoiceNumber }}</p>
                                     </div>
+                                    <span class="material-symbols-outlined text-white/30 text-[48px] rotate-12">description</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 3. Commitment Confirmation -->
-                <div class="flex flex-col md:flex-row items-center justify-between gap-10 apple-card p-12 bg-black text-white relative overflow-hidden">
-                    <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
-                    <div class="relative z-10 flex items-center gap-8">
-                        <div class="w-16 h-16 bg-white/10 rounded-[1.5rem] flex items-center justify-center text-3xl shrink-0">
-                            <Shield class="w-8 h-8 text-emerald-400" />
+                <!-- 3. Final Strategic Commitment -->
+                <div class="surface-card p-12 bg-primary text-white rounded-lg shadow-2xl shadow-primary/30 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-10">
+                    <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+                    <div class="relative z-10 flex items-center gap-8 text-right w-full">
+                        <div class="w-20 h-20 bg-white/10 rounded-lg flex items-center justify-center border border-white/20 shrink-0">
+                            <span class="material-symbols-outlined text-white/80 text-[40px]" style="font-variation-settings: 'FILL' 1">gavel</span>
                         </div>
                         <div>
-                             <h4 class="text-lg font-bold uppercase tracking-tight">Ledger Commitment</h4>
-                             <p class="text-[9px] font-black text-white/40 uppercase tracking-widest mt-1">
-                                Committing fiscal artifact to the global ledger and subscriber history.
+                             <h4 class="text-xl font-black uppercase tracking-tight">الالتزام بالقيد المالي</h4>
+                             <p class="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mt-2">
+                                ترحيل الوثيقة المالية إلى السجل العالمي وتاريخ المشترك.
                              </p>
                         </div>
                     </div>
-                    <div class="relative z-10 flex items-center gap-6">
+                    <div class="relative z-10 flex items-center gap-6 w-full md:w-auto shrink-0">
                         <Link 
                             :href="route('accounting.invoices.index')" 
-                            class="px-8 py-4 bg-white/10 text-white font-bold text-xs uppercase tracking-widest rounded-2xl hover:bg-white/20 transition-all active:scale-95"
+                            class="px-8 py-5 bg-white/10 text-white font-black text-[11px] uppercase tracking-widest rounded-lg hover:bg-white/20 transition-all active:scale-95 text-center"
                         >
-                            Abort Minting
+                            إجهاض السك
                         </Link>
                         <button 
                             type="submit" 
-                            class="px-12 py-5 bg-white text-black font-bold text-xs uppercase tracking-[0.2em] rounded-2xl shadow-2xl hover:bg-emerald-500 hover:text-white transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
+                            class="px-14 py-5 bg-white text-primary font-black text-[12.5px] uppercase tracking-[0.2em] rounded-lg shadow-2xl hover:bg-slate-50 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-4 w-full"
                             :disabled="form.processing || !form.client_id || !form.amount"
                         >
-                            Commit Artifact
+                            <span class="material-symbols-outlined text-[20px] fill-current" style="font-variation-settings: 'FILL' 1">cloud_upload</span>
+                            سك الوثيقة المالية
                         </button>
                     </div>
                 </div>
             </form>
         </div>
-    </AppleLayout>
+    </InstitutionalLayout>
 </template>
