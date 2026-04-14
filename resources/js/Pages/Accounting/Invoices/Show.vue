@@ -1,20 +1,6 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
-import AppleLayout from '@/Layouts/AppleLayout.vue';
-import { 
-    ChevronLeft, 
-    Printer, 
-    Download, 
-    FileText, 
-    Calendar, 
-    User, 
-    Zap, 
-    ShieldCheck,
-    CreditCard,
-    Globe,
-    CheckCircle2,
-    Clock
-} from 'lucide-vue-next';
+import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 
 const props = defineProps({
     invoice: Object
@@ -26,189 +12,195 @@ const printInvoice = () => {
 
 const getStatusDetails = (status) => {
     switch (status) {
-        case 'paid': return { label: 'Settled', color: 'text-emerald-600', bg: 'bg-emerald-50', icon: CheckCircle2 };
-        case 'unpaid': return { label: 'Outstanding', color: 'text-amber-600', bg: 'bg-amber-50', icon: Clock };
-        default: return { label: status, color: 'text-gray-600', bg: 'bg-gray-50', icon: FileText };
+        case 'paid': return { label: 'مكتملة الصرف', color: 'text-secondary', bg: 'bg-secondary-container/20 border-secondary-container/30', icon: 'check_circle' };
+        case 'unpaid': return { label: 'بانتظار التحصيل', color: 'text-amber-700', bg: 'bg-amber-50 border-amber-100', icon: 'schedule' };
+        default: return { label: status, color: 'text-slate-500', bg: 'bg-slate-50 border-slate-100', icon: 'description' };
     }
 };
 
+const formatDate = (date) => {
+    return new Date(date).toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' });
+};
 </script>
 
 <template>
-    <AppleLayout title="Fiscal Artifact">
-        <Head :title="'Invoice: ' + invoice.invoice_number" />
+    <InstitutionalLayout title="سجل مالي مؤسساتي">
+        <Head :title="'فاتورة رقم: ' + invoice.invoice_number" />
 
         <div class="max-w-4xl mx-auto pb-24">
-            <!-- Navigation Header (Hidden on Print) -->
+            <!-- Institutional Header (Hidden on Print) -->
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12 print:hidden">
                 <div class="flex items-center gap-6">
                     <Link 
                         :href="route('accounting.invoices.index')" 
-                        class="w-12 h-12 apple-card flex items-center justify-center text-[#86868b] hover:text-black transition-all group"
+                        class="w-12 h-12 bg-white shadow-sm border border-outline-variant/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary transition-all group"
                     >
-                        <ChevronLeft class="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+                        <span class="material-symbols-outlined text-[24px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
                     </Link>
                     <div>
-                        <h1 class="text-3xl font-bold tracking-tight mb-1">Fiscal Artifact</h1>
-                        <p class="text-[var(--app-secondary)] font-medium">Protocol record {{ invoice.invoice_number }}</p>
+                        <h1 class="text-3xl font-black text-primary tracking-tight mb-1">بيانات السجل المالي</h1>
+                        <p class="text-slate-500 font-bold text-sm uppercase tracking-wider">سجل بروتوكول رقم {{ invoice.invoice_number }}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
                      <button 
                         @click="printInvoice"
-                        class="px-8 py-3.5 bg-black text-white rounded-2xl font-bold text-[11px] uppercase tracking-[0.2em] shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
+                        class="px-8 py-4 bg-primary text-white rounded-lg font-black text-[11px] uppercase tracking-[0.2em] shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
                      >
-                        <Printer class="w-4 h-4" /> Print Protocol
+                        <span class="material-symbols-outlined text-[20px]">print</span>
+                        طباعة السجل الفني
                      </button>
                 </div>
             </div>
 
-            <!-- Invoice Artifact -->
-            <div id="invoice-artifact" class="apple-card bg-white p-12 md:p-20 shadow-2xl relative overflow-hidden print:shadow-none print:p-0 print:border-none">
-                <!-- Status Watermark (Hidden on Print usually, or subtle) -->
-                <div class="absolute -top-10 -right-10 w-64 h-64 opacity-[0.03] rotate-12 pointer-events-none">
-                    <ShieldCheck class="w-full h-full text-black" />
+            <!-- Global Fiscal Artifact -->
+            <div id="invoice-artifact" class="surface-card bg-white p-12 md:p-20 shadow-2xl relative overflow-hidden rounded-lg print:shadow-none print:p-0 print:border-none border-outline-variant/10 rtl">
+                <!-- Authority Watermark -->
+                <div class="absolute -top-16 -right-16 w-80 h-80 opacity-[0.03] rotate-12 pointer-events-none">
+                    <span class="material-symbols-outlined text-[320px] text-primary">verified_user</span>
                 </div>
 
-                <!-- 1. Header Protocol -->
-                <div class="flex flex-col md:flex-row justify-between gap-12 mb-20">
-                    <div class="space-y-6">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 bg-black rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-xl">M</div>
-                            <div>
-                                <h2 class="text-2xl font-black tracking-tighter uppercase leading-none mb-1">MadaaQ</h2>
-                                <p class="text-[10px] font-black text-[#86868b] uppercase tracking-widest">Infrastructure Protocol</p>
+                <!-- 1. Institutional Identity -->
+                <div class="flex flex-col md:flex-row justify-between gap-12 mb-20 border-b border-outline-variant/10 pb-12">
+                    <div class="space-y-6 text-right">
+                        <div class="flex items-center gap-5">
+                            <div class="w-16 h-16 bg-primary rounded-lg flex items-center justify-center text-white text-3xl font-black shadow-2xl shadow-primary/30">M</div>
+                            <div class="text-right">
+                                <h2 class="text-3xl font-black tracking-tight text-primary uppercase leading-none mb-1">MadaaQ ISP</h2>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">بروتوكول حوكمة البنية التحتية</p>
                             </div>
                         </div>
-                        <div class="space-y-1 text-[#86868b] text-[11px] font-medium leading-relaxed">
-                            <p>Edge Operations HQ</p>
-                            <p>Damascus Rural, Syria</p>
-                            <p>contact@madaaq.net</p>
+                        <div class="space-y-1.5 text-slate-500 text-[12px] font-bold leading-relaxed">
+                            <p>المقر الرئيسي للعمليات الرقمية</p>
+                            <p>ريف دمشق، الجمهورية العربية السورية</p>
+                            <p class="font-headline font-black">contact@madaaq.com</p>
                         </div>
                     </div>
 
-                    <div class="text-left md:text-right space-y-4">
+                    <div class="text-right md:text-left space-y-6">
                          <div 
-                            class="inline-flex items-center gap-3 px-6 py-2 rounded-2xl border text-[10px] font-black uppercase tracking-widest"
+                            class="inline-flex items-center gap-3 px-6 py-2.5 rounded border text-[10px] font-black uppercase tracking-widest"
                             :class="getStatusDetails(invoice.status).bg + ' ' + getStatusDetails(invoice.status).color"
                         >
-                            <component :is="getStatusDetails(invoice.status).icon" class="w-4 h-4" />
+                            <span class="material-symbols-outlined text-[18px]">{{ getStatusDetails(invoice.status).icon }}</span>
                             {{ getStatusDetails(invoice.status).label }}
                         </div>
-                        <div class="space-y-1">
-                            <p class="text-[9px] font-black text-[#86868b] uppercase tracking-widest">Artifact Identity</p>
-                            <p class="text-2xl font-mono font-bold tracking-widest uppercase">{{ invoice.invoice_number }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 2. Parties Matrix -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 mb-20 py-12 border-y border-black/[0.03]">
-                    <div class="space-y-6">
-                        <p class="text-[10px] font-black text-[#86868b] uppercase tracking-widest flex items-center gap-2">
-                            <User class="w-4 h-4" /> Subscriber Protocol
-                        </p>
                         <div class="space-y-2">
-                            <p class="text-xl font-bold tracking-tight uppercase">{{ invoice.client?.name || 'Anonymous Peer' }}</p>
-                            <p class="text-[11px] font-mono text-[#86868b] tracking-wider">{{ invoice.client?.username }}</p>
-                            <p class="text-[11px] font-medium text-[#86868b]">{{ invoice.client?.phone || 'No phone record' }}</p>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">معرف السجل (ID)</p>
+                            <p class="text-3xl font-headline font-black tracking-widest text-primary uppercase">{{ invoice.invoice_number }}</p>
                         </div>
                     </div>
-                    <div class="space-y-6 md:text-right">
-                        <p class="text-[10px] font-black text-[#86868b] uppercase tracking-widest flex items-center justify-end gap-2">
-                             Temporal Pulse <Calendar class="w-4 h-4" />
+                </div>
+
+                <!-- 2. Legal Multi-Matrix (Subscriber & Date) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 mb-20">
+                    <div class="space-y-6 text-right">
+                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-[18px]">person</span>
+                            بيانات الطرف المتعاقد (المشترك)
                         </p>
-                        <div class="space-y-4">
+                        <div class="space-y-3 p-6 bg-surface-container-low rounded-lg border border-outline-variant/5">
+                            <p class="text-xl font-black text-primary tracking-tight leading-none">{{ invoice.client?.name || 'مشترك غير معرف' }}</p>
+                            <p class="text-[13px] font-headline font-extrabold text-slate-400 tracking-wider">{{ invoice.client?.username }}</p>
+                            <p class="text-[12px] font-headline font-extrabold text-primary pt-2 border-t border-outline-variant/10">{{ invoice.client?.phone || 'لا يوجد رقم مسجل' }}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-6 text-right md:text-left">
+                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest flex items-center md:justify-end gap-3">
+                             النطاق الزمني للسجل
+                             <span class="material-symbols-outlined text-primary text-[18px]">event_note</span>
+                        </p>
+                        <div class="grid grid-cols-2 gap-6">
                             <div>
-                                <p class="text-[9px] font-black text-[#86868b] uppercase tracking-widest">Genesis (Date)</p>
-                                <p class="text-sm font-bold">{{ new Date(invoice.created_at).toLocaleDateString() }}</p>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">تاريخ الإصدار</p>
+                                <p class="text-[14px] font-headline font-black text-primary">{{ formatDate(invoice.created_at) }}</p>
                             </div>
                             <div>
-                                <p class="text-[9px] font-black text-[#86868b] uppercase tracking-widest">Horizon (Due)</p>
-                                <p class="text-sm font-bold text-rose-600">{{ new Date(invoice.due_date).toLocaleDateString() }}</p>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">تاريخ الاستحقاق</p>
+                                <p class="text-[14px] font-headline font-black text-error italic">{{ formatDate(invoice.due_date) }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 3. Service Extraction (Items) -->
+                <!-- 3. Technical Service Extraction -->
                 <div class="space-y-8 mb-20">
-                    <p class="text-[10px] font-black text-[#86868b] uppercase tracking-widest">Extracted Service Components</p>
+                    <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest border-r-4 border-primary pr-4">تفاصيل الخدمات والمواصفات المخصصّة</p>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead class="border-b-2 border-black/5">
+                        <table class="w-full text-right">
+                            <thead class="bg-surface-container/30">
                                 <tr>
-                                    <th class="pb-6 text-[10px] font-black uppercase tracking-widest">Velocity Spec</th>
-                                    <th class="pb-6 text-[10px] font-black uppercase tracking-widest text-center">Protocol Unit</th>
-                                    <th class="pb-6 text-[10px] font-black uppercase tracking-widest text-right">Extracted Value</th>
+                                    <th class="p-6 text-[11px] font-black text-slate-500 uppercase tracking-widest">توصيف الخدمة (Technical Spec)</th>
+                                    <th class="p-6 text-[11px] font-black text-slate-500 uppercase tracking-widest text-center">الوحدة</th>
+                                    <th class="p-6 text-[11px] font-black text-slate-500 uppercase tracking-widest text-left">القيمة المستخلصة</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-black/[0.01]">
+                            <tbody class="divide-y divide-outline-variant/10">
                                 <tr v-if="invoice.client?.package" class="group">
-                                    <td class="py-10">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-12 h-12 bg-black/5 rounded-2xl flex items-center justify-center text-indigo-600">
-                                                <Zap class="w-6 h-6" />
+                                    <td class="py-10 px-6">
+                                        <div class="flex items-center gap-5">
+                                            <div class="w-14 h-14 bg-surface-container-highest rounded-lg flex items-center justify-center text-primary shadow-inner">
+                                                <span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1">bolt</span>
                                             </div>
-                                            <div>
-                                                <p class="font-bold text-sm uppercase tracking-tight">{{ invoice.client.package.name }}</p>
-                                                <p class="text-[10px] font-medium text-[#86868b] uppercase tracking-widest mt-0.5">Throughput Lease: {{ invoice.client.package.speed_down }}M/{{ invoice.client.package.speed_up }}M</p>
+                                            <div class="text-right">
+                                                <p class="font-black text-base text-primary tracking-tight leading-none mb-2">باقة {{ invoice.client.package.name }}</p>
+                                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">نطاق التردد المحجوز: {{ invoice.client.package.speed_down }}M / {{ invoice.client.package.speed_up }}M</p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="py-10 text-center font-bold text-sm tracking-tight text-[#86868b]">1 Cycle</td>
-                                    <td class="py-10 text-right font-black text-xl tracking-tight">${{ invoice.amount.toLocaleString() }}</td>
+                                    <td class="py-10 px-6 text-center font-black text-sm text-slate-400 font-headline uppercase">1 Cycle</td>
+                                    <td class="py-10 px-6 text-left font-black font-headline text-2xl text-primary tracking-tight">{{ invoice.amount.toLocaleString() }} <span class="text-xs font-bold text-slate-400">ر.س</span></td>
                                 </tr>
                                 <tr v-else>
-                                    <td class="py-10">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-12 h-12 bg-black/5 rounded-2xl flex items-center justify-center text-amber-600">
-                                                <FileText class="w-6 h-6" />
+                                    <td class="py-10 px-6">
+                                        <div class="flex items-center gap-5">
+                                            <div class="w-14 h-14 bg-surface-container-highest rounded-lg flex items-center justify-center text-amber-600 shadow-inner">
+                                                <span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1">history_edu</span>
                                             </div>
-                                            <div>
-                                                <p class="font-bold text-sm uppercase tracking-tight">Manual Provisioning</p>
-                                                <p class="text-[10px] font-medium text-[#86868b] uppercase tracking-widest mt-0.5">Ad-hoc service commitment</p>
+                                            <div class="text-right">
+                                                <p class="font-black text-base text-primary tracking-tight leading-none mb-2">تخصيص يدوي للخدمة</p>
+                                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">التزام مخصص خارج الأطر القياسية</p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="py-10 text-center font-bold text-sm tracking-tight text-[#86868b]">1 Artifact</td>
-                                    <td class="py-10 text-right font-black text-xl tracking-tight">${{ invoice.amount.toLocaleString() }}</td>
+                                    <td class="py-10 px-6 text-center font-black text-sm text-slate-400 font-headline uppercase">Manual</td>
+                                    <td class="py-10 px-6 text-left font-black font-headline text-2xl text-primary tracking-tight">{{ invoice.amount.toLocaleString() }} <span class="text-xs font-bold text-slate-400">ر.س</span></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- 4. Fiscal Pulse (Total) -->
-                <div class="flex flex-col md:flex-row justify-between items-start gap-12 pt-12 border-t border-black/5">
-                    <div class="max-w-xs space-y-4">
-                        <p class="text-[10px] font-black text-[#86868b] uppercase tracking-widest">Commitment Conditions</p>
-                        <p class="text-[11px] font-medium text-[#86868b] leading-relaxed">This artifact confirms the allocation of network throughput within the specified horizon. All values represent extracted technical commitment.</p>
+                <!-- 4. Fiscal Pulse Conclusion -->
+                <div class="flex flex-col md:flex-row justify-between items-start gap-12 pt-12 border-t-2 border-primary/10">
+                    <div class="max-w-sm space-y-4 text-right">
+                        <p class="text-[11px] font-black text-primary uppercase tracking-widest">شروط الالتزام المؤسساتي</p>
+                        <p class="text-[12px] font-bold text-slate-400 leading-relaxed">هذا السجل يؤكد تخصيص القدرات التقنية المطلوبة ضمن الإطار الزمني المحدد. كافة القيم تمثل التزاماً رسمياً مسجلاً في أنظمة حوكمة MadaaQ.</p>
                     </div>
-                    <div class="w-full md:w-80 space-y-6">
-                        <div class="flex items-center justify-between text-[#86868b]">
-                            <span class="text-[10px] font-black uppercase tracking-widest">Gross Value</span>
-                            <span class="font-bold text-sm">${{ invoice.amount.toLocaleString() }}</span>
+                    <div class="w-full md:w-96 space-y-6">
+                        <div class="flex items-center justify-between text-slate-400">
+                            <span class="text-[11px] font-black uppercase tracking-widest font-headline">قيمة السجل الصافية</span>
+                            <span class="font-black font-headline text-base text-primary">{{ invoice.amount.toLocaleString() }} <span class="text-[10px] mr-1">ر.س</span></span>
                         </div>
-                        <div class="flex items-center justify-between text-[#86868b]">
-                            <span class="text-[10px] font-black uppercase tracking-widest">Governance Tax (0%)</span>
-                            <span class="font-bold text-sm">$0.00</span>
+                        <div class="flex items-center justify-between text-slate-400">
+                            <span class="text-[11px] font-black uppercase tracking-widest font-headline">ضرائب الحوكمة (0%)</span>
+                            <span class="font-black font-headline text-base">0.00 <span class="text-[10px] mr-1">ر.س</span></span>
                         </div>
-                        <div class="flex items-center justify-between pt-6 border-t border-black/10">
-                            <span class="text-[12px] font-black uppercase tracking-[0.2em] text-black">Net Protocol Artifact</span>
-                            <span class="text-3xl font-black tracking-tight text-emerald-600">${{ invoice.amount.toLocaleString() }}</span>
+                        <div class="flex items-center justify-between pt-8 border-t-2 border-outline-variant/20">
+                            <span class="text-[14px] font-black uppercase tracking-[0.2em] text-primary">إجمالي قيمة الاستحقاق</span>
+                            <span class="text-4xl font-black font-headline tracking-tighter text-secondary">{{ invoice.amount.toLocaleString() }} <span class="text-sm font-bold opacity-50 mr-2">ر.س</span></span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Print Footer Protocol -->
+                <!-- Print Protocol Footer -->
                 <div class="hidden print:block mt-32 text-center">
-                    <div class="w-20 h-1 bg-black/10 mx-auto mb-6"></div>
-                    <p class="text-[9px] font-black text-[#86868b] uppercase tracking-[0.4em]">MadaaQ Fiscal Handshake Protocol • Integrity First</p>
+                    <div class="w-24 h-1 bg-primary/10 mx-auto mb-6"></div>
+                    <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.6em]">بروتوكول حوكمة المعاملات المالية • MadaaQ Official Record</p>
                 </div>
             </div>
         </div>
-    </AppleLayout>
+    </InstitutionalLayout>
 </template>
 
 <style>
@@ -222,6 +214,8 @@ const getStatusDetails = (status) => {
     #invoice-artifact {
         padding: 0 !important;
         margin: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
     }
 }
 </style>
