@@ -1,18 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
+import { Head, Link } from '@inertiajs/vue3';
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
-import { 
-    TrendingUp, 
-    Building2, 
-    ShieldCheck, 
-    Users, 
-    ArrowUpRight,
-    ExternalLink,
-    Activity,
-    CreditCard,
-    ArrowDownLeft,
-    Clock
-} from 'lucide-vue-next';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
@@ -31,21 +20,23 @@ const revenueChartRef = ref(null);
 const tenantsChartRef = ref(null);
 
 onMounted(() => {
-    // Revenue Chart - Professional Enterprise Style
+    // Strategic Revenue Intelligence Chart
     new Chart(revenueChartRef.value, {
         type: 'line',
         data: {
             labels: props.months,
             datasets: [{
-                label: 'الإيرادات',
+                label: 'الإيرادات الشهرية',
                 data: props.chart_revenue,
-                borderColor: '#2563eb', // Enterprise Blue
-                backgroundColor: 'rgba(37, 99, 235, 0.05)',
-                borderWidth: 2,
+                borderColor: '#0f172a',
+                backgroundColor: 'rgba(15, 23, 42, 0.03)',
+                borderWidth: 3,
                 fill: true,
-                tension: 0, // Solid straight lines for institutional feel
-                pointRadius: 3,
+                tension: 0.1,
+                pointRadius: 4,
                 pointBackgroundColor: '#2563eb',
+                pointBorderWidth: 2,
+                pointBorderColor: '#ffffff'
             }]
         },
         options: {
@@ -54,18 +45,18 @@ onMounted(() => {
             plugins: { legend: { display: false } },
             scales: {
                 y: { 
-                    grid: { color: '#f1f5f9' },
-                    ticks: { color: '#94a3b8', font: { size: 10 } }
+                    grid: { color: 'rgba(0,0,0,0.02)' },
+                    ticks: { color: '#94a3b8', font: { size: 10, family: 'Manrope' } }
                 },
                 x: { 
                     grid: { display: false }, 
-                    ticks: { color: '#94a3b8', font: { size: 10 } } 
+                    ticks: { color: '#94a3b8', font: { size: 10, family: 'Manrope' } } 
                 }
             }
         }
     });
 
-    // Tenants Chart - Stacked Bar Style
+    // Subscriber Acquisition Growth Chart
     new Chart(tenantsChartRef.value, {
         type: 'bar',
         data: {
@@ -73,9 +64,9 @@ onMounted(() => {
             datasets: [{
                 label: 'المشتركين الجدد',
                 data: props.chart_tenants,
-                backgroundColor: '#0f172a', // Navy
-                borderRadius: 4,
-                barThickness: 15,
+                backgroundColor: '#2563eb',
+                borderRadius: 6,
+                barThickness: 12,
             }]
         },
         options: {
@@ -84,12 +75,12 @@ onMounted(() => {
             plugins: { legend: { display: false } },
             scales: {
                 y: { 
-                    grid: { color: '#f1f5f9' },
-                    ticks: { color: '#94a3b8', font: { size: 10 } }
+                    grid: { color: 'rgba(0,0,0,0.02)' },
+                    ticks: { color: '#94a3b8', font: { size: 10, family: 'Manrope' } }
                 },
                 x: { 
                     grid: { display: false }, 
-                    ticks: { color: '#94a3b8', font: { size: 10 } } 
+                    ticks: { color: '#94a3b8', font: { size: 10, family: 'Manrope' } } 
                 }
             }
         }
@@ -97,219 +88,273 @@ onMounted(() => {
 });
 
 const formatNumber = (num) => {
-    return new Intl.NumberFormat('en-US').format(num);
+    return new Intl.NumberFormat('ar-SY').format(num);
 };
 
 </script>
 
 <template>
     <InstitutionalLayout title="مركز العمليات الذكي">
+        <Head title="لوحة التحكم الإستراتيجية - MadaaQ" />
         
-        <!-- Header Info -->
-        <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div class="text-right">
-                <h1 class="text-2xl font-black text-slate-900 mb-1">لوحة التحكم الإستراتيجية</h1>
-                <p class="text-sm text-slate-500 font-medium flex items-center justify-end gap-2">
-                    مراقبة أداء الشبكة، المشتركين، وتحليل البيانات المالية اللحظية
-                    <Activity class="w-4 h-4 text-blue-600" />
-                </p>
-            </div>
-            <div class="flex items-center gap-3">
-                 <button class="px-5 py-2.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-50 transition-none flex items-center gap-2">
-                    <Clock class="w-4 h-4" />
-                    تقارير اليوم
-                 </button>
-                 <button class="ent-btn-primary">
-                    إضافة وحدة جديدة
-                 </button>
-            </div>
-        </div>
-
-        <!-- Top KPIs Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 text-right">
-            <!-- Revenue -->
-            <div class="ent-card p-6 border-r-4 border-r-blue-600">
-                <div class="flex items-center justify-between mb-4 flex-row-reverse">
-                    <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                        <TrendingUp class="w-5 h-5" />
+        <div class="max-w-[1600px] mx-auto pb-24 text-right px-4" dir="rtl">
+            <!-- Strategic Header Intel -->
+            <div class="mb-16 flex flex-col lg:flex-row lg:items-center justify-between gap-10 flex-row-reverse text-right">
+                <div class="text-right">
+                    <h1 class="text-4xl font-black text-primary tracking-tight mb-2">لوحة التحكم التكتيكية (Command Center)</h1>
+                    <div class="flex items-center gap-4 justify-end">
+                        <p class="text-slate-500 font-bold text-sm uppercase tracking-wider">مراقبة حية لأداء الشبكة، بيانات المشتركين، وتحليل المؤشرات المالية اللحظية</p>
+                        <span class="flex h-3 w-3 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
+                        </span>
                     </div>
                 </div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">إجمالي الإيرادات</p>
-                <div class="text-2xl font-black text-slate-900 mb-1 leading-none tracking-tight">${{ formatNumber(stats.total_revenue) }}</div>
-                <div class="flex items-center gap-2 mt-2 flex-row-reverse">
-                    <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 flex items-center gap-1">
-                        +14.2% <ArrowUpRight class="w-3 h-3" />
-                    </span>
-                    <span class="text-[10px] text-slate-400 font-medium">مقارنة بالشهر السابق</span>
+                <div class="flex items-center gap-6">
+                     <button class="px-8 py-3.5 bg-white border border-outline-variant/10 rounded-xl text-[11px] font-black text-slate-500 hover:text-primary transition-all flex items-center gap-3 shadow-sm active:scale-95">
+                        <span class="material-symbols-outlined text-[20px]">calendar_today</span>
+                        تقارير الجلسة الحالية
+                     </button>
+                      <Link 
+                        :href="route('crm.clients.create')" 
+                        class="px-10 py-3.5 bg-primary text-white rounded-xl font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl shadow-primary/20 hover:bg-emerald-600 transition-all active:scale-95 flex items-center gap-3 border border-white/10"
+                    >
+                        <span class="material-symbols-outlined text-[20px]">add_circle</span> تفعيل وحدة مشتركة
+                    </Link>
                 </div>
             </div>
 
-            <!-- Tenants -->
-            <div class="ent-card p-6 border-r-4 border-r-slate-900">
-                <div class="flex items-center justify-between mb-4 flex-row-reverse">
-                    <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-900">
-                        <Building2 class="w-5 h-5" />
-                    </div>
-                </div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">الموزعين النشطين</p>
-                <div class="text-2xl font-black text-slate-900 mb-1 leading-none tracking-tight">{{ stats.active_tenants }}</div>
-                <p class="text-[10px] text-slate-500 font-medium">من أصل <span class="font-bold text-slate-700">{{ stats.total_tenants }}</span> موزعين متاحين</p>
-            </div>
-
-            <!-- Subscriptions -->
-            <div class="ent-card p-6 border-r-4 border-r-emerald-500">
-                <div class="flex items-center justify-between mb-4 flex-row-reverse">
-                    <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
-                        <ShieldCheck class="w-5 h-5" />
-                    </div>
-                </div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">الاشتراكات الفعالة</p>
-                <div class="text-2xl font-black text-slate-900 mb-1 leading-none tracking-tight">{{ stats.active_subscriptions }}</div>
-                <div class="flex items-center gap-1 mt-2 flex-row-reverse">
-                    <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                    <span class="text-[10px] text-emerald-600 font-black uppercase">باقات المؤسسات والبرو</span>
-                </div>
-            </div>
-
-            <!-- Clients -->
-            <div class="ent-card p-6 border-r-4 border-r-indigo-600">
-                <div class="flex items-center justify-between mb-4 flex-row-reverse">
-                    <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
-                        <Users class="w-5 h-5" />
-                    </div>
-                </div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">إجمالي المشتركين</p>
-                <div class="text-2xl font-black text-slate-900 mb-1 leading-none tracking-tight">{{ formatNumber(stats.total_clients) }}</div>
-                <p class="text-[10px] text-slate-500 font-medium">مستخدم مسجل في كافة الشبكات</p>
-            </div>
-        </div>
-
-        <!-- Charts Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
-            <!-- Revenue Chart -->
-            <div class="lg:col-span-2 ent-card overflow-hidden">
-                <div class="ent-card-header flex items-center justify-between flex-row-reverse">
-                    <h3 class="text-xs font-black text-slate-900 uppercase tracking-widest">تحليل النمو المالي (آخر 6 أشهر)</h3>
-                    <TrendingUp class="w-4 h-4 text-slate-400" />
-                </div>
-                <div class="p-8">
-                    <div class="h-[300px] w-full">
-                        <canvas ref="revenueChartRef"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Stats Breakdown Card -->
-            <div class="ent-card overflow-hidden flex flex-col">
-                <div class="ent-card-header flex items-center justify-between flex-row-reverse">
-                    <h3 class="text-xs font-black text-slate-900 uppercase tracking-widest">توزيع الشبكات</h3>
-                    <Activity class="w-4 h-4 text-slate-400" />
-                </div>
-                <div class="p-6 flex-1 space-y-6">
-                    <div class="space-y-2">
-                        <div class="flex justify-between text-[10px] font-bold text-slate-500 uppercase flex-row-reverse">
-                            <span>جودة الخدمة (QoS)</span>
-                            <span>98.4%</span>
+            <!-- Strategic KPIs Matrix -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+                <!-- Revenue Intelligence -->
+                <div class="surface-card p-10 rounded-3xl border border-outline-variant/5 shadow-2xl relative overflow-hidden group bg-white border-b-8 border-primary">
+                    <div class="absolute -top-16 -left-16 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
+                    <div class="relative z-10 flex flex-col gap-8">
+                        <div class="flex items-center justify-between flex-row-reverse">
+                             <div class="w-14 h-14 rounded-2xl bg-primary/5 text-primary flex items-center justify-center border border-primary/10 shadow-inner">
+                                <span class="material-symbols-outlined text-[32px]">payments</span>
+                             </div>
+                             <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none">إجمالي الإيرادات (Revenue)</p>
                         </div>
-                        <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-emerald-500 w-[98.4%]"></div>
+                        <div class="flex items-baseline gap-3">
+                            <h3 class="text-4xl font-headline font-black text-primary leading-none tracking-tighter">{{ formatNumber(stats.total_revenue) }}</h3>
+                            <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest leading-none">ل.س</span>
+                        </div>
+                        <div class="flex items-center gap-3 justify-end flex-row-reverse">
+                            <span class="text-[10px] font-black text-emerald-600 bg-emerald-500/10 px-3 py-1 rounded-lg border border-emerald-500/10 flex items-center gap-2">
+                                +14.2% <span class="material-symbols-outlined text-[14px]">trending_up</span>
+                            </span>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">مقارنة بالأداء السابق</span>
                         </div>
                     </div>
-                    <div class="space-y-2">
-                        <div class="flex justify-between text-[10px] font-bold text-slate-500 uppercase flex-row-reverse">
-                            <span>سعة التحميل المستهلكة</span>
-                            <span>64%</span>
+                </div>
+
+                <!-- Network Grid Operators -->
+                <div class="surface-card p-10 rounded-3xl border border-outline-variant/5 shadow-sm bg-white relative overflow-hidden border-b-8 border-slate-950">
+                    <div class="relative z-10 flex flex-col gap-8">
+                        <div class="flex items-center justify-between flex-row-reverse">
+                             <div class="w-14 h-14 rounded-2xl bg-slate-950 text-white flex items-center justify-center border border-white/10 shadow-inner">
+                                <span class="material-symbols-outlined text-[32px]">hub</span>
+                             </div>
+                             <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none">مشغلي الشبكة النشطين</p>
                         </div>
-                        <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-blue-600 w-[64%]"></div>
+                        <h3 class="text-5xl font-headline font-black text-slate-900 leading-none tracking-tighter">{{ stats.active_tenants }}</h3>
+                        <div class="flex items-center gap-2 justify-end opacity-40">
+                            <p class="text-[10px] font-black uppercase tracking-widest">من أصل <span class="font-headline text-slate-900">{{ stats.total_tenants }}</span> عقدة توزيع مـتاحة</p>
                         </div>
                     </div>
-                    <div class="pt-6 mt-6 border-t border-slate-100 h-40">
-                         <canvas ref="tenantsChartRef"></canvas>
+                </div>
+
+                <!-- Subscription Integrity -->
+                <div class="surface-card p-10 rounded-3xl border border-outline-variant/5 shadow-sm bg-white relative overflow-hidden border-b-8 border-emerald-500">
+                    <div class="relative z-10 flex flex-col gap-8">
+                        <div class="flex items-center justify-between flex-row-reverse">
+                             <div class="w-14 h-14 rounded-2xl bg-emerald-500/5 text-emerald-600 flex items-center justify-center border border-emerald-500/10 shadow-inner">
+                                <span class="material-symbols-outlined text-[32px]">verified_user</span>
+                             </div>
+                             <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none">اشتراكات الخدمة الفعالة</p>
+                        </div>
+                        <h3 class="text-5xl font-headline font-black text-emerald-600 leading-none tracking-tighter">{{ stats.active_subscriptions }}</h3>
+                        <div class="flex items-center gap-3 justify-end flex-row-reverse opacity-60">
+                            <div class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-lg"></div>
+                            <span class="text-[10px] text-emerald-600 font-black uppercase tracking-widest">نظام حوكمة الحزم النشط</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aggregate Clients -->
+                <div class="surface-card p-10 rounded-3xl border border-outline-variant/5 shadow-sm bg-white relative overflow-hidden border-b-8 border-indigo-600">
+                    <div class="relative z-10 flex flex-col gap-8">
+                        <div class="flex items-center justify-between flex-row-reverse">
+                             <div class="w-14 h-14 rounded-2xl bg-indigo-500/5 text-indigo-600 flex items-center justify-center border border-indigo-500/10 shadow-inner">
+                                <span class="material-symbols-outlined text-[32px]">groups</span>
+                             </div>
+                             <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none">قاعدة المشتركين المركزية</p>
+                        </div>
+                        <h3 class="text-5xl font-headline font-black text-indigo-600 leading-none tracking-tighter">{{ formatNumber(stats.total_clients) }}</h3>
+                        <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest opacity-60">إجمالي الهويات المسجلة كلياً</p>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Details Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 text-right">
-            <!-- Recent Invoices Table -->
-             <div class="lg:col-span-2 ent-card overflow-hidden">
-                <div class="ent-card-header flex justify-between items-center flex-row-reverse">
-                    <div class="flex items-center gap-3">
-                        <CreditCard class="w-4 h-4 text-slate-400" />
-                        <h3 class="text-xs font-black text-slate-900 uppercase tracking-widest">أحدث العمليات المالية</h3>
+            <!-- Analytical Visual Intel Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-16">
+                <!-- Primary Revenue Chart -->
+                <div class="lg:col-span-2 surface-card rounded-[2.5rem] border border-outline-variant/5 shadow-2xl bg-white overflow-hidden">
+                    <div class="p-10 flex items-center justify-between flex-row-reverse border-b border-outline-variant/5">
+                        <div class="flex items-center gap-4">
+                            <h3 class="text-xs font-black text-primary uppercase tracking-[0.3em] leading-none">تحليل الأداء المالي (Growth Intelligence)</h3>
+                            <div class="w-1.5 h-6 bg-primary rounded-full"></div>
+                        </div>
+                        <span class="material-symbols-outlined text-slate-300">finance_mode</span>
                     </div>
-                    <button class="text-blue-600 text-[10px] font-black uppercase tracking-widest hover:underline flex items-center gap-1 flex-row-reverse transition-none">
-                         عرض السجل المالي <ArrowUpRight class="w-3 h-3" />
-                    </button>
+                    <div class="p-10">
+                        <div class="h-[350px] w-full">
+                            <canvas ref="revenueChartRef"></canvas>
+                        </div>
+                    </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right text-xs">
-                        <thead>
-                            <tr class="bg-slate-50 text-slate-400 border-b border-slate-200">
-                                <th class="px-8 py-4 font-black uppercase tracking-widest">رقم الفاتورة</th>
-                                <th class="px-8 py-4 font-black uppercase tracking-widest">جهة الدفع</th>
-                                <th class="px-8 py-4 font-black uppercase tracking-widest">القيمة الإجمالية</th>
-                                <th class="px-8 py-4 font-black uppercase tracking-widest text-center">حالة الدفع</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            <tr v-for="invoice in recent_invoices" :key="invoice.id" class="hover:bg-slate-50 transition-none group">
-                                <td class="px-8 py-4 font-bold font-mono text-slate-900">#{{ invoice.invoice_number }}</td>
-                                <td class="px-8 py-4 font-bold text-slate-700">{{ invoice.tenant?.name || 'غير محدد' }}</td>
-                                <td class="px-8 py-4 font-black text-blue-600">${{ formatNumber(invoice.amount) }}</td>
-                                <td class="px-8 py-4 text-center">
-                                    <span 
-                                        :class="[
-                                            'px-3 py-1 rounded text-[9px] font-black uppercase border border-opacity-50',
-                                            invoice.status === 'paid' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-rose-50 text-rose-600 border-rose-200'
-                                        ]"
-                                    >
-                                        {{ invoice.status === 'paid' ? 'تم تحصيلها' : 'قيد الانتظار' }}
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-             </div>
 
-             <!-- Recent Tenants Module -->
-             <div class="ent-card overflow-hidden">
-                <div class="ent-card-header flex justify-between items-center flex-row-reverse">
-                    <h3 class="text-xs font-black text-slate-900 uppercase tracking-widest">الموزعين المضافين حديثاً</h3>
-                </div>
-                <div class="divide-y divide-slate-100">
-                    <div v-for="tenant in recent_tenants" :key="tenant.id" class="p-4 hover:bg-slate-50 transition-none flex items-center justify-between flex-row-reverse">
-                        <div class="flex items-center gap-4 flex-row-reverse text-right">
-                            <div class="w-10 h-10 rounded-lg bg-slate-900 flex items-center justify-center text-xs font-bold text-white shadow-sm">
-                                {{ tenant.name.substring(0,1) }}
+                <!-- Strategic Network Health -->
+                <div class="surface-card rounded-[2.5rem] border border-outline-variant/5 shadow-2xl bg-slate-950 text-white overflow-hidden flex flex-col relative">
+                    <div class="absolute -top-32 -left-32 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
+                    <div class="p-10 flex items-center justify-between flex-row-reverse border-b border-white/5 relative z-10">
+                        <h3 class="text-xs font-black uppercase tracking-[0.3em] leading-none">مؤشرات الجاهزية (NOC Stats)</h3>
+                        <span class="material-symbols-outlined text-white/20">query_stats</span>
+                    </div>
+                    <div class="p-10 flex-1 space-y-10 relative z-10">
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center text-[11px] font-black uppercase tracking-[0.2em] flex-row-reverse">
+                                <span class="text-emerald-500">جودة الخدمة (QoS)</span>
+                                <span class="font-headline text-lg">98.4%</span>
                             </div>
-                            <div>
-                                <div class="text-[12px] font-bold text-slate-900">{{ tenant.name }}</div>
-                                <div class="text-[10px] text-slate-400 font-mono">{{ tenant.domain }}</div>
+                            <div class="h-3 bg-white/5 rounded-full overflow-hidden border border-white/10 p-0.5">
+                                <div class="h-full bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]" style="width: 98.4%"></div>
                             </div>
                         </div>
-                        <a :href="'http://' + tenant.domain" target="_blank" class="w-8 h-8 flex items-center justify-center hover:bg-white border hover:border-slate-200 rounded-lg transition-none text-slate-400 hover:text-blue-600">
-                            <ExternalLink class="w-4 h-4" />
-                        </a>
-                    </div>
-                    
-                    <div class="p-6 bg-slate-50/50">
-                         <button class="w-full py-3 border border-dashed border-slate-300 rounded-lg text-[10px] font-black text-slate-400 uppercase tracking-widest hover:bg-white hover:text-slate-900 transition-none">
-                            إدارة كافة الموزعين
-                         </button>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center text-[11px] font-black uppercase tracking-[0.2em] flex-row-reverse">
+                                <span class="text-blue-400">سعة النطاق المستهلكة</span>
+                                <span class="font-headline text-lg">64%</span>
+                            </div>
+                            <div class="h-3 bg-white/5 rounded-full overflow-hidden border border-white/10 p-0.5">
+                                <div class="h-full bg-primary rounded-full shadow-[0_0_15px_rgba(37,99,235,0.5)]" style="width: 64%"></div>
+                            </div>
+                        </div>
+                        <div class="pt-10 mt-10 border-t border-white/5 h-48">
+                            <div class="flex items-center justify-between mb-6 flex-row-reverse">
+                                 <p class="text-[10px] font-black text-white/30 uppercase tracking-widest">اتجاه اكتساب المشتركين</p>
+                                 <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                            </div>
+                             <canvas ref="tenantsChartRef"></canvas>
+                        </div>
                     </div>
                 </div>
-             </div>
+            </div>
+
+            <!-- Operational Activity Ledger -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 text-right">
+                <!-- Recent Fiscal Transactions -->
+                 <div class="lg:col-span-2 surface-card rounded-[2.5rem] border border-outline-variant/5 shadow-2xl bg-white overflow-hidden border-t-8 border-primary">
+                    <div class="p-10 flex justify-between items-center flex-row-reverse border-b border-outline-variant/5">
+                        <div class="flex items-center gap-4">
+                            <h3 class="text-xs font-black text-primary uppercase tracking-[0.3em] leading-none">أحدث القيود والعمليات المالية (Ledger)</h3>
+                            <div class="w-1.5 h-6 bg-primary rounded-full"></div>
+                        </div>
+                        <Link :href="route('accounting.invoices.index')" class="text-primary text-[10px] font-black uppercase tracking-widest hover:translate-x-[-4px] transition-transform flex items-center gap-2 flex-row-reverse">
+                             تـدقيق السجل المالي العام <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                        </Link>
+                    </div>
+                    <div class="overflow-x-auto px-6 pb-6">
+                        <table class="w-full text-right border-separate border-spacing-0">
+                            <thead>
+                                <tr class="text-slate-400">
+                                    <th class="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em]">بروتوكول السند</th>
+                                    <th class="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em]">الطرف المستفيد</th>
+                                    <th class="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-center">القيمة الاستحقاقية</th>
+                                    <th class="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-center">حالة السداد</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-outline-variant/5">
+                                <tr v-for="invoice in recent_invoices" :key="invoice.id" class="hover:bg-surface-container-low/50 transition-all group">
+                                    <td class="px-8 py-5 font-headline font-black text-primary tracking-widest">#{{ invoice.invoice_number }}</td>
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-3 justify-end">
+                                            <span class="text-sm font-black text-slate-700">{{ invoice.tenant?.name || 'مشترك عام إداري' }}</span>
+                                            <span class="material-symbols-outlined text-[16px] text-slate-300">account_balance</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5 text-center">
+                                        <div class="inline-flex items-center gap-2 font-headline font-black text-primary bg-slate-100 px-4 py-1.5 rounded-xl border border-slate-200">
+                                            {{ formatNumber(invoice.amount) }}
+                                            <span class="text-[8px] font-black text-slate-400 uppercase">ل.س</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5 text-center">
+                                        <div 
+                                            :class="[
+                                                'inline-flex items-center gap-2 px-4 py-1.5 rounded-xl text-[9px] font-black uppercase border-2 shadow-sm transition-all group-hover:scale-105',
+                                                invoice.status === 'paid' ? 'bg-emerald-500/5 text-emerald-600 border-emerald-500/10' : 'bg-rose-500/5 text-rose-500 border-rose-500/10'
+                                            ]"
+                                        >
+                                            <span class="w-1.5 h-1.5 rounded-full bg-current" :class="invoice.status === 'paid' ? 'animate-pulse' : ''"></span>
+                                            {{ invoice.status === 'paid' ? 'تمت التسوية' : 'قيد المطالبة' }}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                 </div>
+
+                 <!-- Regional Network Nodes Intel -->
+                 <div class="surface-card rounded-[2.5rem] border border-outline-variant/5 shadow-2xl bg-white overflow-hidden border-t-8 border-slate-950">
+                    <div class="p-10 flex justify-between items-center flex-row-reverse border-b border-outline-variant/5">
+                        <h3 class="text-xs font-black text-primary uppercase tracking-[0.3em] leading-none">موزعي الشبكة الإقليميين</h3>
+                        <span class="material-symbols-outlined text-slate-300">corporate_fare</span>
+                    </div>
+                    <div class="divide-y divide-outline-variant/5 px-6 pb-6 h-[450px] overflow-y-auto custom-scrollbar">
+                        <div v-for="tenant in recent_tenants" :key="tenant.id" class="p-6 hover:bg-surface-container-low transition-all flex items-center justify-between flex-row-reverse rounded-2xl">
+                            <div class="flex items-center gap-5 flex-row-reverse text-right">
+                                <div class="w-12 h-12 rounded-xl bg-slate-950 text-white flex items-center justify-center text-lg font-black shadow-2xl border border-white/10 group-hover:rotate-6 transition-transform">
+                                    {{ tenant.name.substring(0,1) }}
+                                </div>
+                                <div>
+                                    <div class="text-[14px] font-black text-primary leading-none">{{ tenant.name }}</div>
+                                    <div class="text-[10px] text-slate-400 font-headline font-black mt-2 tracking-widest uppercase opacity-60">{{ tenant.domain }}</div>
+                                </div>
+                            </div>
+                            <a :href="'http://' + tenant.domain" target="_blank" class="w-10 h-10 flex items-center justify-center bg-white border border-outline-variant/10 rounded-xl transition-all text-slate-400 hover:text-primary hover:scale-110 active:scale-90 shadow-sm">
+                                <span class="material-symbols-outlined text-[20px]">exit_to_app</span>
+                            </a>
+                        </div>
+                        
+                        <div class="p-6">
+                             <button class="w-full py-5 border-2 border-dashed border-slate-200 rounded-[1.5rem] text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] hover:bg-slate-50 hover:text-primary hover:border-primary transition-all active:scale-95 group">
+                                <span class="flex items-center justify-center gap-3">
+                                    <span class="material-symbols-outlined text-[18px]">manage_accounts</span> إدارة قاعدة الموزعين الشاملة
+                                </span>
+                             </button>
+                        </div>
+                    </div>
+                 </div>
+            </div>
         </div>
     </InstitutionalLayout>
 </template>
 
 <style scoped>
-/* Force instant transitions for RAM performance */
-* {
-    transition: none !important;
+.font-headline {
+    font-family: 'Manrope', sans-serif;
+}
+.custom-scrollbar::-webkit-scrollbar {
+    width: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
 }
 </style>

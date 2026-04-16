@@ -1,26 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { useForm, Head } from '@inertiajs/vue3';
-import AppleLayout from '@/Layouts/AppleLayout.vue';
-import { 
-    Settings, 
-    Globe, 
-    CreditCard, 
-    MessageSquare, 
-    ShieldCheck, 
-    Zap, 
-    Image as ImageIcon, 
-    Save, 
-    Activity, 
-    Smartphone, 
-    Lock, 
-    User,
-    CheckCircle2,
-    XCircle,
-    Info,
-    Layout,
-    ExternalLink
-} from 'lucide-vue-next';
+import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 import axios from 'axios';
 import { debounce } from 'lodash';
 
@@ -42,8 +23,8 @@ const form = useForm({
     // General
     company_name: props.settings.company_name,
     company_logo: null,
-    currency: props.settings.currency,
-    secondary_currency: props.settings.secondary_currency,
+    currency: props.settings.currency || 'ل.س',
+    secondary_currency: props.settings.secondary_currency || '$',
     exchange_rate: props.settings.exchange_rate,
     
     // Automation
@@ -109,299 +90,320 @@ const submit = () => {
     form.post(route('settings.update'), {
         preserveScroll: true,
         onSuccess: () => {
-            // Logic for success handled by redirect back
+            // Success logic
         }
     });
 };
 
 const tabs = [
-    { id: 'general', icon: Layout, label: 'General' },
-    { id: 'fiscal', icon: CreditCard, label: 'Fiscal' },
-    { id: 'reach', icon: MessageSquare, label: 'WhatsApp' },
-    { id: 'payments', icon: Zap, label: 'Gateways' },
-    { id: 'domain', icon: Globe, label: 'Domain' },
-    { id: 'security', icon: Lock, label: 'Profile' },
+    { id: 'general', icon: 'settings', label: 'البروتوكولات العامة' },
+    { id: 'automation', icon: 'offline_bolt', label: 'حوكمة الأتمتة' },
+    { id: 'reach', icon: 'chat_bubble', label: 'خوارزميات التواصل' },
+    { id: 'payments', icon: 'payments', label: 'بوابات السيولة' },
+    { id: 'domain', icon: 'language', label: 'بنية النطاقات' },
+    { id: 'security', icon: 'manage_accounts', label: 'أمن المشغل' },
 ];
 
 </script>
 
 <template>
-    <AppleLayout title="System Intelligence Hub">
-        <Head title="Command Configuration" />
+    <InstitutionalLayout title="مركز حوكمة المنصة">
+        <Head title="إعدادات النظام الإستراتيجية - MadaaQ" />
 
-        <div class="max-w-[1400px] mx-auto pb-24">
-            <!-- Strategic Header -->
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
-                <div>
-                    <h1 class="text-3xl font-bold tracking-tight mb-2">System Intelligence Hub</h1>
-                    <p class="text-[var(--app-secondary)] font-medium flex items-center gap-2">
-                        <Settings class="w-4 h-4" />
-                        Configuring core administrative artifacts and protocol boundaries
-                    </p>
+        <div class="max-w-7xl mx-auto pb-24 text-right px-4" dir="rtl">
+            <!-- Institutional Strategic Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-10 mb-16 flex-row-reverse text-right">
+                <div class="text-right">
+                    <h1 class="text-4xl font-black text-primary tracking-tight mb-2 uppercase">مركز الحوكمة والإعدادات السيادية (HQ Settings)</h1>
+                    <div class="flex items-center gap-4 justify-end">
+                        <p class="text-slate-500 font-bold text-sm uppercase tracking-wider">ضبط معايير التشغيل المركزية، الهوية المؤسساتية، وبنيوية بوابات الربط البرمجي</p>
+                        <span class="material-symbols-outlined text-[24px] text-primary">admin_panel_settings</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-12">
-                <!-- Navigation Tab Matrix -->
-                <div class="lg:col-span-1 space-y-4">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-12 flex-row-reverse">
+                <!-- Navigation Tab Rail (Command Center Style) -->
+                <div class="lg:col-span-1 space-y-4 order-2 lg:order-1">
                     <button 
                         v-for="tab in tabs" 
                         :key="tab.id"
                         @click="activeTab = tab.id"
-                        class="w-full apple-card p-6 flex items-center gap-4 transition-all hover:scale-105"
-                        :class="activeTab === tab.id ? 'bg-black text-white shadow-xl' : 'bg-white/50 text-[#86868b]'"
+                        class="w-full surface-card p-6 flex items-center gap-5 transition-all hover:translate-x-[-8px] flex-row-reverse group rounded-2xl border border-outline-variant/10 shadow-sm"
+                        :class="activeTab === tab.id ? 'bg-primary text-white shadow-2xl shadow-primary/20 border-primary' : 'bg-white text-slate-400 hover:text-primary hover:bg-slate-50'"
                     >
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center transition-colors" :class="activeTab === tab.id ? 'bg-white/10' : 'bg-black/[0.03]'">
-                            <component :is="tab.icon" class="w-5 h-5" />
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300" :class="activeTab === tab.id ? 'bg-white/20 rotate-12' : 'bg-surface-container shadow-inner border border-outline-variant/5'">
+                            <span class="material-symbols-outlined text-[28px]" :style="activeTab === tab.id ? 'font-variation-settings: \'FILL\' 1' : ''">{{ tab.icon }}</span>
                         </div>
-                        <span class="font-bold text-xs uppercase tracking-[0.2em]">{{ tab.label }}</span>
+                        <span class="font-black text-[12px] uppercase tracking-[0.2em]">{{ tab.label }}</span>
                     </button>
 
-                    <!-- Strategic Insights Card -->
-                    <div class="apple-card p-8 bg-indigo-600 text-white relative overflow-hidden group mt-8">
-                         <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all"></div>
-                         <div class="relative z-10 flex flex-col gap-4">
-                             <ShieldCheck class="w-10 h-10 text-white/40" />
+                    <!-- System Integrity Seal VIP -->
+                    <div class="surface-card p-10 bg-slate-950 text-white relative overflow-hidden group mt-12 rounded-[2rem] shadow-2xl border border-white/5">
+                         <div class="absolute -top-16 -right-16 w-64 h-64 bg-primary/20 rounded-full blur-3xl group-hover:scale-125 transition-all duration-1000"></div>
+                         <div class="relative z-10 flex flex-col gap-8 text-right">
+                             <div class="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center shadow-inner border border-white/5">
+                                <span class="material-symbols-outlined text-[40px] text-white/40">verified_user</span>
+                             </div>
                              <div>
-                                 <h4 class="text-sm font-bold uppercase tracking-tight">Sync Integrity</h4>
-                                 <p class="text-[9px] font-black text-white/40 uppercase tracking-widest mt-1">Updates to these protocols impact the global infrastructure handshake.</p>
+                                 <h4 class="text-base font-black uppercase tracking-tight">نزاهة الهيكلية الرقمية</h4>
+                                 <p class="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mt-3 leading-relaxed">تعديل هذه البروتوكولات يؤثر بشكل تكتيكي مباشر على تدفق البيانات واستدامة الخدمات.</p>
                              </div>
                          </div>
                     </div>
                 </div>
 
-                <!-- Intelligence Workspace (Form Sections) -->
-                <div class="lg:col-span-3">
+                <!-- Intelligence Configuration Workspace -->
+                <div class="lg:col-span-3 order-1 lg:order-2">
                     <form @submit.prevent="submit" class="space-y-12">
                         
-                        <!-- 1. GENERAL PROTOCOLS -->
-                        <div v-if="activeTab === 'general'" class="animate-in slide-in-from-right duration-500">
-                             <div class="apple-card p-12 space-y-12">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-1.5 h-6 bg-black rounded-full"></div>
-                                    <h3 class="text-sm font-bold tracking-tight uppercase">Base Identity Protocols</h3>
+                        <!-- 1. GENERAL IDENTITIES -->
+                        <div v-if="activeTab === 'general'" class="animate-in slide-in-from-top duration-500">
+                             <div class="surface-card p-12 space-y-12 rounded-[2.5rem] shadow-2xl border border-outline-variant/5 bg-white">
+                                <div class="flex items-center gap-4 justify-end">
+                                    <h3 class="text-xs font-black text-primary uppercase tracking-[0.3em]">بروتوكول الهوية الأساسي (Core Identity)</h3>
+                                    <div class="w-1.5 h-8 bg-primary rounded-full"></div>
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                                    <div class="space-y-4">
-                                        <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Legacy Entity Name</label>
-                                        <input v-model="form.company_name" type="text" class="apple-input h-14 font-bold text-lg">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 flex-row-reverse">
+                                    <div class="space-y-4 text-right">
+                                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mr-2">مُعرف المنظومة (Network Label)</label>
+                                        <input v-model="form.company_name" type="text" class="form-input-monolith h-16 font-black text-xl">
                                     </div>
-                                    <div class="space-y-4">
-                                        <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Handshake Symbol (Logo)</label>
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-14 h-14 rounded-2xl bg-black/[0.03] flex items-center justify-center text-[#86868b] border border-dashed border-black/10">
-                                                <ImageIcon v-if="!settings.company_logo" class="w-6 h-6" />
-                                                <img v-else :src="'/storage/' + settings.company_logo" class="w-10 h-10 object-contain" />
+                                    <div class="space-y-4 text-right">
+                                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mr-2">مخطط الشعار المؤسساتي (Logo Artifact)</label>
+                                        <div class="flex items-center gap-6 flex-row-reverse">
+                                            <div class="w-20 h-20 rounded-2xl bg-surface-container flex items-center justify-center text-slate-300 border border-outline-variant/10 shadow-2xl overflow-hidden relative group/logo">
+                                                <div class="absolute inset-0 bg-primary opacity-0 group-hover/logo:opacity-5 transition-opacity"></div>
+                                                <span v-if="!settings.company_logo" class="material-symbols-outlined text-[32px]">image</span>
+                                                <img v-else :src="'/storage/' + settings.company_logo" class="w-full h-full object-contain p-2" />
                                             </div>
-                                            <input type="file" @change="e => form.company_logo = e.target.files[0]" class="flex-1 text-[11px] font-medium text-[#86868b] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[9px] file:font-black file:uppercase file:bg-black file:text-white hover:file:bg-black/80 transition-all" />
+                                            <input type="file" @change="e => form.company_logo = e.target.files[0]" class="flex-1 text-[11px] font-black text-slate-400 file:ml-6 file:py-4 file:px-10 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-slate-950 file:text-white hover:file:bg-primary transition-all cursor-pointer shadow-sm" />
                                         </div>
                                     </div>
-                                    <div class="space-y-4">
-                                        <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Operational Currency</label>
-                                        <input v-model="form.currency" type="text" class="apple-input h-14 font-bold text-lg" placeholder="ر.س">
+                                    <div class="space-y-4 text-right">
+                                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mr-2">العملة السيادية للمنظومة</label>
+                                        <input v-model="form.currency" type="text" class="form-input-monolith h-16 font-black text-xl" placeholder="ل.س">
                                     </div>
-                                    <div class="space-y-4">
-                                        <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Secondary Exchange Artifact</label>
-                                        <input v-model="form.secondary_currency" type="text" class="apple-input h-14 font-bold text-lg" placeholder="$">
+                                    <div class="space-y-4 text-right">
+                                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mr-2">عملة التقاص الثانوية (Global)</label>
+                                        <input v-model="form.secondary_currency" type="text" class="form-input-monolith h-16 font-black text-xl" placeholder="$">
                                     </div>
-                                    <div class="space-y-4">
-                                        <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Extraction Velocity (Rate)</label>
-                                        <input v-model="form.exchange_rate" type="number" step="0.0001" class="apple-input h-14 font-mono font-bold text-lg">
+                                    <div class="space-y-4 text-right">
+                                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mr-2">معامل التحويل اللحظي (Exchange Rate)</label>
+                                        <div class="relative group">
+                                            <span class="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors">currency_exchange</span>
+                                            <input v-model="form.exchange_rate" type="number" step="0.0001" class="form-input-monolith h-16 pr-14 font-headline font-black text-2xl tracking-tighter">
+                                        </div>
                                     </div>
                                 </div>
                              </div>
                         </div>
 
-                        <!-- 2. FISCAL AUTOMATION -->
-                        <div v-if="activeTab === 'fiscal'" class="animate-in slide-in-from-right duration-500">
-                             <div class="apple-card p-12 space-y-12">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                                    <h3 class="text-sm font-bold tracking-tight uppercase">Fiscal Automation Protocols</h3>
+                        <!-- 2. AUTOMATION DEPLOYMENT -->
+                        <div v-if="activeTab === 'automation'" class="animate-in slide-in-from-top duration-500">
+                             <div class="surface-card p-12 space-y-12 bg-white rounded-[2.5rem] shadow-2xl border border-outline-variant/5">
+                                <div class="flex items-center gap-4 justify-end">
+                                    <h3 class="text-xs font-black text-primary uppercase tracking-[0.3em]">بروتوكول الأتمتة والتحصيل (Automation Grid)</h3>
+                                    <div class="w-1.5 h-8 bg-emerald-500 rounded-full"></div>
                                 </div>
 
-                                <div class="space-y-10">
-                                     <div class="flex items-center justify-between p-8 bg-black/[0.02] rounded-[2.5rem] border border-black/5">
-                                         <div class="flex items-center gap-6">
-                                             <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                                                <Smartphone class="w-6 h-6" />
+                                <div class="space-y-12">
+                                     <div class="flex items-center justify-between p-12 bg-slate-50 rounded-3xl border border-outline-variant/10 flex-row-reverse shadow-inner">
+                                         <div class="flex items-center gap-8 flex-row-reverse">
+                                             <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center border border-emerald-500/20 shadow-lg">
+                                                <span class="material-symbols-outlined text-[32px]">bolt</span>
                                              </div>
-                                             <div>
-                                                 <h4 class="text-sm font-bold uppercase tracking-tight">Auto-Suspension Handshake</h4>
-                                                 <p class="text-[10px] font-black text-[#86868b] uppercase tracking-widest mt-1">Disconnect subscribers automatically upon credit depletion</p>
+                                             <div class="text-right">
+                                                 <h4 class="text-lg font-black uppercase tracking-tight">بروتوكول الإيقاف التلقائي (Auto-Suspend)</h4>
+                                                 <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mt-2 leading-none">فصل المشتركين برمجياً فور انتهاء الجلسة الزمنية</p>
                                              </div>
                                          </div>
                                          <div class="relative inline-flex items-center cursor-pointer">
                                              <input v-model="form.auto_suspend_enabled" type="checkbox" class="sr-only peer">
-                                             <div class="w-14 h-8 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500"></div>
+                                             <div class="w-16 h-10 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-8 after:w-8 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
                                          </div>
                                      </div>
 
-                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                                         <div class="space-y-4">
-                                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Default Grace Horizon (Days)</label>
-                                            <input v-model="form.default_grace_period" type="number" class="apple-input h-14 font-bold text-lg">
+                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-10 flex-row-reverse">
+                                         <div class="space-y-4 text-right">
+                                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mr-2">فترة السماح التكتيكية (Grace Period)</label>
+                                            <div class="relative">
+                                                <input v-model="form.default_grace_period" type="number" class="form-input-monolith h-16 font-headline font-black text-2xl pr-8">
+                                                <span class="absolute left-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300 uppercase tracking-widest">HRS/DAYS</span>
+                                            </div>
                                         </div>
-                                        <div class="space-y-4">
-                                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Invoice Pre-Generation Lead (Days)</label>
-                                            <input v-model="form.invoice_generation_days" type="number" class="apple-input h-14 font-bold text-lg">
+                                        <div class="space-y-4 text-right">
+                                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mr-2">دورة إصدار الفواتير المسبقة (يوم)</label>
+                                            <div class="relative">
+                                                <input v-model="form.invoice_generation_days" type="number" class="form-input-monolith h-16 font-headline font-black text-2xl pr-8">
+                                                <span class="absolute left-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300 uppercase tracking-widest">DAYS</span>
+                                            </div>
                                         </div>
                                      </div>
                                 </div>
                              </div>
                         </div>
 
-                        <!-- 3. WHATSAPP INTELLIGENCE -->
-                        <div v-if="activeTab === 'reach'" class="animate-in slide-in-from-right duration-500">
-                             <div class="apple-card p-12 space-y-12">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-1.5 h-6 bg-emerald-400 rounded-full"></div>
-                                    <h3 class="text-sm font-bold tracking-tight uppercase">Reach Intelligence Protocols (WhatsApp)</h3>
+                        <!-- 3. REACH INTELLIGENCE -->
+                        <div v-if="activeTab === 'reach'" class="animate-in slide-in-from-top duration-500">
+                             <div class="surface-card p-12 space-y-12 bg-white rounded-[2.5rem] shadow-2xl border border-outline-variant/5">
+                                <div class="flex items-center gap-4 justify-end">
+                                    <h3 class="text-xs font-black text-primary uppercase tracking-[0.3em]">خوارزميات التواصل الموجه (Messaging Protocols)</h3>
+                                    <div class="w-1.5 h-8 bg-[#25d366] rounded-full"></div>
                                 </div>
 
-                                <div class="space-y-10">
-                                     <div class="space-y-4">
-                                        <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Extraction Method</label>
-                                        <div class="flex bg-black/[0.03] p-1.5 rounded-2xl w-fit">
-                                            <button type="button" @click="form.whatsapp_type = 'api'" class="px-8 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all" :class="form.whatsapp_type === 'api' ? 'bg-white text-black shadow-lg' : 'text-[#86868b]'">Official Meta Cloud API</button>
-                                            <button type="button" @click="form.whatsapp_type = 'regular'" class="px-8 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all" :class="form.whatsapp_type === 'regular' ? 'bg-white text-black shadow-lg' : 'text-[#86868b]'">Legacy Number</button>
+                                <div class="space-y-12 text-right">
+                                     <div class="space-y-5">
+                                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mr-2 text-right block">طريقة الربط البرمجي (Integration Protocol)</label>
+                                        <div class="flex bg-slate-50 p-2 rounded-2xl border border-outline-variant/10 w-fit mr-auto flex-row-reverse shadow-inner">
+                                            <button type="button" @click="form.whatsapp_type = 'api'" class="px-10 py-4 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] transition-all" :class="form.whatsapp_type === 'api' ? 'bg-primary text-white shadow-xl' : 'text-slate-400 hover:text-primary'">Meta Cloud API (Premium)</button>
+                                            <button type="button" @click="form.whatsapp_type = 'regular'" class="px-10 py-4 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] transition-all" :class="form.whatsapp_type === 'regular' ? 'bg-primary text-white shadow-xl' : 'text-slate-400 hover:text-primary'">Direct Mobile Number</button>
                                         </div>
                                     </div>
 
-                                    <div v-if="form.whatsapp_type === 'api'" class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                                         <div class="space-y-4 md:col-span-2">
-                                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Meta Access Artifact (Token)</label>
-                                            <input v-model="form.whatsapp_token" type="password" class="apple-input h-14 font-mono font-bold">
+                                    <div v-if="form.whatsapp_type === 'api'" class="grid grid-cols-1 md:grid-cols-2 gap-10 flex-row-reverse">
+                                         <div class="space-y-4 md:col-span-2 text-right">
+                                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mr-2">مفتاح الوصول السيادي (Meta Cloud Token)</label>
+                                            <input v-model="form.whatsapp_token" type="password" class="form-input-monolith h-16 font-headline font-black tracking-widest text-lg">
                                         </div>
-                                        <div class="space-y-4">
-                                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Phone Identity ID</label>
-                                            <input v-model="form.whatsapp_phone_id" type="text" class="apple-input h-14 font-mono font-bold">
+                                        <div class="space-y-4 text-right">
+                                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mr-2">معرف بوابة الإرسال (Phone Node ID)</label>
+                                            <input v-model="form.whatsapp_phone_id" type="text" class="form-input-monolith h-16 font-headline font-black text-xl">
                                         </div>
-                                        <div class="space-y-4">
-                                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Business Handshake ID</label>
-                                            <input v-model="form.whatsapp_business_id" type="text" class="apple-input h-14 font-mono font-bold">
+                                        <div class="space-y-4 text-right">
+                                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mr-2">معرف الأعمال المعتمد (Business ID)</label>
+                                            <input v-model="form.whatsapp_business_id" type="text" class="form-input-monolith h-16 font-headline font-black text-xl">
                                         </div>
                                     </div>
-                                    <div v-else class="space-y-4">
-                                         <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Extraction Number</label>
-                                         <input v-model="form.whatsapp_regular_number" type="text" class="apple-input h-14 font-bold text-lg" placeholder="+963...">
+                                    <div v-else class="space-y-4 text-right max-w-md mr-auto">
+                                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mr-2">رقم التواصل المعتمد (Authorized Number)</label>
+                                         <div class="relative group">
+                                             <span class="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#25d366] transition-colors">call</span>
+                                             <input v-model="form.whatsapp_regular_number" type="text" class="form-input-monolith h-16 pr-14 font-headline font-black text-2xl tracking-widest" placeholder="+963 --- --- ---">
+                                         </div>
                                     </div>
                                 </div>
                              </div>
                         </div>
 
-                        <!-- 4. PAYMENT GATEWAYS -->
-                        <div v-if="activeTab === 'payments'" class="animate-in slide-in-from-right duration-500">
-                             <div class="space-y-8">
-                                <!-- Stripe Artifact -->
-                                <div class="apple-card p-10 space-y-10">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center gap-4">
-                                             <div class="w-12 h-12 rounded-2xl bg-[#635bff] text-white flex items-center justify-center italic font-black text-2xl">S</div>
-                                             <h3 class="text-xs font-black uppercase tracking-widest">Global Credit Extraction (Stripe)</h3>
+                        <!-- 4. GATEWAY PROTOCOLS (Fiscal) -->
+                        <div v-if="activeTab === 'payments'" class="animate-in slide-in-from-top duration-500">
+                             <div class="space-y-10">
+                                <div class="surface-card p-12 space-y-12 bg-white rounded-[2.5rem] shadow-2xl border border-outline-variant/5">
+                                    <div class="flex items-center justify-between flex-row-reverse">
+                                        <div class="flex items-center gap-8 flex-row-reverse">
+                                             <div class="w-16 h-16 rounded-2xl bg-[#635bff] text-white flex items-center justify-center italic font-black text-4xl shadow-2xl shadow-indigo-200">S</div>
+                                             <div class="text-right">
+                                                 <h3 class="text-lg font-black uppercase tracking-tight">بوابة Stripe العالمية للخصم</h3>
+                                                 <p class="text-[11px] font-black text-slate-400 uppercase mt-2 tracking-widest opacity-60">بروتوكول تحصيل البطاقات الائتمانية والخصم المباشر العالمي</p>
+                                             </div>
                                         </div>
                                         <div class="relative inline-flex items-center cursor-pointer">
                                              <input v-model="form.stripe_active" type="checkbox" class="sr-only peer">
-                                             <div class="w-14 h-8 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#635bff]"></div>
+                                             <div class="w-16 h-10 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-8 after:w-8 after:transition-all peer-checked:bg-[#635bff] shadow-inner"></div>
                                          </div>
                                     </div>
-                                    <div v-if="form.stripe_active" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                         <div class="space-y-4">
-                                            <label class="text-[9px] font-black text-[#86868b] uppercase tracking-widest">Publishable Artifact</label>
-                                            <input v-model="form.stripe_public_key" type="text" class="apple-input h-12 font-mono text-[11px]">
+                                    <div v-if="form.stripe_active" class="grid grid-cols-1 md:grid-cols-2 gap-10 flex-row-reverse animate-in fade-in zoom-in duration-300">
+                                         <div class="space-y-4 text-right">
+                                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2">المفتاح العلني للمنظومة (Publishable Key)</label>
+                                            <input v-model="form.stripe_public_key" type="text" class="form-input-monolith h-14 font-headline text-[13px] tracking-tight">
                                         </div>
-                                        <div class="space-y-4">
-                                            <label class="text-[9px] font-black text-[#86868b] uppercase tracking-widest">Secret Handshake</label>
-                                            <input v-model="form.stripe_secret_key" type="password" class="apple-input h-12 font-mono text-[11px]">
+                                        <div class="space-y-4 text-right">
+                                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2">المفتاح السري المشفر (Secret Key Artifact)</label>
+                                            <input v-model="form.stripe_secret_key" type="password" class="form-input-monolith h-14 font-headline text-[13px] tracking-widest">
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Regional Gateways Matrix -->
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                     <!-- PayPal -->
-                                     <div class="apple-card p-8 space-y-6">
-                                         <div class="flex items-center justify-between">
-                                             <p class="text-[10px] font-black uppercase tracking-widest text-[#003087]">PayPal Hub</p>
-                                             <input v-model="form.paypal_active" type="checkbox" class="w-5 h-5 rounded border-[#d2d2d7] text-[#0070ba] focus:ring-[#0070ba]">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 flex-row-reverse">
+                                     <div class="surface-card p-10 space-y-10 rounded-3xl bg-white shadow-xl border border-[#003087]/5">
+                                         <div class="flex items-center justify-between flex-row-reverse">
+                                             <div class="flex items-center gap-4 flex-row-reverse">
+                                                 <div class="w-10 h-10 rounded-lg bg-[#0070ba] text-white flex items-center justify-center italic font-black text-xl">P</div>
+                                                 <p class="text-[11px] font-black uppercase tracking-widest text-[#003087]">PayPal Hub Integration</p>
+                                             </div>
+                                             <input v-model="form.paypal_active" type="checkbox" class="w-6 h-6 rounded-lg border-outline-variant/30 text-[#0070ba] focus:ring-[#0070ba] shadow-sm">
                                          </div>
-                                         <div v-if="form.paypal_active" class="space-y-4">
-                                             <input v-model="form.paypal_client_id" type="text" class="apple-input h-10 text-[10px] font-mono" placeholder="Client ID">
-                                             <input v-model="form.paypal_secret" type="password" class="apple-input h-10 text-[10px] font-mono" placeholder="Secret Artifact">
+                                         <div v-if="form.paypal_active" class="space-y-6 animate-in slide-in-from-top duration-300">
+                                             <input v-model="form.paypal_client_id" type="text" class="form-input-monolith h-14 text-[12px] font-headline" placeholder="Client Protocol ID">
+                                             <input v-model="form.paypal_secret" type="password" class="form-input-monolith h-14 text-[12px] font-headline" placeholder="Secure Secret Token">
                                          </div>
                                      </div>
-                                     <!-- SyriaTel Cash -->
-                                     <div class="apple-card p-8 space-y-6 border-rose-100 bg-rose-50/10">
-                                         <div class="flex items-center justify-between">
-                                             <p class="text-[10px] font-black uppercase tracking-widest text-rose-600">SyriaTel Cash</p>
-                                             <input v-model="form.syriatel_cash_active" type="checkbox" class="w-5 h-5 rounded border-rose-200 text-rose-600 focus:ring-rose-600">
+                                     <div class="surface-card p-10 space-y-10 rounded-3xl border border-rose-200 bg-rose-50/20">
+                                         <div class="flex items-center justify-between flex-row-reverse">
+                                             <div class="flex items-center gap-4 flex-row-reverse">
+                                                 <div class="w-10 h-10 rounded-lg bg-rose-600 text-white flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">payments</span></div>
+                                                 <p class="text-[11px] font-black uppercase tracking-widest text-rose-600">بوابة سيريتل كاش (SyriaTel)</p>
+                                             </div>
+                                             <input v-model="form.syriatel_cash_active" type="checkbox" class="w-6 h-6 rounded-lg border-rose-200 text-rose-600 focus:ring-rose-600 shadow-sm">
                                          </div>
-                                         <div v-if="form.syriatel_cash_active" class="space-y-4">
-                                             <input v-model="form.syriatel_cash_merchant_id" type="text" class="apple-input h-10 text-[10px] font-mono border-rose-100" placeholder="Merchant ID">
-                                             <input v-model="form.syriatel_cash_pin" type="password" class="apple-input h-10 text-[10px] font-mono border-rose-100" placeholder="PIN Artifact">
+                                         <div v-if="form.syriatel_cash_active" class="space-y-6 animate-in slide-in-from-top duration-300">
+                                             <input v-model="form.syriatel_cash_merchant_id" type="text" class="form-input-monolith h-14 text-[12px] font-headline border-rose-100" placeholder="Merchant Identity Code">
+                                             <input v-model="form.syriatel_cash_pin" type="password" class="form-input-monolith h-14 text-[12px] font-headline border-rose-100" placeholder="Wallet PIN Artifact">
                                          </div>
                                      </div>
                                 </div>
                              </div>
                         </div>
 
-                        <!-- 5. DOMAIN GOVERNANCE -->
-                        <div v-if="activeTab === 'domain'" class="animate-in slide-in-from-right duration-500">
-                             <div class="apple-card p-12 space-y-12">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-1.5 h-6 bg-indigo-600 rounded-full"></div>
-                                    <h3 class="text-sm font-bold tracking-tight uppercase">Domain Governance Intelligence</h3>
+                        <!-- 5. DOMAIN ARCHITECTURE -->
+                        <div v-if="activeTab === 'domain'" class="animate-in slide-in-from-top duration-500">
+                             <div class="surface-card p-12 space-y-12 bg-white rounded-[2.5rem] shadow-2xl border border-outline-variant/5">
+                                <div class="flex items-center gap-4 justify-end">
+                                    <h3 class="text-xs font-black text-primary uppercase tracking-[0.3em]">هيكلية النطاقات المركزية (Domain Logic)</h3>
+                                    <div class="w-1.5 h-8 bg-indigo-600 rounded-full"></div>
                                 </div>
 
-                                <div class="space-y-10">
-                                     <div class="flex items-center justify-between p-8 bg-black/5 rounded-[2.5rem] border border-black/5">
-                                         <div class="flex items-center gap-6">
-                                             <div class="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center">
-                                                <Globe class="w-6 h-6" />
+                                <div class="space-y-12">
+                                     <div class="flex items-center justify-between p-12 bg-indigo-50/50 rounded-3xl border border-indigo-100 flex-row-reverse shadow-inner">
+                                         <div class="flex items-center gap-8 flex-row-reverse">
+                                             <div class="w-16 h-16 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-2xl border border-white/10">
+                                                <span class="material-symbols-outlined text-[32px]">public</span>
                                              </div>
-                                             <div>
-                                                 <h4 class="text-sm font-bold uppercase tracking-tight">Personalized Extraction Link</h4>
-                                                 <p class="text-[10px] font-black text-[#86868b] uppercase tracking-widest mt-1">Activate custom subdomain for subscriber portal entry</p>
+                                             <div class="text-right">
+                                                 <h4 class="text-lg font-black uppercase tracking-tight">اسم النطاق الفرعي السيادي (Subdomain)</h4>
+                                                 <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mt-2 leading-none">تخصيص مسار فرعي موحد للوصول لبوابة الخدمات</p>
                                              </div>
                                          </div>
                                          <div class="relative inline-flex items-center cursor-pointer">
                                              <input v-model="form.is_subdomain_enabled" type="checkbox" class="sr-only peer">
-                                             <div class="w-14 h-8 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-indigo-600"></div>
+                                             <div class="w-16 h-10 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-8 after:w-8 after:transition-all peer-checked:bg-indigo-600 shadow-inner"></div>
                                          </div>
                                      </div>
 
-                                     <div v-if="form.is_subdomain_enabled" class="space-y-8 p-10 bg-white border border-black/5 rounded-[2.5rem] shadow-sm">
-                                         <div class="space-y-4">
-                                            <div class="flex items-center justify-between px-2">
-                                                <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest">Identity Prefix</label>
-                                                <div v-if="subdomainStatus.checking" class="flex items-center gap-2 text-[9px] font-bold text-indigo-500">
-                                                    <Activity class="w-3 h-3 animate-spin" /> PROBING...
+                                     <div v-if="form.is_subdomain_enabled" class="space-y-12 p-12 bg-white border border-outline-variant/10 rounded-[2rem] shadow-2xl animate-in fade-in duration-500">
+                                         <div class="space-y-6 text-right">
+                                            <div class="flex items-center justify-between px-3 flex-row-reverse">
+                                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest leading-none">بادئة الرابط اللحظية (Prefix)</label>
+                                                <div v-if="subdomainStatus.checking" class="flex items-center gap-3 text-[10px] font-black text-indigo-500 uppercase">
+                                                    <span class="material-symbols-outlined text-[18px] animate-spin">rebase</span> جاري فحص الوفرة...
                                                 </div>
-                                                <div v-else-if="subdomainStatus.available === true" class="flex items-center gap-2 text-[9px] font-bold text-emerald-500">
-                                                    <CheckCircle2 class="w-3 h-3" /> PROTOCOL AVAILABLE
+                                                <div v-else-if="subdomainStatus.available === true" class="flex items-center gap-3 text-[10px] font-black text-emerald-500 uppercase">
+                                                    <span class="material-symbols-outlined text-[18px]">verified</span> البروتوكول متاح للاعتماد
                                                 </div>
-                                                <div v-else-if="subdomainStatus.available === false" class="flex items-center gap-2 text-[9px] font-bold text-rose-500">
-                                                    <XCircle class="w-3 h-3" /> CONFLICT DETECTED
+                                                <div v-else-if="subdomainStatus.available === false" class="flex items-center gap-3 text-[10px] font-black text-rose-500 uppercase">
+                                                    <span class="material-symbols-outlined text-[18px]">warning</span> البادئة محجوزة مسبقاً
                                                 </div>
                                             </div>
-                                            <div class="flex items-center gap-4">
+                                            <div class="flex items-center gap-8 flex-row-reverse">
                                                 <div class="flex-1 relative group">
                                                     <input 
                                                         v-model="form.subdomain" 
                                                         type="text" 
-                                                        class="apple-input h-14 pl-6 font-bold text-lg text-right lowercase focus:ring-indigo-500" 
-                                                        placeholder="vendor1"
+                                                        class="form-input-monolith h-20 px-10 font-headline font-black text-3xl text-left lowercase focus:ring-indigo-600 shadow-inner border-2" 
+                                                        placeholder="node_prefix"
                                                     >
                                                 </div>
-                                                <span class="text-xl font-bold text-[#86868b]">.madaaq.com</span>
+                                                <span class="text-4xl font-black text-slate-200 font-headline">.madaaq.com</span>
                                             </div>
                                          </div>
 
-                                         <div class="p-6 bg-indigo-50 rounded-2xl border border-indigo-100 flex items-start gap-4">
-                                              <Info class="w-5 h-5 text-indigo-600 mt-0.5" />
-                                              <p class="text-[11px] font-medium text-indigo-900 leading-relaxed">
-                                                  Once committed, your subscriber portal will be accessible via <span class="font-black text-indigo-600">{{ form.subdomain || 'prefix' }}.madaaq.com</span>. Please allow 5-10 minutes for global DNS propagation.
+                                         <div class="p-10 bg-indigo-950 text-white rounded-3xl border border-white/5 flex items-start gap-8 flex-row-reverse shadow-2xl relative overflow-hidden">
+                                              <div class="absolute inset-0 bg-primary/5 animate-pulse"></div>
+                                              <span class="material-symbols-outlined text-primary text-[32px] mt-1 shrink-0">info</span>
+                                              <p class="text-[14px] font-bold leading-relaxed text-right opacity-80">
+                                                  بمجرد تأكيد البروتوكول، ستكون البوابة متاحة عالمياً عبر المسار <span class="font-black text-primary font-headline text-lg">{{ form.subdomain || 'prefix' }}.madaaq.com</span>. يرجى الانتظار لدقائق معدودة لاتمام مزامنة الـ <span class="text-primary font-headline">DNS</span>.
                                               </p>
                                          </div>
                                      </div>
@@ -409,39 +411,41 @@ const tabs = [
                              </div>
                         </div>
 
-                        <!-- 6. SECURITY / PROFILE -->
-                        <div v-if="activeTab === 'security'" class="animate-in slide-in-from-right duration-500">
-                             <div class="apple-card p-12 space-y-12">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-1.5 h-6 bg-rose-500 rounded-full"></div>
-                                    <h3 class="text-sm font-bold tracking-tight uppercase">Command Authority Identity (Profile)</h3>
+                        <!-- 6. OPERATOR AUTHORITY (Security Profile) -->
+                        <div v-if="activeTab === 'security'" class="animate-in slide-in-from-top duration-500">
+                             <div class="surface-card p-12 space-y-12 bg-white rounded-[2.5rem] shadow-2xl border border-outline-variant/5">
+                                <div class="flex items-center gap-4 justify-end">
+                                    <h3 class="text-xs font-black text-primary uppercase tracking-[0.3em]">هوية المشغل السيادية (Admin Identity)</h3>
+                                    <div class="w-1.5 h-8 bg-rose-500 rounded-full"></div>
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                                    <div class="space-y-4">
-                                        <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Operator Identity</label>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 flex-row-reverse">
+                                    <div class="space-y-4 text-right">
+                                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mr-2">هوية المشغل المعتمدة (Authorized Name)</label>
                                         <div class="relative group">
-                                            <User class="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-black/20 group-focus-within:text-black transition-colors" />
-                                            <input v-model="form.profile_name" type="text" class="apple-input h-14 pl-16 font-bold">
+                                            <span class="material-symbols-outlined absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors text-[28px]">shield_person</span>
+                                            <input v-model="form.profile_name" type="text" class="form-input-monolith h-16 pr-16 font-black text-xl">
                                         </div>
                                     </div>
-                                    <div class="space-y-4">
-                                        <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Direct Signal (Phone)</label>
+                                    <div class="space-y-4 text-right">
+                                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mr-2">رقم التواصل العاجل (Admin Phone)</label>
                                         <div class="relative group">
-                                            <Smartphone class="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-black/20 group-focus-within:text-black transition-colors" />
-                                            <input v-model="form.profile_phone" type="text" class="apple-input h-14 pl-16 font-bold">
+                                            <span class="material-symbols-outlined absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors text-[28px]">ad_units</span>
+                                            <input v-model="form.profile_phone" type="text" class="form-input-monolith h-16 pr-16 font-headline font-black text-xl tracking-widest">
                                         </div>
                                     </div>
-                                    <div class="md:col-span-2 pt-6">
-                                        <div class="h-px bg-black/[0.03] w-full mb-10"></div>
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                                             <div class="space-y-4">
-                                                <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Secret Rotation (New Password)</label>
-                                                <input v-model="form.profile_password" type="password" class="apple-input h-14 font-mono">
+                                    <div class="md:col-span-2 pt-12 border-t border-outline-variant/10">
+                                         <div class="flex items-center gap-4 justify-end mb-10">
+                                            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">تدوير شيفرة الدخول السيادية (Security Protocol Rotation)</h4>
+                                      </div>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 flex-row-reverse">
+                                             <div class="space-y-4 text-right">
+                                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mr-2">الشيفرة الجديدة (New Secret)</label>
+                                                <input v-model="form.profile_password" type="password" class="form-input-monolith h-16 font-headline tracking-[0.8em] text-xl">
                                             </div>
-                                            <div class="space-y-4">
-                                                <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Secret Confirmation</label>
-                                                <input v-model="form.profile_password_confirmation" type="password" class="apple-input h-14 font-mono">
+                                            <div class="space-y-4 text-right">
+                                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mr-2">تأكيد الشيفرة الجديدة</label>
+                                                <input v-model="form.profile_password_confirmation" type="password" class="form-input-monolith h-16 font-headline tracking-[0.8em] text-xl">
                                             </div>
                                         </div>
                                     </div>
@@ -449,29 +453,27 @@ const tabs = [
                              </div>
                         </div>
 
-                        <!-- GLOBAL COMMITMENT BAR -->
-                        <div class="flex flex-col md:flex-row items-center justify-between gap-10 apple-card p-12 bg-black text-white relative overflow-hidden">
-                            <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
-                            <div class="relative z-10 flex items-center gap-8 text-left">
-                                <div class="w-16 h-16 bg-white/10 rounded-[1.5rem] flex items-center justify-center text-3xl">
-                                    💾
+                        <!-- GLOBAL SYNCHRONIZATION BAR (The Final Commit) -->
+                        <div class="surface-card p-12 bg-slate-950 border-none relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-12 flex-row-reverse shadow-[0_35px_60px_-15px_rgba(0,0,0,0.5)] rounded-[2.5rem] mt-24">
+                            <div class="absolute inset-0 bg-primary/10 animate-pulse pointer-events-none"></div>
+                            <div class="relative z-10 flex items-center gap-10 flex-row-reverse text-right">
+                                <div class="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center text-primary text-4xl border border-white/5 shadow-inner rotate-3 transition-transform group-hover:rotate-0">
+                                    <span class="material-symbols-outlined text-[40px] font-black" style="font-variation-settings: 'FILL' 1">cloud_sync</span>
                                 </div>
                                 <div>
-                                     <h4 class="text-lg font-bold uppercase tracking-tight">Synchronization Commitment</h4>
-                                     <p class="text-[9px] font-black text-white/40 uppercase tracking-widest mt-1">
-                                        Pushing updated intelligence protocols to global infrastructure nodes.
-                                     </p>
+                                     <h4 class="text-2xl font-black text-white uppercase tracking-tight leading-none mb-3">حفظ الإعدادات الإستراتيجية (Commit)</h4>
+                                     <p class="text-[11px] font-black text-white/30 uppercase tracking-[0.3em] leading-none">مزامنة كافة التغييرات السيادية مع قاعدة البيانات والبروتوكولات النشطة.</p>
                                 </div>
                             </div>
                             <div class="relative z-10">
                                 <button 
                                     type="submit"
-                                    class="px-12 py-5 bg-white text-black font-bold text-xs uppercase tracking-[0.2em] rounded-2xl shadow-2xl hover:bg-emerald-500 hover:text-white transition-all hover:scale-105 active:scale-95 disabled:opacity-50 flex items-center gap-3"
+                                    class="px-16 py-6 bg-white text-slate-950 font-black text-[12px] uppercase tracking-[0.3em] rounded-2xl shadow-2xl hover:bg-primary hover:text-white transition-all hover:scale-105 active:scale-95 disabled:opacity-50 flex items-center gap-5 group border border-white/10"
                                     :disabled="form.processing || (activeTab === 'domain' && subdomainStatus.available === false)"
                                 >
-                                    <Save class="w-5 h-5" /> 
-                                    <span v-if="form.processing">Synchronizing...</span>
-                                    <span v-else>Apply Protocols</span>
+                                    <span class="material-symbols-outlined text-[24px] group-hover:rotate-180 transition-transform duration-1000">rebase</span>
+                                    <span v-if="form.processing">جاري المزامنة المركزية...</span>
+                                    <span v-else>اعتماد وتفعيل البروتوكولات</span>
                                 </button>
                             </div>
                         </div>
@@ -480,5 +482,11 @@ const tabs = [
                 </div>
             </div>
         </div>
-    </AppleLayout>
+    </InstitutionalLayout>
 </template>
+
+<style scoped>
+.font-headline {
+    font-family: 'Manrope', sans-serif;
+}
+</style>

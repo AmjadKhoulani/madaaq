@@ -85,7 +85,7 @@ const submit = () => {
                 <div class="surface-card p-10 rounded-lg">
                     <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] mb-10 flex items-center gap-3">
                         <span class="material-symbols-outlined text-primary text-[20px]">id_card</span>
-                        مصفوفة هوية الموقع والتعريف
+                        بيانات الموقع وتوصيف البرج
                     </h3>
 
                     <div class="space-y-10">
@@ -163,7 +163,7 @@ const submit = () => {
                     <div class="surface-card p-10 space-y-8">
                          <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
                             <span class="material-symbols-outlined text-primary text-[20px]">bolt</span>
-                            مصفوفة تکرار الطاقة (Energy Array)
+                             نظام تكرار الطاقة
                         </h3>
 
                         <div class="space-y-6">

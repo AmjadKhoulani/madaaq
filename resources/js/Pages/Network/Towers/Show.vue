@@ -163,7 +163,7 @@ const formatDate = (date) => {
                                 <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-125 transition-all"></div>
                                 <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                                     <div class="text-right">
-                                        <p class="text-[10px] font-black text-white/50 uppercase tracking-widest mb-1.5">سيرفر التحكم النشط</p>
+                                        <p class="text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-2">سيرفر التحكم النشط</p>
                                         <h5 class="text-2xl font-black font-headline tracking-tighter">{{ tower.mikrotik_server.name }}</h5>
                                         <p class="text-xs font-headline font-extrabold opacity-60 mt-1 tracking-widest">{{ tower.mikrotik_server.ip }}</p>
                                     </div>
@@ -278,7 +278,7 @@ const formatDate = (date) => {
                                 <div class="w-12 h-12 bg-primary-fixed/20 text-primary rounded-lg flex items-center justify-center shadow-inner">
                                     <span class="material-symbols-outlined text-[24px]">battery_std</span>
                                 </div>
-                                <h4 class="text-lg font-black text-primary uppercase tracking-widest">مجمع الطاقة الكيميائية (Batteries)</h4>
+                                <h3 class="text-sm font-black text-primary uppercase tracking-widest">مجمع الطاقة الكيميائية (Batteries)</h3>
                             </div>
                             <div class="grid grid-cols-2 gap-6">
                                 <div class="p-5 bg-surface-container-low rounded-lg border border-outline-variant/5">
@@ -429,7 +429,7 @@ const formatDate = (date) => {
                                             <h6 class="font-black text-lg text-primary leading-tight mb-2 truncate">{{ tower.transmitter_router.name }}</h6>
                                             <p class="text-[11px] font-headline font-extrabold text-slate-400 tracking-widest uppercase">{{ tower.transmitter_router.ip }}</p>
                                             <div v-if="tower.transmitter_router.tower" class="mt-6 pt-6 border-t border-outline-variant/10">
-                                                <p class="text-[9px] font-black text-slate-400 uppercase mb-2">موقع البث في المصفوفة:</p>
+                                                <p class="text-[9px] font-black text-slate-400 uppercase mb-2">موقع البث في النظام:</p>
                                                 <Link :href="route('network.towers.show', tower.transmitter_router.tower_id)" class="text-xs font-black text-primary flex items-center gap-2 hover:translate-x-[-4px] transition-transform">
                                                     <span class="w-1.5 h-3.5 bg-primary rounded-full"></span>
                                                     {{ tower.transmitter_router.tower.name }}

@@ -93,8 +93,8 @@ const submit = () => {
                     <span class="material-symbols-outlined text-[24px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
                 </Link>
                 <div>
-                    <h1 class="text-3xl font-black text-primary tracking-tight mb-2">تزامن البيانات: {{ client.username }}</h1>
-                    <p class="text-[12px] font-bold text-slate-400 uppercase tracking-widest leading-none">تعديل معايير الاتصال والهيكل المادي للشبكة</p>
+                    <h1 class="text-3xl font-black text-primary tracking-tight mb-2">تعديل بيانات المشترك: {{ client.username }}</h1>
+                    <p class="text-[12px] font-bold text-slate-400 uppercase tracking-widest leading-none">تعديل إعدادات الاتصال والبيانات الفنية</p>
                 </div>
             </div>
             <div class="flex items-center gap-4">
@@ -113,17 +113,17 @@ const submit = () => {
                 <div class="surface-card p-10 rounded-lg relative overflow-hidden">
                     <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
                         <span class="material-symbols-outlined text-primary text-[20px]">id_card</span>
-                        مصفوفة الهوية والتعريف
+                        البيانات الشخصية والتعريف
                     </h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-3">
-                            <label class="text-[11px] font-black text-primary uppercase tracking-widest flex items-center gap-2">الاسم الاعتباري للمشترك</label>
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest flex items-center gap-2">الاسم الكامل</label>
                             <input v-model="form.name" type="text" class="form-input-monolith" required />
                         </div>
 
                         <div class="space-y-3">
-                            <label class="text-[11px] font-black text-primary uppercase tracking-widest flex items-center gap-2">معرف الشبكة (رقم الهاتف)</label>
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest flex items-center gap-2">رقم الهاتف (اسم المستخدم)</label>
                             <input v-model="form.phone" type="tel" class="form-input-monolith font-headline text-base" required />
                         </div>
 
@@ -133,7 +133,7 @@ const submit = () => {
                         </div>
 
                         <div class="space-y-3">
-                            <label class="text-[11px] font-black text-primary uppercase tracking-widest flex items-center gap-2">البريد الإلكتروني الاستخباراتي</label>
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest flex items-center gap-2">البريد الإلكتروني الرسمي</label>
                             <input v-model="form.email" type="email" class="form-input-monolith font-headline" />
                         </div>
                     </div>
@@ -144,13 +144,13 @@ const submit = () => {
                     <div class="flex items-center justify-between mb-8">
                         <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] flex items-center gap-3">
                             <span class="material-symbols-outlined text-primary text-[20px]">settings_input_antenna</span>
-                            تموضع الهيكل التقني
+                            إعدادات الربط الفني
                         </h3>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
                         <div class="space-y-3">
-                            <label class="text-[11px] font-black text-primary uppercase tracking-widest">سيرفر الإدارة (Edge Node)</label>
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest">سيرفر الإدارة</label>
                             <select v-model="form.mikrotik_server_id" class="form-select-monolith">
                                 <option value="">اختر عقدة الحافة...</option>
                                 <option v-for="server in servers" :key="server.id" :value="server.id">{{ server.name }}</option>
@@ -249,7 +249,7 @@ const submit = () => {
                 <div class="surface-card p-10 rounded-lg border-2 border-secondary/10 bg-surface-container-low">
                     <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
                         <span class="material-symbols-outlined text-secondary text-[24px]">payments</span>
-                        محاذاة البيانات المالية
+                        بيانات الاشتراك والفوترة
                     </h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -303,7 +303,7 @@ const submit = () => {
                         :disabled="form.processing"
                     >
                         <span class="material-symbols-outlined text-[20px]">save</span>
-                        تصدير وحفظ التزامن
+                        حفظ التغييرات
                     </button>
                     
                     <p class="mt-6 text-[9px] text-white/30 text-center uppercase tracking-widest font-bold">التعديلات تنعكس فوراً على خوادم MikroTik المركزية</p>

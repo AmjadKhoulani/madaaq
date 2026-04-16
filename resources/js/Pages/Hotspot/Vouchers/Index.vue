@@ -1,25 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import AppleLayout from '@/Layouts/AppleLayout.vue';
-import { 
-    Ticket, 
-    Search, 
-    Plus, 
-    Printer, 
-    Filter, 
-    Trash2, 
-    XCircle, 
-    CheckCircle2, 
-    Activity, 
-    MoreHorizontal,
-    ChevronDown,
-    Calendar,
-    Download,
-    Eye,
-    Zap
-} from 'lucide-vue-next';
-import Pagination from '@/Components/Pagination.vue';
+import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 import { pickBy, throttle } from 'lodash';
 
 const props = defineProps({
@@ -57,7 +39,9 @@ const toggleSelectAll = (e) => {
 
 const handleBulkAction = (action) => {
     if (!selectedIds.value.length) return;
-    if (confirm(`Execute ${action} on ${selectedIds.value.length} selected vouchers?`)) {
+    
+    let actionLabel = action === 'delete' ? 'حذف نهائي' : 'تعطيل';
+    if (confirm(`هل أنت متأكد من تنفيذ إجراء (${actionLabel}) على ${selectedIds.value.length} قسيمة مختارة؟`)) {
         router.post(route('hotspot.vouchers.bulk_action'), {
             ids: selectedIds.value,
             action: action
@@ -78,167 +62,175 @@ const getStatusClass = (status) => {
 </script>
 
 <template>
-    <AppleLayout title="Voucher Hub">
-        <Head title="Guest Access Vouchers" />
+    <InstitutionalLayout title="سجل القسائم">
+        <Head title="إدارة قسائم الهوت سبوت - MadaaQ" />
 
-        <div class="max-w-[1400px] mx-auto pb-20">
+        <div class="max-w-7xl mx-auto pb-24 text-right px-4" dir="rtl">
             <!-- Strategic Stats -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                <div class="apple-card p-8 bg-black text-white relative overflow-hidden group">
-                    <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
-                    <div class="relative z-10">
-                        <p class="text-[10px] font-black text-white/40 uppercase tracking-widest mb-2">Total Minted</p>
-                        <h3 class="text-4xl font-bold tracking-tight">{{ stats.total }}</h3>
-                        <p class="text-[9px] font-bold text-emerald-400 mt-2 flex items-center gap-1">
-                            <Activity class="w-3 h-3" /> System Lifetime Vouchers
+                <div class="surface-card p-10 bg-slate-950 text-white relative overflow-hidden group rounded-xl shadow-2xl">
+                    <div class="absolute -top-16 -right-16 w-48 h-48 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-all"></div>
+                    <div class="relative z-10 flex flex-col items-start text-right">
+                        <p class="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-3">إجمالي القسائم المُصدرة</p>
+                        <h3 class="text-5xl font-black tracking-tighter font-headline">{{ stats.total }}</h3>
+                        <p class="text-[10px] font-bold text-emerald-400 mt-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px]">analytics</span>
+                            إجمالي القسائم المنشأة منذ تأسيس النظام
                         </p>
                     </div>
                 </div>
-                <div class="apple-card p-8 bg-white border border-black/5 group">
-                    <p class="text-[10px] font-black text-[#86868b] uppercase tracking-widest mb-2">Active Circulation</p>
-                    <h3 class="text-4xl font-bold tracking-tight text-emerald-600">{{ stats.active }}</h3>
-                    <p class="text-[9px] font-bold text-[#86868b] mt-2 flex items-center gap-1">
-                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-                        Currently Valid Leases
-                    </p>
+                <div class="surface-card p-10 bg-white group rounded-xl shadow-sm border border-outline-variant/10">
+                    <div class="flex flex-col items-start text-right">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">القسائم النشطة حالياً</p>
+                        <h3 class="text-5xl font-black tracking-tighter text-secondary font-headline">{{ stats.active }}</h3>
+                        <p class="text-[10px] font-bold text-slate-500 mt-4 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
+                            اشتراكات فعالة قيد الاستخدام الفعلي
+                        </p>
+                    </div>
                 </div>
-                <div class="apple-card p-8 bg-white border border-black/5 group">
-                    <p class="text-[10px] font-black text-[#86868b] uppercase tracking-widest mb-2">Inactive / Expired</p>
-                    <h3 class="text-4xl font-bold tracking-tight text-rose-600">{{ stats.inactive }}</h3>
-                    <p class="text-[9px] font-bold text-[#86868b] mt-2 flex items-center gap-1">
-                        <XCircle class="w-1.5 h-1.5" /> Decommissioned Records
-                    </p>
+                <div class="surface-card p-10 bg-white group rounded-xl shadow-sm border border-outline-variant/10">
+                    <div class="flex flex-col items-start text-right">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">القسائم المنتهية / المعطلة</p>
+                        <h3 class="text-5xl font-black tracking-tighter text-error/70 font-headline">{{ stats.inactive }}</h3>
+                        <p class="text-[10px] font-bold text-slate-500 mt-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-error/30 text-[18px]">cancel</span>
+                            سجلات خارج الخدمة أو منتهية الصلاحية
+                        </p>
+                    </div>
                 </div>
             </div>
 
             <!-- Management Header -->
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
-                <div class="flex items-center gap-4">
-                    <div class="relative group">
-                        <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#86868b] group-focus-within:text-black transition-colors" />
-                        <input v-model="form.search" type="text" placeholder="Search voucher secret..." class="apple-input pl-11 h-12 w-64 lg:w-80 bg-black/[0.02] border-transparent focus:bg-white focus:border-black/5">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-10">
+                <div class="flex items-center gap-4 flex-1">
+                    <div class="relative group flex-1 max-w-md">
+                        <input v-model="form.search" type="text" placeholder="بحث سريع عن رمز القسيمة..." class="form-input-monolith pr-12 h-14 w-full">
+                        <span class="material-symbols-outlined absolute right-4 top-4 text-slate-400">search</span>
                     </div>
                     <button 
                         @click="showFilters = !showFilters"
-                        class="w-12 h-12 apple-card flex items-center justify-center text-[#86868b] hover:text-black transition-all"
-                        :class="showFilters ? 'bg-black text-white border-black' : ''"
+                        class="w-14 h-14 surface-card flex items-center justify-center text-slate-400 hover:text-primary transition-all rounded-xl border border-outline-variant/10"
+                        :class="showFilters ? 'bg-primary text-white border-primary' : ''"
                     >
-                        <Filter class="w-5 h-5" />
+                        <span class="material-symbols-outlined text-[24px]">filter_list</span>
                     </button>
-                    <div v-if="selectedIds.length > 0" class="flex items-center gap-2 animate-in slide-in-from-left">
-                        <div class="h-8 w-px bg-black/10 mx-2"></div>
-                        <button @click="handleBulkAction('disable')" class="px-5 py-2.5 bg-amber-50 text-amber-700 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-100 transition-all">Disable ({{ selectedIds.length }})</button>
-                        <button @click="handleBulkAction('delete')" class="px-5 py-2.5 bg-rose-50 text-rose-700 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-100 transition-all">Purge</button>
+                    <div v-if="selectedIds.length > 0" class="flex items-center gap-3 animate-in fade-in slide-in-from-right-4">
+                        <div class="h-10 w-px bg-outline-variant/10 mx-2"></div>
+                        <button @click="handleBulkAction('disable')" class="px-6 py-3 bg-secondary-container/10 text-secondary rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-secondary hover:text-white transition-all">تعطيل ({{ selectedIds.length }})</button>
+                        <button @click="handleBulkAction('delete')" class="px-6 py-3 bg-error/5 text-error rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-error hover:text-white transition-all">حذف نهائي</button>
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
                      <Link 
                         :href="route('hotspot.vouchers.reprint_last')" 
-                        class="px-6 h-12 apple-card flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest hover:text-black transition-all"
+                        class="px-8 h-14 surface-card flex items-center justify-center gap-3 text-[11px] font-black uppercase tracking-widest text-slate-600 hover:text-primary transition-all rounded-xl border border-outline-variant/10"
                      >
-                        <Printer class="w-4 h-4" /> Last Batch
+                        <span class="material-symbols-outlined text-[20px]">print</span>
+                        طباعة آخر دفعة
                      </Link>
                      <Link 
                         :href="route('hotspot.vouchers.create')" 
-                        class="px-8 h-12 bg-black text-white rounded-2xl font-bold text-[11px] uppercase tracking-[0.2em] shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
+                        class="px-10 h-14 bg-primary text-white rounded-xl font-black text-[11px] uppercase tracking-[0.2em] shadow-xl shadow-primary/20 hover:bg-primary/90 transition-all flex items-center gap-4"
                      >
-                        <Plus class="w-4 h-4" /> Mint Vouchers
+                        <span class="material-symbols-outlined text-[24px]">add_box</span>
+                        توليد قسائم جديدة
                      </Link>
                 </div>
             </div>
 
             <!-- Filter Panel -->
-            <div v-if="showFilters" class="apple-card p-8 mb-8 bg-black/[0.01] border-black/5 grid grid-cols-1 md:grid-cols-4 gap-6 animate-in slide-in-from-top">
-                <div class="space-y-3">
-                    <label class="text-[9px] font-black text-[#86868b] uppercase tracking-widest ml-1">Status Protocol</label>
-                    <select v-model="form.status" class="apple-input h-11 text-xs">
-                        <option value="">All Statuses</option>
-                        <option value="active">Active Circulation</option>
-                        <option value="inactive">Decommissioned</option>
+            <div v-if="showFilters" class="surface-card p-10 mb-10 bg-surface-container-low/50 border border-outline-variant/10 rounded-xl grid grid-cols-1 md:grid-cols-4 gap-8 animate-in slide-in-from-top duration-300">
+                <div class="space-y-4 text-right">
+                    <label class="text-[10px] font-black text-primary uppercase tracking-widest mr-2">حالة القسيمة</label>
+                    <select v-model="form.status" class="form-input-monolith h-12 text-sm bg-white">
+                        <option value="">جميع الحالات التشغيلية</option>
+                        <option value="active">القسائم النشطة</option>
+                        <option value="inactive">القسائم المنتهية</option>
                     </select>
                 </div>
-                <div class="space-y-3">
-                    <label class="text-[9px] font-black text-[#86868b] uppercase tracking-widest ml-1">Velocity Package</label>
-                    <select v-model="form.package_id" class="apple-input h-11 text-xs">
-                        <option value="">All Packages</option>
+                <div class="space-y-4 text-right">
+                    <label class="text-[10px] font-black text-primary uppercase tracking-widest mr-2">باقة الاشتراك</label>
+                    <select v-model="form.package_id" class="form-input-monolith h-12 text-sm bg-white">
+                        <option value="">جميع الباقات المعرفة</option>
                         <option v-for="p in packages" :key="p.id" :value="p.id">{{ p.name }}</option>
                     </select>
                 </div>
-                <div class="space-y-3">
-                    <label class="text-[9px] font-black text-[#86868b] uppercase tracking-widest ml-1">Genesis Start (Date From)</label>
-                    <input v-model="form.date_from" type="date" class="apple-input h-11 text-xs">
+                <div class="space-y-4 text-right">
+                    <label class="text-[10px] font-black text-primary uppercase tracking-widest mr-2">من تاريخ الإصدار</label>
+                    <input v-model="form.date_from" type="date" class="form-input-monolith h-12 text-sm bg-white font-headline">
                 </div>
-                <div class="space-y-3">
-                    <label class="text-[9px] font-black text-[#86868b] uppercase tracking-widest ml-1">Genesis End (Date To)</label>
-                    <input v-model="form.date_to" type="date" class="apple-input h-11 text-xs">
+                <div class="space-y-4 text-right">
+                    <label class="text-[10px] font-black text-primary uppercase tracking-widest mr-2">إلى تاريخ الإصدار</label>
+                    <input v-model="form.date_to" type="date" class="form-input-monolith h-12 text-sm bg-white font-headline">
                 </div>
             </div>
 
             <!-- Vouchers Registry -->
-            <div class="apple-card overflow-hidden bg-white/50 backdrop-blur-xl border border-black/5">
+            <div class="surface-card rounded-xl overflow-hidden shadow-sm border border-outline-variant/10">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                    <table class="w-full text-right border-collapse">
                         <thead>
-                            <tr class="border-b border-black/[0.02] bg-black/[0.01]">
-                                <th class="px-8 py-5 w-12">
-                                    <input type="checkbox" @change="toggleSelectAll" class="w-5 h-5 rounded-lg border-black/10 text-black">
+                            <tr class="bg-surface-container-low/50 border-b border-outline-variant/10">
+                                <th class="px-8 py-6 w-12 text-center">
+                                    <input type="checkbox" @change="toggleSelectAll" class="w-5 h-5 rounded-lg border-outline-variant/20 text-primary focus:ring-primary/20 transition-all">
                                 </th>
-                                <th class="px-8 py-5 text-[10px] font-black text-[#86868b] uppercase tracking-widest">Voucher Intelligence</th>
-                                <th class="px-8 py-5 text-[10px] font-black text-[#86868b] uppercase tracking-widest">Edge Synced Node</th>
-                                <th class="px-8 py-5 text-[10px] font-black text-[#86868b] uppercase tracking-widest">Velocity Tier</th>
-                                <th class="px-8 py-5 text-[10px] font-black text-[#86868b] uppercase tracking-widest">Presence</th>
-                                <th class="px-8 py-5 text-[10px] font-black text-[#86868b] uppercase tracking-widest text-right">Commitment</th>
+                                <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">بيانات القسيمة الائتمانية</th>
+                                <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">عقدة التزويد (Gateway)</th>
+                                <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] text-center">فئة السرعة والتعرفة</th>
+                                <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] text-center">الحالة البرمجية</th>
+                                <th class="px-8 py-6"></th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-black/[0.01]">
-                            <tr v-for="v in vouchers.data" :key="v.id" class="group hover:bg-black/[0.01] transition-all" :class="selectedIds.includes(v.id) ? 'bg-indigo-50/30' : ''">
-                                <td class="px-8 py-6">
-                                    <input type="checkbox" v-model="selectedIds" :value="v.id" class="w-5 h-5 rounded-lg border-black/10 text-black">
+                        <tbody class="divide-y divide-outline-variant/5">
+                            <tr v-for="v in vouchers.data" :key="v.id" class="group hover:bg-surface-container-low/50 transition-all" :class="selectedIds.includes(v.id) ? 'bg-primary/5' : ''">
+                                <td class="px-8 py-6 text-center">
+                                    <input type="checkbox" v-model="selectedIds" :value="v.id" class="w-5 h-5 rounded-lg border-outline-variant/20 text-primary focus:ring-primary/20 transition-all">
                                 </td>
                                 <td class="px-8 py-6">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-10 h-10 rounded-xl bg-black shadow-inner flex items-center justify-center text-white shrink-0 group-hover:scale-110 transition-transform">
-                                            <Ticket class="w-4 h-4" />
+                                    <div class="flex items-center gap-6">
+                                        <div class="w-14 h-14 rounded-2xl bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20 group-hover:rotate-6 transition-transform border border-white/10 shrink-0">
+                                            <span class="material-symbols-outlined text-[28px]">confirmation_number</span>
                                         </div>
-                                        <div>
-                                            <p class="font-bold text-sm tracking-widest font-mono uppercase group-hover:text-amber-600 transition-colors">{{ v.username }}</p>
-                                            <p class="text-[8px] font-black text-[#86868b] uppercase tracking-widest mt-0.5">Minted: {{ new Date(v.created_at).toLocaleDateString() }}</p>
+                                        <div class="text-right min-w-0">
+                                            <p class="font-black text-lg tracking-[0.1em] font-headline uppercase text-primary leading-none">{{ v.username }}</p>
+                                            <div class="flex items-center gap-3 mt-2 text-[9px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
+                                                <span>إصدار: {{ new Date(v.created_at).toLocaleDateString('ar-SY') }}</span>
+                                                <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                                                <span class="font-headline">{{ new Date(v.created_at).toLocaleTimeString('ar-SY', {hour: '2-digit', minute:'2-digit'}) }}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-8 py-6">
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></div>
-                                        <span class="text-[10px] font-bold text-black uppercase tracking-tight">{{ v.mikrotik_server?.name || 'Local Node' }}</span>
+                                    <div class="flex items-center gap-2 justify-end mb-1">
+                                        <span class="text-[11px] font-black text-primary uppercase whitespace-nowrap">{{ v.mikrotik_server?.name || 'خادم محلي' }}</span>
+                                        <span class="material-symbols-outlined text-[16px] text-secondary">dns</span>
                                     </div>
-                                    <p class="text-[9px] font-mono text-[#86868b] mt-1">{{ v.mikrotik_server?.ip || '0.0.0.0' }}</p>
+                                    <p class="text-[10px] font-headline font-black text-slate-400 opacity-60 flex justify-end tracking-tight">{{ v.mikrotik_server?.ip || '0.0.0.0' }}</p>
                                 </td>
                                 <td class="px-8 py-6">
-                                    <div class="px-3 py-1.5 bg-black/[0.02] border border-black/[0.05] rounded-xl inline-flex flex-col items-center">
-                                         <p class="text-[10px] font-black tracking-tighter">{{ v.package?.name || 'GENERIC' }}</p>
-                                         <p class="text-[8px] font-bold text-emerald-600">${{ v.package?.price || '0.00' }}</p>
+                                    <div class="px-5 py-3 bg-surface-container-low border border-outline-variant/10 rounded-2xl flex flex-col items-center shadow-inner">
+                                         <p class="text-[11px] font-black tracking-tight text-primary uppercase leading-none mb-1.5">{{ v.package?.name || 'باقة افتراضية' }}</p>
+                                         <p class="text-[10px] font-black text-secondary font-headline">{{ v.package?.price || '0' }} <span class="text-[8px] opacity-60 mr-0.5">S.P</span></p>
                                     </div>
                                 </td>
-                                <td class="px-8 py-6">
-                                    <span 
-                                        class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border flex items-center justify-center gap-2 w-fit"
+                                <td class="px-8 py-6 text-center">
+                                    <div 
+                                        class="inline-flex items-center gap-2.5 px-5 py-2 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-sm"
                                         :class="getStatusClass(v.status)"
                                     >
-                                        <span v-if="v.status === 'active'" class="w-1 h-1 bg-emerald-500 rounded-full animate-pulse"></span>
-                                        {{ v.status }}
-                                    </span>
+                                        <span v-if="v.status === 'active'" class="w-2 h-2 rounded-full bg-current animate-pulse"></span>
+                                        {{ v.status === 'active' ? 'قيد الاستخدام' : 'منتهي الصلاحية' }}
+                                    </div>
                                 </td>
-                                <td class="px-8 py-6 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                         <button 
-                                            class="w-10 h-10 apple-card flex items-center justify-center text-[#86868b] hover:text-indigo-600 transition-all shadow-sm"
-                                         >
-                                            <Eye class="w-4 h-4" />
+                                <td class="px-8 py-6">
+                                    <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                         <button class="w-12 h-12 bg-white shadow-sm border border-outline-variant/10 rounded-xl flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 transition-all">
+                                            <span class="material-symbols-outlined text-[22px]">visibility</span>
                                          </button>
-                                         <button 
-                                            class="w-10 h-10 apple-card flex items-center justify-center text-[#86868b] hover:text-amber-600 transition-all shadow-sm"
-                                         >
-                                            <Printer class="w-4 h-4" />
+                                         <button class="w-12 h-12 bg-white shadow-sm border border-outline-variant/10 rounded-xl flex items-center justify-center text-slate-400 hover:text-secondary hover:border-secondary/30 transition-all">
+                                            <span class="material-symbols-outlined text-[22px]">print</span>
                                          </button>
                                     </div>
                                 </td>
@@ -247,19 +239,38 @@ const getStatusClass = (status) => {
                     </table>
                 </div>
 
-                <div v-if="vouchers.data.length === 0" class="py-24 text-center">
-                    <div class="w-20 h-20 bg-black/5 rounded-[2.5rem] flex items-center justify-center mx-auto mb-6 text-[#86868b]">
-                        <Ticket class="w-10 h-10" />
+                <div v-if="vouchers.data.length === 0" class="py-40 flex flex-col items-center gap-10 text-center animate-in fade-in duration-700">
+                    <div class="w-28 h-28 rounded-full bg-surface-container-low flex items-center justify-center text-slate-200 border border-outline-variant/5 shadow-inner">
+                        <span class="material-symbols-outlined text-[56px]" style="font-variation-settings: 'wght' 100">confirmation_number</span>
                     </div>
-                    <h3 class="text-lg font-bold tracking-tight text-black mb-1">Hub Registry Depleted</h3>
-                    <p class="text-sm text-[#86868b] max-w-xs mx-auto">Initialize a new minting protocol to generate guest access vouchers.</p>
+                    <div>
+                        <h3 class="text-2xl font-black text-primary mb-3">لا توجد قسائم مسجلة في هذا النطاق</h3>
+                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em] max-w-sm mx-auto leading-relaxed">لم يتم رصد أي سجلات للقسائم حالياً. يرجى تعديل معايير البحث أو توليد دفعة جديدة.</p>
+                    </div>
                 </div>
 
-                <!-- Strategic Pagination -->
-                <div class="px-8 py-6 border-t border-black/[0.02] bg-black/[0.01]">
-                    <Pagination :links="vouchers.links" />
+                <!-- Professional Pagination -->
+                <div class="px-8 py-8 border-t border-outline-variant/10 flex items-center justify-center gap-3 bg-surface-container/5">
+                    <Link 
+                        v-for="(link, k) in vouchers.links" 
+                        :key="k"
+                        :href="link.url || '#'"
+                        v-html="link.label"
+                        class="h-11 px-6 flex items-center justify-center rounded-xl text-[11px] font-black transition-all font-headline"
+                        :class="[
+                            link.active ? 'bg-primary text-white shadow-xl shadow-primary/20 scale-110 mx-2' : 'hover:bg-primary/5 text-slate-500 border border-transparent hover:border-outline-variant/10',
+                            !link.url ? 'opacity-30 cursor-not-allowed' : ''
+                        ]"
+                    />
                 </div>
             </div>
         </div>
-    </AppleLayout>
+    </InstitutionalLayout>
 </template>
+
+<style scoped>
+.font-headline {
+    font-family: 'Manrope', sans-serif;
+}
+</style>
+

@@ -1,20 +1,6 @@
 <script setup>
 import { useForm, Head, Link } from '@inertiajs/vue3';
-import AppleLayout from '@/Layouts/AppleLayout.vue';
-import { 
-    ChevronLeft, 
-    Shield, 
-    ShieldCheck, 
-    Lock, 
-    Zap, 
-    Save, 
-    Settings, 
-    Key, 
-    Activity, 
-    Globe, 
-    Users,
-    CheckCircle2
-} from 'lucide-vue-next';
+import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 
 const props = defineProps({
     role: Object,
@@ -62,62 +48,62 @@ import { computed } from 'vue';
 </script>
 
 <template>
-    <AppleLayout :title="'Modify ' + role.display_name">
-        <Head :title="'Authority Governance: ' + role.display_name" />
+    <InstitutionalLayout :title="'تعديل: ' + role.display_name">
+        <Head :title="'حوكمة الصلاحيات: ' + role.display_name" />
 
-        <div class="max-w-5xl mx-auto pb-24">
+        <div class="max-w-5xl mx-auto pb-24 text-right">
             <!-- Navigation Header -->
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
-                <div class="flex items-center gap-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12 flex-row-reverse">
+                <div class="flex items-center gap-6 justify-end">
+                    <div class="text-right">
+                        <h1 class="text-3xl font-black text-primary tracking-tight mb-1">تعديل حدود الصلاحيات</h1>
+                        <p class="text-slate-500 font-bold text-sm uppercase tracking-wider">تحديث بروتوكول الوصول للدور: {{ role.display_name }}</p>
+                    </div>
                     <Link 
                         :href="route('roles.index')" 
-                        class="w-12 h-12 apple-card flex items-center justify-center text-[#86868b] hover:text-black transition-all group"
+                        class="w-12 h-12 bg-white shadow-sm border border-outline-variant/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary transition-all group"
                     >
-                        <ChevronLeft class="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+                        <span class="material-symbols-outlined text-[24px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
                     </Link>
-                    <div>
-                        <h1 class="text-3xl font-bold tracking-tight mb-1">Modify Authority Boundary</h1>
-                        <p class="text-[var(--app-secondary)] font-medium">Updating protocol limits for {{ role.display_name }}</p>
-                    </div>
                 </div>
             </div>
 
             <form @submit.prevent="submit" class="space-y-8">
                 <!-- 1. Identity & Context -->
-                <div class="apple-card p-10">
-                    <div class="flex items-center gap-3 mb-10">
-                        <div class="w-1.5 h-6 bg-black rounded-full"></div>
-                        <h3 class="text-sm font-bold tracking-tight uppercase">Protocol Identity</h3>
-                    </div>
+                <div class="surface-card p-10 rounded-xl relative overflow-hidden">
+                    <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] mb-10 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary text-[20px]">fingerprint</span>
+                        هوية البروتوكول
+                    </h3>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 text-left">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                         <div class="space-y-4">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Internal Identity Artifact (Name)</label>
-                            <input v-model="form.name" type="text" class="apple-input h-14 font-mono font-bold uppercase tracking-tight" required>
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest mr-2 flex items-center gap-2">المُعرف البرمجي الداخلي (Name)</label>
+                            <input v-model="form.name" type="text" class="form-input-monolith font-mono font-bold uppercase" required>
                         </div>
                         <div class="space-y-4">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Display Label (Human Readable)</label>
-                            <input v-model="form.display_name" type="text" class="apple-input h-14 font-bold text-lg" required>
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest mr-2 flex items-center gap-2">المُسمى الوظيفي</label>
+                            <input v-model="form.display_name" type="text" class="form-input-monolith font-bold text-lg" required>
                         </div>
                         <div class="space-y-4 md:col-span-2">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Authority Boundary Description</label>
-                            <textarea v-model="form.description" class="apple-input py-6 min-h-[100px] font-medium leading-relaxed"></textarea>
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest mr-2 flex items-center gap-2">وصف حدود الصلاحيات</label>
+                            <textarea v-model="form.description" class="form-input-monolith py-6 min-h-[100px] font-bold leading-relaxed"></textarea>
                         </div>
                     </div>
                 </div>
 
                 <!-- 2. Atomic Permissions Matrix -->
-                <div class="apple-card p-10">
-                    <div class="flex items-center gap-3 mb-10">
-                        <div class="w-1.5 h-6 bg-indigo-600 rounded-full"></div>
-                        <h3 class="text-sm font-bold tracking-tight uppercase">Atomic Permission Matrix</h3>
-                    </div>
+                <div class="surface-card p-10 rounded-xl">
+                    <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] mb-10 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-secondary text-[24px]">key_visualizer</span>
+                        مصفوفة الصلاحيات التفصيلية
+                    </h3>
 
                     <div class="space-y-16">
                         <div v-for="(perms, category) in groupedPermissions" :key="category" class="space-y-8">
-                             <div class="flex items-center gap-4">
-                                <h4 class="text-xs font-black uppercase tracking-widest text-[#86868b]">{{ category }} Protocol</h4>
-                                <div class="flex-1 h-px bg-black/[0.03]"></div>
+                             <div class="flex items-center gap-4 flex-row-reverse">
+                                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400">بروتوكول: {{ category }}</h4>
+                                <div class="flex-1 h-px bg-outline-variant/10"></div>
                              </div>
 
                              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -126,16 +112,16 @@ import { computed } from 'vue';
                                     :key="perm.id"
                                     type="button"
                                     @click="togglePermission(perm.id)"
-                                    class="p-6 rounded-[2rem] border transition-all flex items-center justify-between group text-left relative overflow-hidden"
-                                    :class="isPermissionSelected(perm.id) ? 'bg-black text-white border-black shadow-lg scale-[1.02]' : 'bg-white border-black/5 text-[#86868b] hover:bg-black/[0.02]'"
+                                    class="p-6 rounded-xl border transition-all flex items-center justify-between group relative overflow-hidden"
+                                    :class="isPermissionSelected(perm.id) ? 'bg-primary text-white border-primary shadow-lg scale-[1.02]' : 'bg-surface-container-low border-outline-variant/10 text-slate-400 hover:bg-white hover:text-primary'"
                                 >
-                                    <div class="flex items-center gap-4 relative z-10 min-w-0">
-                                        <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all bg-black/[0.03]" :class="isPermissionSelected(perm.id) ? 'bg-white/10' : ''">
-                                            <Key class="w-4 h-4" />
+                                    <div class="flex items-center gap-4 relative z-10 min-w-0 flex-row-reverse">
+                                        <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all bg-black/5" :class="isPermissionSelected(perm.id) ? 'bg-white/10' : ''">
+                                            <span class="material-symbols-outlined text-[18px]">key</span>
                                         </div>
-                                        <span class="text-[10px] font-bold uppercase tracking-tight truncate">{{ perm.name.split('.').slice(1).join(' ') || perm.name }}</span>
+                                        <span class="text-[10px] font-black uppercase tracking-tight truncate">{{ perm.name.split('.').slice(1).join(' ') || perm.name }}</span>
                                     </div>
-                                    <CheckCircle2 v-if="isPermissionSelected(perm.id)" class="w-5 h-5 text-emerald-400 relative z-10" />
+                                    <span v-if="isPermissionSelected(perm.id)" class="material-symbols-outlined text-white text-[20px] relative z-10">check_circle</span>
                                 </button>
                              </div>
                         </div>
@@ -143,36 +129,37 @@ import { computed } from 'vue';
                 </div>
 
                 <!-- 3. Commitment Protocol -->
-                <div class="flex flex-col md:flex-row items-center justify-between gap-10 apple-card p-12 bg-black text-white relative overflow-hidden">
-                    <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
-                    <div class="relative z-10 flex items-center gap-8 text-left">
-                        <div class="w-16 h-16 bg-white/10 rounded-[1.5rem] flex items-center justify-center text-3xl shrink-0">
-                            <ShieldCheck class="w-8 h-8 text-amber-400" />
+                <div class="flex flex-col md:flex-row items-center justify-between gap-10 surface-card p-12 bg-slate-950 text-white rounded-xl relative overflow-hidden shadow-2xl">
+                    <div class="absolute -bottom-32 -left-32 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
+                    <div class="relative z-10 flex items-center gap-8 text-right flex-row-reverse">
+                        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center text-3xl shrink-0">
+                            <span class="material-symbols-outlined text-[32px] text-secondary">verified_user</span>
                         </div>
                         <div>
-                             <h4 class="text-lg font-bold uppercase tracking-tight">Handshake Commitment</h4>
-                             <p class="text-[9px] font-black text-white/40 uppercase tracking-widest mt-1 leading-relaxed">
-                                Committing updated authority boundaries to the global matrix artifacts.
+                             <h4 class="text-xl font-black uppercase tracking-tight">تأكيد المزامنة</h4>
+                             <p class="text-[10px] font-black text-white/40 uppercase tracking-widest mt-1 leading-relaxed">
+                                سيتم تحديث حدود الصلاحيات لهذا الدور وتطبيقها فوراً على الكادر المرتبط.
                              </p>
                         </div>
                     </div>
                     <div class="relative z-10 flex items-center gap-6">
                         <Link 
                             :href="route('roles.index')" 
-                            class="px-8 py-4 bg-white/10 text-white font-bold text-xs uppercase tracking-widest rounded-2xl hover:bg-white/20 transition-all active:scale-95"
+                            class="px-8 py-5 bg-white/5 text-white/50 font-black text-[11px] uppercase tracking-widest rounded-lg hover:bg-white/10 hover:text-white transition-all active:scale-95 border border-white/10"
                         >
-                            Abort Changes
+                            إلغاء التغييرات
                         </Link>
                         <button 
                             type="submit" 
-                            class="px-12 py-5 bg-white text-black font-bold text-xs uppercase tracking-[0.2em] rounded-2xl shadow-2xl hover:bg-emerald-500 hover:text-white transition-all hover:scale-105 active:scale-95 disabled:opacity-50 flex items-center gap-2"
+                            class="px-12 py-5 bg-white text-slate-950 font-black text-[11px] uppercase tracking-[0.2em] rounded-lg shadow-xl hover:bg-emerald-500 hover:text-white transition-all hover:scale-105 active:scale-95 disabled:opacity-30 flex items-center gap-3"
                             :disabled="form.processing"
                         >
-                            <Save class="w-4 h-4" /> Sync Artifact
+                            <span class="material-symbols-outlined text-[20px]">sync_alt</span>
+                            حفظ التغييرات
                         </button>
                     </div>
                 </div>
             </form>
         </div>
-    </AppleLayout>
+    </InstitutionalLayout>
 </template>

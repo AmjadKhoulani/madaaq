@@ -85,14 +85,14 @@ const submit = () => {
 </script>
 
 <template>
-    <InstitutionalLayout title="استحواذ مشترك جديد">
+    <InstitutionalLayout title="إضافة مشترك جديد">
         <Head title="إضافة مشترك جديد" />
 
-        <!-- Protocol Acquisition Header -->
+        <!-- Subscriber Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-10 text-right">
             <div>
-                <h1 class="text-3xl font-black text-primary tracking-tight mb-2">استحواذ مشترك جديد (Acquisition)</h1>
-                <p class="text-[12px] font-bold text-slate-400 uppercase tracking-widest leading-none">تهيئة بروتوكول وصول جديد على عقد الحافة</p>
+                <h1 class="text-3xl font-black text-primary tracking-tight mb-2">إضافة مشترك جديد</h1>
+                <p class="text-[12px] font-bold text-slate-400 uppercase tracking-widest leading-none">إدخال بيانات المشترك وإعدادات الاتصال</p>
             </div>
             <Link 
                 :href="route('crm.clients.index')" 
@@ -111,7 +111,7 @@ const submit = () => {
                 <div class="surface-card p-10 rounded-lg relative overflow-hidden">
                     <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
                         <span class="material-symbols-outlined text-primary text-[20px]">person_add</span>
-                        مصفوفة الهوية والتعريف الشخصي
+                        البيانات الشخصية
                     </h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -137,12 +137,12 @@ const submit = () => {
                     </div>
                 </div>
 
-                <!-- Section 2: Infrastructure Provisioning -->
+                <!-- Section 2: Network Connectivity -->
                 <div class="surface-card p-10 rounded-lg">
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-6 mb-10">
                         <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] flex items-center gap-3 w-full">
                             <span class="material-symbols-outlined text-primary text-[20px]">router</span>
-                            تهيئة الهيكل التقني والشبكي
+                            إعدادات الربط الفني
                         </h3>
                         <div class="flex p-1 bg-surface-container-low rounded-lg border border-outline-variant/10 w-full sm:w-auto shrink-0">
                             <button 
@@ -170,7 +170,7 @@ const submit = () => {
                         </div>
                         
                         <div class="space-y-3">
-                            <label class="text-[11px] font-black text-primary uppercase tracking-widest">برج الوصول الحركي</label>
+                             <label class="text-[11px] font-black text-primary uppercase tracking-widest">برج التغطية / الموقع</label>
                             <select v-model="form.tower_id" class="form-select-monolith" :disabled="!form.mikrotik_server_id">
                                 <option value="">اختر البرج...</option>
                                 <option v-for="tower in availableTowers" :key="tower.id" :value="tower.id">
@@ -229,11 +229,11 @@ const submit = () => {
                     </div>
                 </div>
 
-                <!-- Section 3: Billing Matrix -->
+                <!-- Section 3: Subscription & Billing -->
                 <div class="surface-card p-10 rounded-lg border-2 border-secondary/10 bg-surface-container-low">
                     <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
                         <span class="material-symbols-outlined text-secondary text-[24px]">account_balance_wallet</span>
-                        مصفوفة الفوترة والتحصيل المالي
+                        إعدادات الاشتراك والفوترة
                     </h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -265,7 +265,7 @@ const submit = () => {
                 <div class="surface-card bg-primary text-white p-10 rounded-lg shadow-2xl shadow-primary/30 relative overflow-hidden">
                     <div class="absolute -top-16 -right-16 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
                     
-                    <p class="text-[10px] font-black uppercase tracking-[0.3em] text-white/50 mb-4">صافي قيمة الاستحواذ</p>
+                    <p class="text-[10px] font-black uppercase tracking-[0.3em] text-white/50 mb-4">قيمة الاشتراك</p>
                     <div class="text-6xl font-black font-headline tracking-tighter mb-10 flex items-baseline gap-3">
                         {{ form.price || '0.00' }} <span class="text-2xl font-bold opacity-40">ر.س</span>
                     </div>
@@ -291,17 +291,17 @@ const submit = () => {
                         :disabled="form.processing"
                     >
                         <span class="material-symbols-outlined text-[20px] fill-current" style="font-variation-settings: 'FILL' 1">bolt</span>
-                        تنفيذ عملية الاستحواذ
+                        تأكيد إضافة المشترك
                     </button>
                 </div>
 
                 <div class="surface-card p-8 bg-amber-50 border-2 border-amber-100 rounded-lg">
                     <h4 class="text-[11px] font-black text-amber-900 flex items-center gap-3 mb-4 uppercase tracking-widest">
                          <span class="material-symbols-outlined text-[18px]">verified_user</span>
-                         تحقق النزاهة الشبكية
+                         ملاحظات تقنية
                     </h4>
                     <p class="text-[11px] text-amber-800/70 font-bold leading-relaxed">
-                        بمجرد بدء عملية التنفيذ، سيتم تلقائياً ترحيل وتأمين بيانات الاعتماد إلى عقدة الحافة المختارة. يرجى التأكد من استيعاب المصفوفة قبل المتابعة.
+                        بمجرد بدء عملية التنفيذ، سيتم تلقائياً ترحيل بيانات الاشتراك إلى السيرفر المختار. يرجى التأكد من صحة البيانات قبل المتابعة.
                     </p>
                 </div>
             </div>

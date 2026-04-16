@@ -38,6 +38,9 @@ class ActivityLogController extends Controller
         $logs = $query->paginate(50);
         $users = \App\Models\User::select('id', 'name')->get();
 
-        return view('activity-logs.index', compact('logs', 'users'));
+        return \Inertia\Inertia::render('ActivityLogs/Index', [
+            'logs' => $logs,
+            'users' => $users
+        ]);
     }
 }

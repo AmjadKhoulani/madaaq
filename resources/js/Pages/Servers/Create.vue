@@ -1,23 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useForm, Head, Link } from '@inertiajs/vue3';
-import AppleLayout from '@/Layouts/AppleLayout.vue';
-import { 
-    Plus, 
-    Server, 
-    Zap, 
-    MapPin, 
-    Globe, 
-    Monitor, 
-    ShieldCheck, 
-    Cpu, 
-    HardDrive,
-    Search,
-    ChevronLeft,
-    CheckCircle2,
-    X,
-    Wifi
-} from 'lucide-vue-next';
+import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 
 const props = defineProps({
     internetSources: Array,
@@ -71,156 +55,137 @@ const submit = () => {
 </script>
 
 <template>
-    <AppleLayout title="Initialize Node">
-        <Head title="Deploy Core Node" />
+    <InstitutionalLayout title="تأسيس عقدة شبكة">
+        <Head title="ربط سيرفر MikroTik جديد" />
 
-        <div class="max-w-5xl mx-auto">
-            <!-- Header Section -->
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
-                <div class="flex items-center gap-6">
-                    <Link 
-                        :href="route('servers.index')" 
-                        class="w-12 h-12 apple-card flex items-center justify-center text-[#86868b] hover:text-black transition-all group"
-                    >
-                        <ChevronLeft class="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
-                    </Link>
-                    <div>
-                        <h1 class="text-3xl font-bold tracking-tight mb-1">Initialize MikroTik Node</h1>
-                        <p class="text-[var(--app-secondary)] font-medium">Provision a new primary infrastructure core.</p>
+        <div class="max-w-5xl mx-auto pb-24 text-right px-4">
+            <!-- Institutional Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12 flex-row-reverse">
+                <div class="flex items-center gap-6 justify-end">
+                    <div class="text-right">
+                        <h1 class="text-3xl font-black text-primary tracking-tight mb-2">تأسيس عقدة MikroTik</h1>
+                        <p class="text-slate-500 font-bold text-sm uppercase tracking-wider">تهيئة وتثبيت نواة برمجية جديدة في البنية التحتية</p>
                     </div>
                 </div>
+                <Link 
+                    :href="route('servers.index')" 
+                    class="w-12 h-12 bg-white border border-outline-variant/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary transition-all shadow-sm group"
+                >
+                    <span class="material-symbols-outlined text-[24px] group-hover:translate-x-1 transition-transform">chevron_right</span>
+                </Link>
             </div>
 
-            <form @submit.prevent="submit" class="space-y-8">
+            <form @submit.prevent="submit" class="space-y-10">
                 <!-- 1. Hardware Architecture Intelligence -->
-                <div class="apple-card p-10">
-                    <div class="flex items-center gap-3 mb-10">
-                        <div class="w-1.5 h-6 bg-indigo-600 rounded-full"></div>
-                        <h3 class="text-sm font-bold tracking-tight uppercase">Hardware Intelligence Core</h3>
+                <div class="surface-card p-10 rounded-xl border border-outline-variant/5 shadow-sm">
+                    <div class="flex items-center gap-4 mb-12 justify-end">
+                        <h3 class="text-sm font-black text-primary uppercase tracking-widest">بيانات العتاد والطراز</h3>
+                        <div class="w-1.5 h-6 bg-primary rounded-full"></div>
                     </div>
 
-                    <!-- Search / Discovery -->
+                    <!-- Smart Node Discovery -->
                     <div class="relative mb-12 group">
-                        <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2 mb-4 block">Smart Node Discovery</label>
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2 mb-4 block">اكتشاف طراز العقدة (Smart Discovery)</label>
                         <div class="relative">
-                            <Search class="w-5 h-5 absolute left-5 top-1/2 -translate-y-1/2 text-[#86868b] group-focus-within:text-black transition-colors" />
+                            <span class="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors text-[20px]">search</span>
                             <input 
                                 v-model="deviceQuery"
                                 type="text" 
-                                placeholder="Search MikroTik Catalog (e.g. CCR, hAP, RB...)"
-                                class="apple-input h-14 pl-14 text-sm font-bold"
+                                placeholder="ابحث في كتالوج MikroTik (مثلاً: CCR, hAP, RB...)"
+                                class="form-input-monolith h-16 pr-14 text-sm font-black"
                                 @focus="showResults = true"
                             >
                         </div>
 
-                        <!-- Search Dropdown -->
-                        <div v-if="showResults && deviceQuery" class="absolute z-50 w-full mt-4 bg-white/95 backdrop-blur-xl border border-black/5 rounded-[2.5rem] shadow-2xl overflow-hidden p-2">
+                        <!-- Search Dropdown Logic -->
+                        <div v-if="showResults && deviceQuery" class="absolute z-50 w-full mt-4 bg-white border border-outline-variant/10 rounded-xl shadow-2xl overflow-hidden p-3 animate-in fade-in slide-in-from-top-4 duration-300">
                             <div 
                                 v-for="product in filteredProducts.slice(0, 5)" 
                                 :key="product.id"
                                 @click="selectProduct(product)"
-                                class="flex items-center gap-4 p-4 hover:bg-black/5 rounded-[1.5rem] cursor-pointer transition-all"
+                                class="flex items-center gap-4 p-4 hover:bg-surface-container-low rounded-lg cursor-pointer transition-all flex-row-reverse"
                             >
-                                <div class="w-14 h-14 bg-white rounded-xl border border-black/5 p-2 flex items-center justify-center shrink-0">
-                                    <Monitor class="w-6 h-6 text-black/40" />
+                                <div class="w-12 h-12 bg-primary/5 rounded-lg flex items-center justify-center shrink-0 border border-primary/10">
+                                    <span class="material-symbols-outlined text-primary text-[24px]">router</span>
                                 </div>
-                                <div class="flex-1">
-                                    <p class="font-bold text-sm tracking-tight">{{ product.manufacturer }} {{ product.model_name }}</p>
-                                    <p class="text-[10px] font-black uppercase tracking-widest text-[#86868b]">{{ product.device_type || 'Core Router' }}</p>
+                                <div class="flex-1 text-right">
+                                    <p class="font-black text-sm text-primary tracking-tight">{{ product.manufacturer }} {{ product.model_name }}</p>
+                                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">{{ product.device_type || 'عقدة راوتر أساسية' }}</p>
                                 </div>
-                                <div class="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center text-black/20">
-                                    <Plus class="w-4 h-4" />
-                                </div>
+                                <span class="material-symbols-outlined text-slate-300">add_circle</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Selected Preview / Quick Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                         <div 
-                            v-for="product in products.slice(0, 4)" 
-                            :key="product.id"
-                            @click="selectProduct(product)"
-                            class="apple-card p-6 flex flex-col items-center text-center cursor-pointer transition-all group border-2"
-                            :class="form.model_id === product.id ? 'border-emerald-500 bg-emerald-50/20' : 'border-transparent hover:border-black/5'"
-                        >
-                            <div class="w-24 h-24 mb-4 flex items-center justify-center grayscale group-hover:grayscale-0 transition-all">
-                                <Monitor class="w-12 h-12 text-black/20 group-hover:text-black/60" />
-                            </div>
-                            <h4 class="text-[10px] font-black uppercase tracking-tight line-clamp-1">{{ product.model_name }}</h4>
-                            <p class="text-[8px] font-black text-[#86868b] uppercase tracking-widest mt-1">{{ product.manufacturer }}</p>
-                        </div>
-                    </div>
-
-                    <!-- Config Layer -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
-                        <div class="space-y-4">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Logical Node Identifier</label>
-                            <input v-model="form.name" type="text" placeholder="E.g. DC01-Primary-Core" class="apple-input h-14 font-bold uppercase tracking-tight" required>
+                    <!-- Hardware Configuration Matrix -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-end flex-row-reverse">
+                         <div class="space-y-4">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2">المُعرف المنطقي للعقدة (Node Identifier)</label>
+                            <input v-model="form.name" type="text" placeholder="مثلاً: DC01-Primary-Core" class="form-input-monolith h-16 font-black uppercase tracking-tight" required>
                         </div>
 
-                        <div v-if="selectedProduct" class="bg-black p-8 rounded-[2.5rem] flex items-center gap-6 shadow-2xl relative overflow-hidden">
-                            <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-3xl"></div>
-                            <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center shrink-0">
-                                <Cpu class="w-8 h-8 text-white/40" />
+                        <div v-if="selectedProduct" class="bg-primary p-8 rounded-xl flex items-center gap-6 shadow-xl shadow-primary/20 relative overflow-hidden group/pod">
+                            <div class="absolute -top-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover/pod:scale-150 transition-transform duration-1000"></div>
+                            <div class="w-16 h-16 bg-white/10 rounded-lg flex items-center justify-center shrink-0 border border-white/10">
+                                <span class="material-symbols-outlined text-white/50 text-[32px]">memory</span>
                             </div>
-                            <div class="min-w-0">
-                                <p class="text-[9px] font-black text-white/40 uppercase tracking-widest mb-1">Topology Placement</p>
-                                <p class="text-xs font-bold text-white truncate uppercase">{{ selectedProduct.model_name }}</p>
+                            <div class="min-w-0 text-right">
+                                <p class="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1.5 leading-none">توضع الطوبولوجيا</p>
+                                <p class="text-sm font-black text-white truncate uppercase">{{ selectedProduct.model_name }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. Connection Governance -->
-                <div class="apple-card p-10">
-                    <div class="flex items-center gap-3 mb-10">
-                        <div class="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                        <h3 class="text-sm font-bold tracking-tight uppercase">Connection Governance</h3>
+                <!-- 2. Connection Governance Protocols -->
+                <div class="surface-card p-10 rounded-xl border border-outline-variant/5 shadow-sm">
+                    <div class="flex items-center gap-4 mb-12 justify-end">
+                        <h3 class="text-sm font-black text-primary uppercase tracking-widest">إعدادات الاتصال والوصول</h3>
+                        <div class="w-1.5 h-6 bg-secondary rounded-full"></div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="lg:col-span-2 space-y-2">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Global Interface IP (Public/Private)</label>
-                            <input v-model="form.ip" type="text" placeholder="10.x.x.x or 185.x.x.x" class="apple-input h-14 font-mono font-bold text-sm" required>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div class="lg:col-span-2 space-y-4">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2">عنوان الواجهة العالمية (IP Address)</label>
+                            <input v-model="form.ip" type="text" placeholder="10.x.x.x or 185.x.x.x" class="form-input-monolith h-16 font-mono font-black text-sm" required>
                         </div>
 
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">API Protocol Port</label>
-                            <input v-model="form.api_port" type="number" class="apple-input h-14 font-mono font-bold" placeholder="8728">
+                        <div class="space-y-4">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2">منفذ بروتوكول API</label>
+                            <input v-model="form.api_port" type="number" class="form-input-monolith h-16 font-mono font-black" placeholder="8728">
                         </div>
 
-                        <div class="space-y-2">
-                             <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Access Lifecycle</label>
-                             <div class="h-14 apple-input flex items-center justify-center bg-black/5 text-[10px] font-black uppercase tracking-widest text-black/40">
-                                Persistent Connection
+                        <div class="space-y-4">
+                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2">دورة الوصول</label>
+                             <div class="h-16 form-input-monolith flex items-center justify-center bg-surface-container-low/50 text-[10px] font-black uppercase tracking-widest text-slate-300 border-dashed">
+                                إدارة حوكمة مستمرة
                              </div>
                         </div>
 
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Auth Username (Admin)</label>
-                            <input v-model="form.username" type="text" class="apple-input h-12 font-bold" placeholder="admin">
+                        <div class="space-y-4">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2">اسم المستخدم الحصين (admin)</label>
+                            <input v-model="form.username" type="text" class="form-input-monolith h-16 font-black" placeholder="admin">
                         </div>
 
-                        <div class="lg:col-span-3 space-y-2">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Infrastructure Access Key (Password)</label>
-                            <input v-model="form.password" type="password" class="apple-input h-12 font-mono" placeholder="••••••••">
+                        <div class="lg:col-span-3 space-y-4">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2">مفتاح الوصول للبنية التحتية (Password)</label>
+                            <input v-model="form.password" type="password" class="form-input-monolith h-16 font-mono" placeholder="••••••••">
                         </div>
                     </div>
                 </div>
 
-                <!-- 3. Geospatial Registry -->
-                <div class="apple-card p-10">
-                    <div class="flex items-center gap-3 mb-10">
-                        <div class="w-1.5 h-6 bg-rose-500 rounded-full"></div>
-                        <h3 class="text-sm font-bold tracking-tight uppercase">Geospatial Registry</h3>
+                <!-- 3. Geospatial Infrastructure Registry -->
+                <div class="surface-card p-10 rounded-xl border border-outline-variant/5 shadow-sm border-r-4 border-error">
+                    <div class="flex items-center gap-4 mb-12 justify-end">
+                        <h3 class="text-sm font-black text-primary uppercase tracking-widest">الموقع المادي والتوزيع الجغرافي</h3>
+                        <div class="w-1.5 h-6 bg-error rounded-full"></div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                         <div class="space-y-4">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Backbone Supply Source</label>
-                            <select v-model="form.internet_source_id" class="apple-input h-14 font-bold text-xs uppercase">
-                                <option value="">Independent Core Gateway</option>
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2">مصدر تزويد العمود الفقري (Backbone)</label>
+                            <select v-model="form.internet_source_id" class="form-input-monolith h-16 font-black text-[13px] uppercase">
+                                <option value="">بوابة عقدة مستقلة (Independent Gateway)</option>
                                 <option v-for="source in internetSources" :key="source.id" :value="source.id">
                                     {{ source.name }} ({{ source.type }})
                                 </option>
@@ -228,65 +193,64 @@ const submit = () => {
                         </div>
 
                         <div class="space-y-4">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Parent Infrastructure (Tower)</label>
-                            <select v-model="form.location_tower_id" class="apple-input h-14 font-bold text-xs uppercase">
-                                <option value="">Autonomous Placement</option>
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2">البنية المظلية (البرج)</label>
+                            <select v-model="form.location_tower_id" class="form-input-monolith h-16 font-black text-[13px] uppercase">
+                                <option value="">توضع ذاتي مستقل</option>
                                 <option v-for="tower in towers" :key="tower.id" :value="tower.id">
-                                    🗼 {{ tower.name }}
+                                     {{ tower.name }} — 🗼
                                 </option>
                             </select>
                         </div>
 
                         <div class="md:col-span-2 space-y-4">
-                             <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Physical Site intelligence</label>
-                             <input v-model="form.location" type="text" class="apple-input h-14 text-sm font-medium" placeholder="E.g. North Rack-Unit 4">
+                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2">توصيف الموقع المادي الدقيق</label>
+                             <input v-model="form.location" type="text" class="form-input-monolith h-16 text-sm font-bold" placeholder="مثلاً: الخزانة الشمالية - الرف 4">
                         </div>
-                    </div>
 
-                    <!-- Simple Coordinates (Map placeholder logic) -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                         <div class="space-y-2">
-                             <label class="text-[10px] font-black text-rose-500 uppercase tracking-widest ml-2">North Latitude</label>
-                             <input v-model="form.lat" type="text" class="apple-input h-12 font-mono bg-rose-50/50 border-rose-100" placeholder="33.xxx">
-                         </div>
-                         <div class="space-y-2">
-                             <label class="text-[10px] font-black text-emerald-500 uppercase tracking-widest ml-2">East Longitude</label>
-                             <input v-model="form.lng" type="text" class="apple-input h-12 font-mono bg-emerald-50/50 border-emerald-100" placeholder="36.xxx">
-                         </div>
+                        <div class="space-y-4">
+                             <label class="text-[10px] font-black text-rose-500 uppercase tracking-widest mr-2">خط العرض (Latitude)</label>
+                             <input v-model="form.lat" type="text" class="form-input-monolith h-16 font-mono bg-rose-50/10 border-rose-100/20" placeholder="33.xxx">
+                        </div>
+                        <div class="space-y-4">
+                             <label class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mr-2">خط الطول (Longitude)</label>
+                             <input v-model="form.lng" type="text" class="form-input-monolith h-16 font-mono bg-emerald-50/10 border-emerald-100/20" placeholder="36.xxx">
+                        </div>
                     </div>
                 </div>
 
-                <!-- Submission Logic -->
-                <div class="flex flex-col md:flex-row items-center justify-between gap-10 apple-card p-12 bg-black text-white overflow-hidden relative">
-                    <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
-                    <div class="relative z-10 flex items-center gap-8 flex-1">
-                        <div class="w-16 h-16 bg-white/10 rounded-[1.5rem] flex items-center justify-center text-3xl">
-                            <Zap class="w-8 h-8 fill-white" />
+                <!-- Strategic Submission Finalization -->
+                <div class="surface-card p-12 bg-slate-900 rounded-xl shadow-2xl overflow-hidden relative group/final">
+                    <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-primary/5 rounded-full blur-3xl group-hover/final:scale-150 transition-transform duration-1000"></div>
+                    <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10 flex-row-reverse">
+                        <div class="flex items-center gap-8 flex-1 justify-end">
+                            <div class="text-right">
+                                 <h4 class="text-xl font-black text-white tracking-tight">تأكيد إضافة السيرفر</h4>
+                                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-2">
+                                    حوكمة البنية التحتية تتطلب دقة عالية في المزامنة.
+                                 </p>
+                            </div>
+                            <div class="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 shadow-inner group-hover/final:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-white text-[32px]" style="font-variation-settings: 'FILL' 1">bolt</span>
+                            </div>
                         </div>
-                        <div>
-                             <h4 class="text-lg font-bold uppercase tracking-tight">Provisioning Pulse</h4>
-                             <p class="text-[9px] font-black text-white/40 uppercase tracking-widest mt-1">
-                                High-priority network governance initialization. Synchronize carefully.
-                             </p>
+                        <div class="flex items-center gap-6 relative z-10 flex-row-reverse">
+                            <Link 
+                                :href="route('servers.index')" 
+                                class="px-10 py-5 bg-white/5 text-slate-400 font-black text-[11px] uppercase tracking-widest rounded-lg hover:bg-white/10 transition-all active:scale-95"
+                            >
+                                إلغاء العملية
+                            </Link>
+                            <button 
+                                type="submit" 
+                                class="px-14 py-5 bg-primary text-white font-black text-[11px] uppercase tracking-[0.2em] rounded-lg shadow-2xl shadow-primary/20 hover:bg-emerald-600 transition-all hover:scale-[1.05] active:scale-95"
+                                :disabled="form.processing"
+                            >
+                                إضافة العقدة إلى الشبكة
+                            </button>
                         </div>
-                    </div>
-                    <div class="relative z-10 flex items-center gap-6">
-                        <Link 
-                            :href="route('servers.index')" 
-                            class="px-8 py-4 bg-white/10 text-white font-bold text-xs uppercase tracking-widest rounded-2xl hover:bg-white/20 transition-all active:scale-95"
-                        >
-                            Abort Entry
-                        </Link>
-                        <button 
-                            type="submit" 
-                            class="px-12 py-5 bg-white text-black font-bold text-xs uppercase tracking-[0.2em] rounded-2xl shadow-2xl shadow-white/10 hover:bg-emerald-500 hover:text-white transition-all hover:scale-105 active:scale-95"
-                            :disabled="form.processing"
-                        >
-                            Execute Initialize commit
-                        </button>
                     </div>
                 </div>
             </form>
         </div>
-    </AppleLayout>
+    </InstitutionalLayout>
 </template>

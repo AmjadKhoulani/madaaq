@@ -1,20 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useForm, Head, Link } from '@inertiajs/vue3';
-import AppleLayout from '@/Layouts/AppleLayout.vue';
-import { 
-    ChevronLeft, 
-    Ticket, 
-    Zap, 
-    Cpu, 
-    Hash, 
-    Shield, 
-    CheckCircle2, 
-    ArrowRight,
-    Printer,
-    DollarSign,
-    Box
-} from 'lucide-vue-next';
+import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 
 const props = defineProps({
     servers: Array,
@@ -44,152 +31,171 @@ const submit = () => {
 </script>
 
 <template>
-    <AppleLayout title="Mint Vouchers">
-        <Head title="Bulk Voucher Minting" />
+    <InstitutionalLayout title="توليد قسائم جديدة">
+        <Head title="إصدار قسائم الهوت سبوت - MadaaQ" />
 
-        <div class="max-w-4xl mx-auto pb-24">
+        <div class="max-w-4xl mx-auto pb-24 text-right px-4" dir="rtl">
             <!-- Navigation Header -->
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
-                <div class="flex items-center gap-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16 flex-row-reverse">
+                <div class="flex items-center gap-6 justify-end">
+                    <div class="text-right">
+                        <h1 class="text-4xl font-black text-primary tracking-tight mb-2">منظومة توليد القسائم (Minting)</h1>
+                        <p class="text-slate-500 font-bold text-sm uppercase tracking-wider flex items-center gap-3 justify-end">
+                            <span>إصدار دفعات الرموز الائتمانية عبر بروتوكول API</span>
+                            <span class="material-symbols-outlined text-primary text-[20px]">confirmation_number</span>
+                        </p>
+                    </div>
                     <Link 
                         :href="route('hotspot.vouchers.index')" 
-                        class="w-12 h-12 apple-card flex items-center justify-center text-[#86868b] hover:text-black transition-all group"
+                        class="w-14 h-14 bg-white shadow-sm border border-outline-variant/10 rounded-xl flex items-center justify-center text-slate-400 hover:text-primary transition-all group"
                     >
-                        <ChevronLeft class="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+                        <span class="material-symbols-outlined text-[28px] group-hover:translate-x-2 transition-transform">arrow_forward</span>
                     </Link>
-                    <div>
-                        <h1 class="text-3xl font-bold tracking-tight mb-1">Voucher Minting Protocol</h1>
-                        <p class="text-[var(--app-secondary)] font-medium">Bulk initialization of guest access secrets</p>
-                    </div>
                 </div>
             </div>
 
-            <form @submit.prevent="submit" class="space-y-8">
+            <form @submit.prevent="submit" class="space-y-10">
                 <!-- 1. Deployment Host -->
-                <div class="apple-card p-10">
-                    <div class="flex items-center gap-3 mb-10">
-                        <div class="w-1.5 h-6 bg-indigo-600 rounded-full"></div>
-                        <h3 class="text-sm font-bold tracking-tight uppercase">Deployment Target Cluster</h3>
+                <div class="surface-card p-12 rounded-2xl relative overflow-hidden border border-outline-variant/5 shadow-sm">
+                    <div class="flex items-center gap-3 mb-10 justify-end">
+                        <h3 class="text-xs font-black text-primary uppercase tracking-[0.2em]">خادم الربط ونطاق الخدمة</h3>
+                        <span class="material-symbols-outlined text-secondary">lan</span>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                         <div class="space-y-4">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Primary Edge Controller</label>
-                            <select v-model="form.server_id" class="apple-input h-14 font-bold uppercase tracking-tight" required>
-                                <option value="">Select Target Node...</option>
-                                <option v-for="s in servers" :key="s.id" :value="s.id">🖥️ {{ s.name }} ({{ s.ip }})</option>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                         <div class="space-y-4 text-right">
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest mr-2">خادم الميكروتيك المستهدف (Gateway)</label>
+                            <select v-model="form.server_id" class="form-input-monolith h-14 font-black text-sm pr-12" required>
+                                <option value="" disabled>اختر بوابة التزويد...</option>
+                                <option v-for="s in servers" :key="s.id" :value="s.id">{{ s.name }} — {{ s.ip }}</option>
                             </select>
                         </div>
-                        <div class="space-y-4">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Surface Velocity Tier</label>
-                            <select v-model="form.package_id" class="apple-input h-14 font-bold uppercase tracking-tight" required>
-                                <option value="">Choose Service Profile...</option>
-                                <option v-for="p in packages" :key="p.id" :value="p.id">⚡ {{ p.name }} (${{ p.price }})</option>
+                        <div class="space-y-4 text-right">
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest mr-2">باقة الاشتراك (Standard Profile)</label>
+                            <select v-model="form.package_id" class="form-input-monolith h-14 font-black text-sm pr-12" required>
+                                <option value="" disabled>اختر باقة الخدمة الفنية...</option>
+                                <option v-for="p in packages" :key="p.id" :value="p.id">{{ p.name }} ({{ p.price }} ل.س)</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
                 <!-- 2. Synthesis Parameters -->
-                <div class="apple-card p-10">
-                    <div class="flex items-center gap-3 mb-10">
-                        <div class="w-1.5 h-6 bg-amber-500 rounded-full"></div>
-                        <h3 class="text-sm font-bold tracking-tight uppercase">Synthesis Configuration</h3>
+                <div class="surface-card p-12 rounded-2xl relative overflow-hidden border border-outline-variant/5 shadow-sm">
+                    <div class="flex items-center gap-3 mb-10 justify-end">
+                        <h3 class="text-xs font-black text-primary uppercase tracking-[0.2em]">معايير توليد الرموز (Synthesis)</h3>
+                        <span class="material-symbols-outlined text-emerald-500">settings_suggest</span>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div class="space-y-4">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Batch Quantity</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                        <div class="space-y-4 text-right">
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest mr-2">حجم الدفعة (Quantity)</label>
                             <div class="relative">
-                                <input v-model="form.quantity" type="number" min="1" max="100" class="apple-input h-14 pl-14 font-bold text-lg">
-                                <Hash class="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-500" />
-                            </div>
-                            <p class="text-[8px] font-bold text-[#86868b] uppercase tracking-widest ml-2">Max 100 units per cycle</p>
-                        </div>
-                        <div class="space-y-4">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Identity Prefix</label>
-                            <div class="relative">
-                                <input v-model="form.prefix" type="text" maxlength="5" class="apple-input h-14 pl-14 font-mono font-bold text-lg" placeholder="GT-">
-                                <Zap class="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-500" />
+                                <input v-model="form.quantity" type="number" min="1" max="500" class="form-input-monolith h-14 pr-14 font-headline font-black text-xl">
+                                <span class="material-symbols-outlined absolute right-5 top-4 text-emerald-500">layers</span>
                             </div>
                         </div>
-                        <div class="space-y-4">
-                            <label class="text-[10px] font-black text-[#86868b] uppercase tracking-widest ml-2">Secret Entropy (Length)</label>
+                        <div class="space-y-4 text-right">
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest mr-2">بادئة الرمز (Prefix)</label>
                             <div class="relative">
-                                <input v-model="form.length" type="number" min="4" max="10" class="apple-input h-14 pl-14 font-bold text-lg">
-                                <Shield class="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-500" />
+                                <input v-model="form.prefix" type="text" maxlength="5" class="form-input-monolith h-14 pr-14 font-headline font-black text-xl" placeholder="GT-">
+                                <span class="material-symbols-outlined absolute right-5 top-4 text-primary">text_fields</span>
+                            </div>
+                        </div>
+                        <div class="space-y-4 text-right">
+                            <label class="text-[11px] font-black text-primary uppercase tracking-widest mr-2">طول الرمز (Length)</label>
+                            <div class="relative">
+                                <input v-model="form.length" type="number" min="4" max="12" class="form-input-monolith h-14 pr-14 font-headline font-black text-xl">
+                                <span class="material-symbols-outlined absolute right-5 top-4 text-secondary">pin</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- 3. Minting Preview -->
-                <div v-if="selectedPackage && selectedServer" class="apple-card p-12 bg-black text-white relative overflow-hidden animate-in slide-in-from-top duration-700">
-                    <div class="absolute -top-10 -right-10 w-64 h-64 bg-indigo-600/20 rounded-full blur-3xl"></div>
-                    <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10">
-                        <div class="flex items-center gap-8">
-                            <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-3xl">
-                                🏭
+                <div v-if="selectedPackage && selectedServer" class="surface-card p-12 bg-slate-950 text-white relative overflow-hidden animate-in slide-in-from-top duration-700 rounded-2xl shadow-2xl">
+                    <div class="absolute -top-16 -right-16 w-64 h-64 bg-primary/20 rounded-full blur-3xl"></div>
+                    <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-12 flex-row-reverse">
+                        <div class="flex items-center gap-8 flex-row-reverse text-right">
+                            <div class="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center border border-white/5 shadow-2xl">
+                                <span class="material-symbols-outlined text-[40px] text-primary">precision_manufacturing</span>
                             </div>
                             <div>
-                                <h4 class="text-xl font-bold tracking-tight">Synthesis Summary</h4>
-                                <p class="text-[10px] font-black text-white/40 uppercase tracking-widest mt-1">Ready to transmit batch payload</p>
+                                <h4 class="text-2xl font-black tracking-tight leading-none mb-2">ملخص البروتوكول</h4>
+                                <p class="text-[10px] font-black text-white/40 uppercase tracking-widest">جاهز للحقن البرمجي في خادم الميكروتيك</p>
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-8 text-right">
+                        <div class="grid grid-cols-2 gap-16 text-right">
                             <div>
-                                <p class="text-[9px] font-black text-white/40 uppercase tracking-widest mb-1">Fiscal Impact</p>
-                                <p class="text-2xl font-black">${{ (selectedPackage.price * form.quantity).toFixed(2) }}</p>
+                                <p class="text-[10px] font-black text-white/40 uppercase tracking-widest mb-2">القيمة الائتمانية</p>
+                                <p class="text-4xl font-black text-secondary font-headline">{{ (selectedPackage.price * form.quantity).toLocaleString() }} <span class="text-xs opacity-50 uppercase mr-1">S.P</span></p>
                             </div>
                             <div>
-                                <p class="text-[9px] font-black text-white/40 uppercase tracking-widest mb-1">Sync Horizon</p>
-                                <p class="text-2xl font-black">{{ selectedServer.name }}</p>
+                                <p class="text-[10px] font-black text-white/40 uppercase tracking-widest mb-2">خادم المزامنة</p>
+                                <p class="text-2xl font-black text-primary truncate max-w-[150px]">{{ selectedServer.name }}</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-12 p-8 bg-white/5 rounded-[2rem] border border-white/10 flex items-center justify-between group">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center font-mono font-black text-amber-500">
-                                {{ form.prefix || '?' }}{{ 'X'.repeat(form.length) }}
+                    <div class="mt-12 p-8 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-between group flex-row-reverse shadow-inner">
+                        <div class="flex items-center gap-6 flex-row-reverse">
+                            <div class="px-8 py-3 rounded-xl bg-white/10 flex items-center justify-center font-headline font-black text-2xl text-amber-500 tracking-[0.2em] border border-white/5">
+                                {{ form.prefix || '' }}{{ 'X'.repeat(form.length) }}
                             </div>
-                            <p class="text-sm font-medium opacity-60">Example voucher identity structure</p>
+                            <p class="text-xs font-black text-white/30 uppercase tracking-widest">نموذج الرمز المولد (Artifact)</p>
                         </div>
-                        <CheckCircle2 class="text-emerald-500 group-hover:scale-125 transition-all" />
+                        <span class="material-symbols-outlined text-emerald-500 group-hover:scale-125 transition-all text-[36px]">verified</span>
                     </div>
                 </div>
 
                 <!-- 4. Governance Commitment -->
-                <div class="flex flex-col md:flex-row items-center justify-between gap-10 apple-card p-12 bg-black text-white relative overflow-hidden">
-                    <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
-                    <div class="relative z-10 flex items-center gap-8">
-                        <div class="w-16 h-16 bg-white/10 rounded-[1.5rem] flex items-center justify-center text-3xl shrink-0">
-                            <Box class="w-8 h-8 text-amber-400" />
+                <div class="flex flex-col md:flex-row items-center justify-between gap-10 surface-card p-12 bg-slate-900 text-white rounded-2xl relative overflow-hidden shadow-2xl border border-white/5">
+                    <div class="absolute -bottom-32 -left-32 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
+                    <div class="relative z-10 flex items-center gap-8 text-right flex-row-reverse">
+                        <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 border border-white/5">
+                            <span class="material-symbols-outlined text-[32px] text-amber-500">verified_user</span>
                         </div>
                         <div>
-                             <h4 class="text-lg font-bold uppercase tracking-tight">Minting Commitment</h4>
-                             <p class="text-[9px] font-black text-white/40 uppercase tracking-widest mt-1">
-                                Initiating bulk synthesis and edge API handshake protocol.
+                             <h4 class="text-xl font-black uppercase tracking-tight">إقرار المزامنة الطرفية</h4>
+                             <p class="text-[10px] font-black text-white/40 uppercase tracking-widest mt-2 leading-relaxed">
+                                سيتم حقن رموز الوصول في قاعدة بيانات خادم الميكروتيك فوراً عبر بروتوكول API الموحد.
                              </p>
                         </div>
                     </div>
-                    <div class="relative z-10 flex items-center gap-6">
-                        <Link 
-                            :href="route('hotspot.vouchers.index')" 
-                            class="px-8 py-4 bg-white/10 text-white font-bold text-xs uppercase tracking-widest rounded-2xl hover:bg-white/20 transition-all active:scale-95"
-                        >
-                            Abort Minting
-                        </Link>
-                        <button 
+                    <div class="relative z-10 flex items-center gap-6 flex-row-reverse">
+                         <button 
                             type="submit" 
-                            class="px-12 py-5 bg-white text-black font-bold text-xs uppercase tracking-[0.2em] rounded-2xl shadow-2xl hover:bg-amber-500 hover:text-white transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
+                            class="px-14 py-5 bg-primary text-white font-black text-xs uppercase tracking-[0.2em] rounded-xl shadow-2xl shadow-primary/30 hover:bg-primary/90 transition-all hover:scale-105 active:scale-95 disabled:opacity-30 flex items-center gap-4 border border-white/10"
                             :disabled="form.processing || !form.server_id || !form.package_id"
                         >
-                            Commence Synthesis
+                            <span class="material-symbols-outlined text-[24px]">cloud_sync</span> تنفيذ عملية التوليد
+                        </button>
+                        <Link 
+                            :href="route('hotspot.vouchers.index')" 
+                            class="px-10 py-5 bg-white/5 text-white/70 font-black text-xs uppercase tracking-widest rounded-xl hover:bg-white/10 hover:text-white transition-all active:scale-95 border border-white/5"
+                        >
+                            إلغاء الأمر
+                        </Link>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </InstitutionalLayout>
+</template>
+
+<style scoped>
+.font-headline {
+    font-family: 'Manrope', sans-serif;
+}
+</style>
+er:bg-emerald-500 hover:text-white transition-all hover:scale-105 active:scale-95 disabled:opacity-30"
+                            :disabled="form.processing || !form.server_id || !form.package_id"
+                        >
+                            بدء توليد القسائم
                         </button>
                     </div>
                 </div>
             </form>
         </div>
-    </AppleLayout>
+    </InstitutionalLayout>
 </template>

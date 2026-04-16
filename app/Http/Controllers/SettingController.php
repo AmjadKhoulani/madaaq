@@ -41,6 +41,9 @@ class SettingController extends Controller
             }
         }
         
+        $user = auth()->user();
+        $tenant = $user ? $user->tenant : null;
+
         return \Inertia\Inertia::render('Settings/Index', [
             'settings' => $settings,
             'tenant' => $tenant

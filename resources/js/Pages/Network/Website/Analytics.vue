@@ -1,16 +1,6 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import AppleLayout from '@/Layouts/AppleLayout.vue';
-import { 
-    Globe, 
-    Activity, 
-    ShieldBan,
-    Clock,
-    Search,
-    TrendingUp,
-    Filter,
-    Table as TableIcon
-} from 'lucide-vue-next';
+import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 
 const props = defineProps({
     topWebsites: Array,
@@ -25,113 +15,127 @@ const form = useForm({
 
 const blockDomain = (domain) => {
     form.domain = domain;
-    if(confirm(`Are you sure you want to deploy a block protocol for ${domain} across all edge nodes?`)) {
+    if(confirm(`هل أنت متأكد من رغبتك في تفعيل بروتوكول الحظر السيادي للنطاق ${domain} عبر كافة عقد الشبكة المركزية؟`)) {
         form.post(route('network.website.block'), {
             preserveScroll: true,
-            onSuccess: () => alert('Domain blocking protocol engaged.')
+            onSuccess: () => {
+                // Success logic handled by controller flash
+            }
         });
     }
 };
 
 const formatNumber = (num) => {
-    return new Intl.NumberFormat().format(num);
+    return new Intl.NumberFormat('en-US').format(num);
 };
 
 </script>
 
 <template>
-    <AppleLayout title="Global Web Analytics">
-        <Head title="Global Extraction Trends" />
+    <InstitutionalLayout title="استخبارات الويب العالمية">
+        <Head title="تحليلات العنونة العالمية - MadaaQ" />
 
-        <div class="max-w-[1400px] mx-auto pb-24">
-            <!-- Strategic Header -->
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
-                <div>
-                     <h1 class="text-4xl font-bold tracking-tight mb-2">Global Web Analytics</h1>
-                     <p class="text-[var(--app-secondary)] font-medium flex items-center gap-3">
-                        <TrendingUp class="w-4 h-4 text-indigo-500" />
-                        Cumulative Top 100 DNS Hit Intelligence
-                     </p>
+        <div class="max-w-[1400px] mx-auto pb-24 text-right px-4" dir="rtl">
+            <!-- Strategic Intelligence Header -->
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-10 mb-16 flex-row-reverse text-right">
+                <div class="text-right">
+                     <h1 class="text-4xl font-black text-primary tracking-tight mb-2 uppercase">تحليلات العنونة والارتباط (Resolution Intel)</h1>
+                     <div class="flex items-center gap-4 justify-end">
+                        <p class="text-slate-500 font-bold text-sm uppercase tracking-wider">ذكاء طلبيات <span class="text-primary font-headline">DNS</span> التراكمي لأعلى هويات النطاقات المستخرجة عبر العقد</p>
+                        <span class="material-symbols-outlined text-primary text-[24px]">troubleshoot</span>
+                     </div>
                 </div>
                 
-                <div class="flex items-center gap-2 p-1.5 bg-black/[0.03] backdrop-blur-3xl rounded-[16px] border border-black/5">
+                <div class="flex items-center gap-3 p-2 bg-white rounded-2xl border border-outline-variant/10 shadow-2xl">
                     <Link :href="route('network.website.analytics', { period: '7d' })" 
-                          class="px-6 py-2.5 rounded-[12px] text-xs font-bold transition-all text-center"
-                          :class="period === '7d' ? 'bg-white text-black shadow-sm' : 'text-[#86868b] hover:text-black hover:bg-black/5'">
-                        Past 7 Days
+                          class="px-8 py-3 rounded-xl text-[10px] font-black transition-all text-center uppercase tracking-[0.2em]"
+                          :class="period === '7d' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'text-slate-400 hover:text-primary hover:bg-slate-50'">
+                        دورة 07 أيام
                     </Link>
                     <Link :href="route('network.website.analytics', { period: '30d' })" 
-                          class="px-6 py-2.5 rounded-[12px] text-xs font-bold transition-all text-center"
-                          :class="period === '30d' ? 'bg-white text-black shadow-sm' : 'text-[#86868b] hover:text-black hover:bg-black/5'">
-                        Past 30 Days
+                          class="px-8 py-3 rounded-xl text-[10px] font-black transition-all text-center uppercase tracking-[0.2em]"
+                          :class="period === '30d' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'text-slate-400 hover:text-primary hover:bg-slate-50'">
+                        دورة 30 يوماً
                     </Link>
                 </div>
             </div>
 
-            <!-- Global Analytics Table -->
-            <div class="apple-card overflow-hidden">
-                <div class="p-6 border-b border-black/[0.03] bg-black/[0.02] flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-1.5 h-6 bg-indigo-500 rounded-full"></div>
-                        <h3 class="text-sm font-bold tracking-tight">Cumulative Extraction Ranking</h3>
+            <!-- Resolution Analytics Ledger -->
+            <div class="surface-card rounded-[2.5rem] overflow-hidden shadow-2xl border border-outline-variant/5 bg-white">
+                <div class="p-10 border-b border-slate-50 bg-slate-50/50 flex items-center justify-between flex-row-reverse">
+                    <div class="flex items-center gap-4 justify-end">
+                        <h3 class="text-xs font-black text-primary uppercase tracking-[0.3em]">تصنيف الاستخراج السيادي (DNS Ranking)</h3>
+                        <div class="w-1.5 h-8 bg-primary rounded-full"></div>
                     </div>
-                    <div class="text-[10px] font-black text-[#86868b] uppercase tracking-widest flex items-center gap-2">
-                        <TableIcon class="w-4 h-4" />
-                        Top 100 Domains
+                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-4">
+                        <span>أعلى 100 هوية مستهدفة</span>
+                        <span class="material-symbols-outlined text-slate-300 text-[20px]">leaderboard</span>
                     </div>
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                    <table class="w-full text-right border-separate border-spacing-0">
                         <thead>
-                            <tr class="bg-black/[0.01] border-b border-black/[0.05]">
-                                <th class="p-4 text-[10px] font-black text-[#86868b] uppercase tracking-widest select-none text-center w-16">Rank</th>
-                                <th class="p-4 text-[10px] font-black text-[#86868b] uppercase tracking-widest select-none">Domain Identity</th>
-                                <th class="p-4 text-[10px] font-black text-[#86868b] uppercase tracking-widest select-none">DNS Resolution Density</th>
-                                <th class="p-4 text-[10px] font-black text-[#86868b] uppercase tracking-widest select-none text-right">Sanction Protocol</th>
+                            <tr class="bg-slate-50/20 text-slate-400">
+                                <th class="p-8 text-[11px] font-black uppercase tracking-[0.2em] text-center w-32">الرتبة</th>
+                                <th class="p-8 text-[11px] font-black uppercase tracking-[0.2em]">هوية النطاق (Resolution Host)</th>
+                                <th class="p-8 text-[11px] font-black uppercase tracking-[0.2em]">كثافة الطلبات التراكمية</th>
+                                <th class="p-8 text-[11px] font-black uppercase tracking-[0.2em] text-left">بروتوكول الردع (Action)</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-black/[0.03]">
-                            <tr v-for="(website, index) in topWebsites" :key="website.domain" class="hover:bg-black/[0.01] transition-colors group">
-                                <td class="p-4 text-center">
-                                    <div class="w-8 h-8 rounded-full flex items-center justify-center mx-auto text-[11px] font-black"
+                        <tbody class="divide-y divide-slate-50">
+                            <tr v-for="(website, index) in topWebsites" :key="website.domain" class="hover:bg-slate-50/80 transition-all group">
+                                <td class="p-8 text-center">
+                                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto text-[14px] font-black font-headline shadow-inner border transition-all group-hover:scale-110"
                                          :class="{
-                                             'bg-amber-100 text-amber-600': index === 0,
-                                             'bg-slate-200 text-slate-600': index === 1,
-                                             'bg-orange-100 text-orange-600': index === 2,
-                                             'bg-black/[0.03] text-[#86868b] group-hover:text-black transition-colors': index > 2
+                                             'bg-amber-100 text-amber-700 border-amber-200 shadow-amber-200/50': index === 0,
+                                             'bg-slate-200 text-slate-700 border-slate-300 shadow-slate-300/50': index === 1,
+                                             'bg-orange-100 text-orange-700 border-orange-200 shadow-orange-200/50': index === 2,
+                                             'bg-slate-50 text-slate-400 border-slate-100 group-hover:text-primary transition-colors': index > 2
                                          }">
                                          {{ index + 1 }}
                                     </div>
                                 </td>
-                                <td class="p-4">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-10 h-10 rounded-[12px] flex items-center justify-center font-bold text-lg"
-                                             :class="index < 3 ? 'bg-indigo-50 text-indigo-600' : 'bg-black/[0.03] text-black/50'">
+                                <td class="p-8 text-right">
+                                    <div class="flex items-center gap-6 flex-row-reverse">
+                                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl shadow-inner border transition-all group-hover:rotate-6"
+                                             :class="index < 3 ? 'bg-primary/5 text-primary border-primary/10' : 'bg-slate-50 text-slate-300 border-slate-100'">
                                             {{ website.domain.substring(0, 1).toUpperCase() }}
                                         </div>
-                                        <div>
-                                            <p class="font-bold text-sm text-black group-hover:text-indigo-600 transition-colors">{{ website.domain }}</p>
+                                        <div class="text-right">
+                                            <p class="font-black text-base text-primary group-hover:text-slate-900 transition-colors tracking-tight">{{ website.domain }}</p>
+                                            <div class="flex items-center gap-2 justify-end mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                 <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">VERIFIED_RESOLVER_NODE</span>
+                                                 <span class="w-1 h-1 bg-emerald-500 rounded-full animate-pulse"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="p-4">
-                                    <div class="flex items-center gap-3">
-                                        <Activity class="w-4 h-4 text-[#86868b]" />
-                                        <span class="font-mono text-xs font-bold">{{ formatNumber(website.total_hits) }} Hits</span>
+                                <td class="p-8">
+                                    <div class="flex items-center gap-4 justify-end">
+                                        <div class="text-right">
+                                            <span class="font-headline text-lg font-black text-slate-900 tracking-tighter">{{ formatNumber(website.total_hits) }}</span>
+                                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mt-1">طلبات عنونة (Hits)</span>
+                                        </div>
+                                        <span class="material-symbols-outlined text-slate-300 text-[24px]">cloud_sync</span>
                                     </div>
                                 </td>
-                                <td class="p-4 text-right">
-                                    <button @click="blockDomain(website.domain)" class="px-4 py-2 border-2 border-rose-500/20 text-rose-600 bg-white hover:bg-rose-50 text-[10px] font-black uppercase tracking-widest rounded-full transition-all active:scale-95 inline-flex items-center gap-2">
-                                        <ShieldBan class="w-3.5 h-3.5" />
-                                        Block
+                                <td class="p-8 text-left">
+                                    <button @click="blockDomain(website.domain)" class="px-8 py-3.5 bg-white border-2 border-rose-500/10 text-rose-500 hover:bg-rose-600 hover:text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-xl transition-all active:scale-90 inline-flex items-center gap-4 shadow-sm group/btn">
+                                        <span class="material-symbols-outlined text-[20px] transition-transform group-hover/btn:rotate-180">block</span>
+                                        تفعيل بروتوكول الحظر
                                     </button>
                                 </td>
                             </tr>
                             <tr v-if="topWebsites.length === 0">
-                                <td colspan="4" class="p-16 text-center text-[#86868b]">
-                                    <Activity class="w-8 h-8 mx-auto mb-4 opacity-30" />
-                                    <p class="text-[10px] font-black uppercase tracking-widest">No analytic payload detected for this period</p>
+                                <td colspan="4" class="p-48 text-center">
+                                    <div class="flex flex-col items-center gap-8 opacity-40 grayscale group/empty">
+                                        <div class="w-24 h-24 rounded-[2rem] bg-slate-100 flex items-center justify-center shadow-inner group-hover/empty:scale-110 transition-transform">
+                                            <span class="material-symbols-outlined text-[64px] font-light">data_alert</span>
+                                        </div>
+                                        <h4 class="text-2xl font-black text-primary uppercase tracking-tight">قاعدة البيانات شاغرة حالياً</h4>
+                                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em] italic">لم يتم رصد أي مسارات عنونة نشطة ضمن الجدول الزمني المحدد</p>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -139,14 +143,25 @@ const formatNumber = (num) => {
                 </div>
             </div>
 
-            <div class="mt-8 flex items-center gap-4 p-4 rounded-2xl bg-blue-50/50 border border-blue-100">
-                <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center shrink-0">
-                    <Activity class="w-4 h-4" />
+            <!-- Intelligence Advisory (Sovereign Alert) -->
+            <div class="mt-16 p-10 rounded-[2.5rem] bg-slate-950 text-white flex items-start gap-8 flex-row-reverse text-right shadow-2xl relative overflow-hidden group">
+                <div class="absolute -top-16 -left-16 w-64 h-64 bg-primary/20 rounded-full blur-3xl group-hover:scale-150 transition-all duration-1000"></div>
+                <div class="w-16 h-16 bg-white/5 text-primary rounded-2xl flex items-center justify-center shrink-0 border border-white/10 shadow-inner relative z-10 transition-transform group-hover:rotate-12">
+                    <span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1">info</span>
                 </div>
-                <p class="text-xs font-bold text-blue-900">
-                    <span class="text-blue-800 font-black">Intelligence Note:</span> Data is derived from global MikroTik DNS cache snapshots. It represents DNS resolution requests, not absolute traffic volume.
-                </p>
+                <div class="text-right relative z-10">
+                    <h4 class="text-sm font-black text-white/40 mb-4 uppercase tracking-[0.3em]">تنبيه مصفوفة التحليل السيادي (Advisory)</h4>
+                    <p class="text-sm font-bold text-white/80 leading-relaxed max-w-4xl">
+                        يتم اشتقاق هذه البيانات عبر استخراج لقطات الذاكرة المؤقتة للعنونة (<span class="text-primary font-headline">DNS Cache Snapshots</span>) من كافة العقد البنيوية النشطة. تعبر الإحصائيات عن كثافة طلبات المسارات اللحظية ولا تمثل بالضرورة حجم الاستهلاك الفعلي (<span class="text-primary font-headline">Traffic Volume</span>) المرتبط بكل نطاق.
+                    </p>
+                </div>
             </div>
         </div>
-    </AppleLayout>
+    </InstitutionalLayout>
 </template>
+
+<style scoped>
+.font-headline {
+    font-family: 'Manrope', sans-serif;
+}
+</style>
