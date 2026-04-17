@@ -124,9 +124,9 @@ h1, h2, h3, h4 { @apply font-headline; }
     @apply bg-outline-variant/30 rounded-full hover:bg-outline-variant/50 transition-colors;
 }
 
-/* UI Forms */
+/* UI Forms - High Fidelity Monolith Implementation */
 .form-input-monolith, .form-select-monolith {
-    @apply w-full px-6 py-4 bg-surface-container-low border border-outline-variant/10 rounded-lg text-sm font-bold text-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all shadow-inner;
+    @apply w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-[1.5rem] text-slate-900 focus:ring-8 focus:ring-primary/5 focus:border-primary outline-none transition-all font-black text-base;
 }
 .form-input-monolith::placeholder {
     @apply text-slate-300 font-medium;

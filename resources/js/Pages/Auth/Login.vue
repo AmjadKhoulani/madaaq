@@ -176,7 +176,7 @@ const submit = () => {
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </form>
 
                     <!-- 6. COMPLIANCE FOOTER -->
                     <div class="mt-12 text-center pt-8 border-t border-white/5">

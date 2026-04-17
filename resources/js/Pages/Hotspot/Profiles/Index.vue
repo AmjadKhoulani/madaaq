@@ -148,9 +148,3 @@ const deleteProfile = (id) => {
     font-family: 'Manrope', sans-serif;
 }
 </style>
-p-hover:text-primary transition-colors">إضافة فئة وصول جديدة</p>
-                </Link>
-            </div>
-        </div>
-    </InstitutionalLayout>
-</template>

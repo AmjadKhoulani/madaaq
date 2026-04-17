@@ -11,7 +11,7 @@ const props = defineProps({
 });
 
 const form = useForm({
-    mode: 'new', // new, existing
+    mode: 'new',
     customer_id: '',
     name: '',
     phone: '',
@@ -74,7 +74,7 @@ const generateSecret = () => {
     <InstitutionalLayout title="تفعيل اشتراك جديد">
         <Head title="إعداد اشتراك برودباند" />
 
-        <div class="max-w-5xl mx-auto pb-24 text-right">
+        <div class="max-w-5xl mx-auto pb-24 text-right" dir="rtl">
             <!-- Navigation Header -->
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12 flex-row-reverse">
                 <div class="flex items-center gap-6 justify-end">

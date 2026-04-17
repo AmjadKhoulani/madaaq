@@ -147,9 +147,3 @@ const getStatusDetails = (status) => {
     font-family: 'Manrope', sans-serif;
 }
 </style>
-                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] max-w-xs mx-auto mt-4">لم يتم رصد أي حسابات ضيوف في النظام حالياً. ابدأ بتوليد أول حساب.</p>
-                </div>
-            </div>
-        </div>
-    </InstitutionalLayout>
-</template>

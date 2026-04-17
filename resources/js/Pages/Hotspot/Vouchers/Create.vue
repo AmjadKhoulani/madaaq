@@ -188,14 +188,3 @@ const submit = () => {
     font-family: 'Manrope', sans-serif;
 }
 </style>
-er:bg-emerald-500 hover:text-white transition-all hover:scale-105 active:scale-95 disabled:opacity-30"
-                            :disabled="form.processing || !form.server_id || !form.package_id"
-                        >
-                            بدء توليد القسائم
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </InstitutionalLayout>
-</template>
