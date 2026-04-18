@@ -1,136 +1,112 @@
 @import "tailwindcss";
 
 @theme {
-    /* Architectural Monolith Color Palette */
-    --color-inverse-on-surface: #eaf1ff;
+    /* Radiant Monolith: Unified Theme Engine */
     --color-primary: #00355f;
-    --color-primary-fixed: #d2e4ff;
-    --color-tertiary-container: #9a000d;
-    --color-error-container: #ffdad6;
-    --color-on-tertiary: #ffffff;
-    --color-on-secondary: #ffffff;
-    --color-surface-container-high: #dfe9fa;
-    --color-on-secondary-fixed-variant: #005137;
-    --color-on-primary-fixed: #001c37;
-    --color-secondary-fixed: #85f8c4;
-    --color-background: #f8f9ff;
-    --color-secondary: #006c4a;
-    --color-secondary-fixed-dim: #68dba9;
-    --color-outline-variant: #c2c7d1;
-    --color-on-secondary-fixed: #002114;
-    --color-inverse-primary: #a0c9ff;
-    --color-on-error: #ffffff;
-    --color-on-tertiary-container: #ffa297;
-    --color-tertiary: #6f0006;
-    --color-surface-bright: #f8f9ff;
-    --color-surface-container: #e5eeff;
-    --color-surface-variant: #d9e3f4;
-    --color-surface: #f8f9ff;
-    --color-on-primary: #ffffff;
-    --color-tertiary-fixed: #ffdad6;
-    --color-inverse-surface: #27313e;
-    --color-tertiary-fixed-dim: #ffb4ab;
-    --color-outline: #727780;
-    --color-on-secondary-container: #00714e;
-    --color-secondary-container: #82f5c1;
-    --color-surface-container-lowest: #ffffff;
-    --color-on-surface-variant: #42474f;
-    --color-error: #ba1a1a;
-    --color-surface-dim: #d1dbec;
-    --color-primary-fixed-dim: #a0c9ff;
-    --color-on-primary-fixed-variant: #07497d;
-    --color-on-background: #121c28;
-    --color-surface-tint: #2d6197;
-    --color-primary-container: #0f4c81;
-    --color-on-surface: #121c28;
-    --color-on-primary-container: #8ebdf9;
-    --color-surface-container-highest: #d9e3f4;
-    --color-on-tertiary-fixed: #410002;
-    --color-on-tertiary-fixed-variant: #93000b;
-    --color-surface-container-low: #eef4ff;
-    --color-on-error-container: #93000a;
-
-    /* Fonts */
+    --color-primary-light: #0f4c81;
+    --color-primary-dark: #001c37;
+    
+    --color-neon-cyan: #00e5ff;
+    --color-vibrant-purple: #7c4dff;
+    --color-electric-blue: #3b82f6;
+    
+    --color-surface-dark: #0f172a;
+    --color-surface-light: #f8f9ff;
+    
     --font-headline: "Manrope", sans-serif;
     --font-body: "IBM Plex Sans Arabic", sans-serif;
-
-    /* Border Radius */
-    --radius-default: 0.125rem;
-    --radius-lg: 0.25rem;
-    --radius-xl: 0.5rem;
-    --radius-full: 0.75rem;
 }
 
 /* 
-   ARCHITECTURAL MONOLITH: DESIGN SYSTEM v2
-   Creative North Star: "The Sovereign Architect"
+   RADIANT MONOLITH: DESIGN SYSTEM v3
+   Pivot: Breathtaking SaaS Aesthetics & High-Intensity Vibrancy
 */
 
-:root {
-    --primary-gradient: linear-gradient(135deg, #00355f 0%, #0f4c81 100%);
-}
-
 body {
-    @apply bg-background text-on-surface font-body antialiased;
-    font-weight: 500;
-    font-size: 1.025rem;
+    @apply bg-surface-light text-slate-800 font-body antialiased;
+    background-image: radial-gradient(at 0% 0%, rgba(0, 229, 255, 0.03) 0, transparent 50%),
+                      radial-gradient(at 100% 100%, rgba(124, 77, 255, 0.03) 0, transparent 50%);
 }
 
-/* The "No-Line" Rule Layer System */
-.surface-canvas { @apply bg-background; }
-.surface-container { @apply bg-surface-container; }
-.surface-card { @apply bg-surface-container-lowest shadow-sm border border-outline-variant/10; }
-
-/* Metrics & Authority */
-.metric-value {
-    @apply font-headline font-extrabold text-primary tracking-tight;
+/* Glassmorphism Matrix */
+.glass-panel {
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-glass;
 }
 
-.metric-label {
-    @apply text-slate-500 text-sm font-medium;
+.glass-card {
+    @apply bg-white/40 backdrop-blur-md border border-white/20 shadow-radiant hover:shadow-2xl transition-all duration-300;
 }
 
-/* Navigation & UI Shell */
-.sidebar-monolith {
-    @apply bg-slate-50 border-l-0 flex flex-col transition-all duration-300;
-    box-shadow: inset -1px 0 0 0 rgba(194, 199, 209, 0.15);
+/* Radiant Gradients */
+.bg-radiant {
+    background: linear-gradient(135deg, #00355f 0%, #0f4c81 100%);
 }
 
-.nav-link-active {
-    @apply flex items-center gap-4 px-6 py-4 text-primary font-bold border-r-4 border-primary bg-white transition-all duration-200;
+.bg-accent-flow {
+    background: linear-gradient(90deg, #00e5ff 0%, #3b82f6 50%, #7c4dff 100%);
+    background-size: 200% auto;
+    animation: flow 5s linear infinite;
 }
 
-.nav-link-inactive {
-    @apply flex items-center gap-4 px-6 py-4 text-slate-500 hover:text-primary hover:bg-surface-container-low transition-colors;
+@keyframes flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
-/* Typography Overrides */
-h1, h2, h3, h4 { @apply font-headline; }
-
-/* Material Symbols Integration */
-.material-symbols-outlined {
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+/* Technical Metrics (Manrope Intensity) */
+.metric-value-radiant {
+    @apply font-headline font-black text-primary tracking-tight italic uppercase;
 }
 
-/* Custom Scrollbar for Architect vibe */
+.metric-vibe-cyan { @apply text-neon-cyan drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]; }
+.metric-vibe-purple { @apply text-vibrant-purple drop-shadow-[0_0_8px_rgba(124,77,255,0.4)]; }
+
+/* UI Surface Hierarchy */
+.surface-monolith {
+    @apply bg-surface-light border border-slate-200/50 rounded-2xl;
+}
+
+/* Navigation Shell Overhaul */
+.monolith-sidebar {
+    @apply fixed inset-y-0 right-0 z-50 w-72 bg-slate-900 border-l border-white/5 transition-transform duration-500 ease-out;
+}
+
+.nav-item {
+    @apply flex items-center gap-4 px-6 py-4 rounded-xl transition-all duration-300 mx-4;
+}
+
+.nav-item-active {
+    @apply bg-accent-gradient text-white font-black shadow-glow-purple scale-[1.05];
+}
+
+.nav-item-inactive {
+    @apply text-slate-400 hover:text-white hover:bg-white/5;
+}
+
+/* Forms: High-Fidelity Execution */
+.input-radiant {
+    @apply w-full px-6 py-4 bg-white/50 border border-slate-200 rounded-xl focus:ring-8 focus:ring-primary/5 focus:border-primary transition-all font-bold text-slate-700 outline-none shadow-inner;
+}
+
+/* Professional Scrollbar */
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
 }
 ::-webkit-scrollbar-track {
-    @apply bg-surface-container-low;
+    @apply bg-slate-50;
 }
 ::-webkit-scrollbar-thumb {
-    @apply bg-outline-variant/30 rounded-full hover:bg-outline-variant/50 transition-colors;
+    @apply bg-primary/20 rounded-full border-4 border-slate-50 hover:bg-primary/40 transition-colors;
 }
 
-/* UI Forms - High Fidelity Monolith Implementation */
-.form-input-monolith, .form-select-monolith {
-    @apply w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-[1.5rem] text-slate-900 focus:ring-8 focus:ring-primary/5 focus:border-primary outline-none transition-all font-black text-base;
+/* Micro-animations */
+@keyframes pulse-soft {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.02); opacity: 0.8; }
 }
-.form-input-monolith::placeholder {
-    @apply text-slate-300 font-medium;
-}
-.form-input-monolith:disabled, .form-select-monolith:disabled {
-    @apply opacity-50 bg-slate-100 cursor-not-allowed;
+.animate-pulse-soft { animation: pulse-soft 3s infinite ease-in-out; }
+
+.hover-glow:hover {
+    @apply shadow-glow-cyan scale-[1.02] transition-all;
 }

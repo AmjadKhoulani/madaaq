@@ -1,131 +1,142 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'باقات البرودباند | Spectral Allocation Registry')
 
 @section('content')
-<div class="sm:flex sm:items-center sm:justify-between mb-8">
-    <div>
-        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">باقات البرودباند</h2>
-        <p class="mt-1 text-sm text-gray-500">إدارة باقات PPPoE والتحكم بالسرعات والأسعار.</p>
-    </div>
-    <div class="mt-4 sm:ml-4 sm:mt-0 sm:flex-none">
-        <a href="{{ route('broadband.profiles.create') }}" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors">
-            <span class="flex items-center gap-2">
-                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"/></svg>
-                إضافة باقة جديدة
-            </span>
+<div class="space-y-12 pb-24">
+    
+    <!-- Radiant Hub Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div class="space-y-2">
+            <div class="flex items-center gap-3">
+                <span class="w-12 h-1 bg-accent-flow rounded-full"></span>
+                <p class="text-[10px] font-black text-primary uppercase tracking-[0.3em] font-headline">Spectral Performance Hub</p>
+            </div>
+            <h2 class="text-4xl font-black text-slate-900 tracking-tighter italic uppercase">باقات البرودباند</h2>
+            <p class="text-slate-400 font-bold uppercase tracking-widest text-[11px] font-headline opacity-80">Managing High-Speed PPPoE Profiles & Network Allocation Matrix</p>
+        </div>
+        
+        <a href="{{ route('broadband.profiles.create') }}" class="px-8 py-4 bg-slate-900 text-white font-black rounded-2xl text-[11px] uppercase tracking-[0.2em] shadow-glow-purple hover:scale-[1.05] active:scale-[0.95] transition-all flex items-center gap-4 italic group">
+            <span class="material-symbols-outlined text-sm group-hover:rotate-180 transition-transform duration-500">speed</span>
+            إنشاء باقة برودباند جديدة
         </a>
     </div>
-</div>
 
-<div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-    @if($profiles->count() > 0)
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-300">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th scope="col" class="py-3.5 pl-4 pr-4 text-right text-sm font-semibold text-gray-900 sm:pr-6">اسم الباقة</th>
-                    <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">التكنولوجيا</th>
-                    <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">السرعة (Download/Upload)</th>
-                    <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">سعة التحميل</th>
-                    <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">المدة</th>
-                    <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">السعر</th>
-                    <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">الأجهزة المستهدفة</th>
-                    <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                        <span class="sr-only">إجراءات</span>
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 bg-white">
-                @foreach($profiles as $profile)
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pr-6">
-                        <div class="flex items-center gap-3">
-                            <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+    <!-- Radiant Command Table Hub -->
+    <div class="glass-panel rounded-[3rem] overflow-hidden !bg-white/60">
+        @if($profiles->count() > 0)
+        <div class="overflow-x-auto">
+            <table class="w-full text-right border-collapse">
+                <thead>
+                    <tr class="bg-primary/5 text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] border-b border-white/40 italic">
+                        <th class="px-10 py-6">Spectral Identity</th>
+                        <th class="px-10 py-6">Operational Tech</th>
+                        <th class="px-10 py-6 text-center">Throughput (D/U)</th>
+                        <th class="px-10 py-6 text-center">Payload Limit</th>
+                        <th class="px-10 py-6 text-center">Temporal Index</th>
+                        <th class="px-10 py-6 text-center text-primary">Fiscal Yield</th>
+                        <th class="px-10 py-6 text-center">Asset Linking</th>
+                        <th class="px-10 py-6 text-left">Protocol Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/20">
+                    @foreach($profiles as $profile)
+                    <tr class="group hover:bg-white/40 transition-all duration-300">
+                        <td class="px-10 py-7">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-slate-900 p-0.5 shadow-sm group-hover:shadow-glow-cyan transition-all">
+                                    <div class="w-full h-full bg-slate-800 rounded-lg flex items-center justify-center text-white">
+                                        <span class="material-symbols-outlined text-lg">bolt</span>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-black text-slate-900 uppercase italic tracking-tighter">{{ $profile->name }}</span>
                             </div>
-                            {{ $profile->name }}
-                        </div>
-                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        <div class="flex items-center gap-1.5 uppercase font-bold text-[10px]">
-                            @if($profile->technology_type === 'fiber')
-                                <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-100">🌐 Fiber</span>
-                            @elseif($profile->technology_type === 'wireless')
-                                <span class="bg-orange-50 text-orange-700 px-2 py-0.5 rounded border border-orange-100">📡 Wireless</span>
-                            @elseif($profile->technology_type === 'dsl')
-                                <span class="bg-gray-50 text-gray-700 px-2 py-0.5 rounded border border-gray-100">🔌 DSL</span>
-                            @elseif($profile->technology_type === 'cable')
-                                <span class="bg-purple-50 text-purple-700 px-2 py-0.5 rounded border border-purple-100">📺 Cable</span>
-                            @else
-                                <span class="text-gray-400">---</span>
-                            @endif
-                        </div>
-                    </td>
-                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500" dir="ltr">
-                        <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">{{ $profile->speed_down }}M</span>
-                        <span class="text-gray-400 mx-1">/</span>
-                        <span class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">{{ $profile->speed_up }}M</span>
-                    </td>
-                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        @if($profile->data_limit_mb)
-                            {{ number_format($profile->data_limit_mb / 1024, 1) }} GB
-                        @else
-                            <span class="text-gray-400">غير محدود</span>
-                        @endif
-                    </td>
-                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        @if($profile->duration_days)
-                            {{ $profile->duration_days }} يوم
-                        @else
-                            <span class="text-gray-400">-</span>
-                        @endif
-                    </td>
-                    <td class="whitespace-nowrap px-3 py-4 text-sm font-bold text-gray-900">
-                        {{ number_format($profile->price, 0) }} {{ $currency ?? 'ر.ي' }}
-                    </td>
-                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        @php
-                            $targetCount = $profile->routers->count() + $profile->mikrotikServers->count();
-                        @endphp
-                        @if($targetCount > 0)
-                            <span class="inline-flex items-center rounded-full bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10">
-                                {{ $targetCount }} أجهزة
+                        </td>
+                        <td class="px-10 py-7">
+                            <div class="flex items-center gap-2">
+                                @if($profile->technology_type === 'fiber')
+                                    <span class="px-3 py-1 bg-neon-cyan/10 text-neon-cyan text-[8px] font-black uppercase rounded-lg border border-neon-cyan/20 animate-pulse-soft">🌐 Fiber Matrix</span>
+                                @elseif($profile->technology_type === 'wireless')
+                                    <span class="px-3 py-1 bg-amber-500/10 text-amber-600 text-[8px] font-black uppercase rounded-lg border border-amber-500/20">📡 Spectral Wireless</span>
+                                @elseif($profile->technology_type === 'dsl')
+                                    <span class="px-3 py-1 bg-slate-100 text-slate-500 text-[8px] font-black uppercase rounded-lg border border-slate-200">🔌 Copper DSL</span>
+                                @else
+                                    <span class="text-slate-300 italic text-[10px]">---</span>
+                                @endif
+                            </div>
+                        </td>
+                        <td class="px-10 py-7 text-center">
+                            <div class="flex items-center justify-center gap-1.5 font-manrope font-black">
+                                <span class="px-3 py-1 bg-emerald-500 text-white text-[10px] rounded-lg shadow-glow-cyan">{{ $profile->speed_down }}M</span>
+                                <span class="text-slate-300 italic opacity-40">/</span>
+                                <span class="px-3 py-1 bg-vibrant-purple text-white text-[10px] rounded-lg shadow-glow-purple">{{ $profile->speed_up }}M</span>
+                            </div>
+                        </td>
+                        <td class="px-10 py-7 text-center">
+                            <span class="text-[11px] font-black text-slate-600 uppercase italic tracking-tighter">
+                                @if($profile->data_limit_mb)
+                                    {{ number_format($profile->data_limit_mb / 1024, 1) }} GB
+                                @else
+                                    <span class="text-slate-300 font-bold">UNLIMITED</span>
+                                @endif
                             </span>
-                        @else
-                           <span class="text-gray-400 text-xs">غير محدد</span>
-                        @endif
-                    </td>
-                    <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6">
-                        <div class="flex items-center justify-end gap-2">
-                            <a href="{{ route('broadband.profiles.edit', $profile) }}" class="text-indigo-600 hover:text-indigo-900 p-1 rounded hover:bg-gray-100 transition" title="تعديل">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                            </a>
-                            <form action="{{ route('broadband.profiles.destroy', $profile) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف هذه الباقة؟ سيتم إزالتها من المايكروتيك أيضاً.')" class="inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900 p-1 rounded hover:bg-gray-100 transition" title="حذف">
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                </button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-    @else
-    <div class="text-center py-12">
-        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-        </svg>
-        <h3 class="mt-2 text-sm font-semibold text-gray-900">لا توجد باقات</h3>
-        <p class="mt-1 text-sm text-gray-500">ابدأ بإنشاء باقة برودباند جديدة.</p>
-        <div class="mt-6">
-            <a href="{{ route('broadband.profiles.create') }}" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                <svg class="-ml-0.5 mr-1.5 h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"/></svg>
-                باقة جديدة
+                        </td>
+                        <td class="px-10 py-7 text-center">
+                             <div class="flex items-center justify-center gap-2 text-slate-500">
+                                <span class="material-symbols-outlined text-[14px]">schedule</span>
+                                <span class="text-[10px] font-black uppercase italic">{{ $profile->duration_days ?? 30 }} DAYS</span>
+                             </div>
+                        </td>
+                        <td class="px-10 py-7 text-center">
+                            <div class="flex items-baseline justify-center gap-1">
+                                <span class="text-lg font-black text-primary italic tracking-tighter">{{ number_format($profile->price, 0) }}</span>
+                                <span class="text-[8px] font-black text-slate-400 uppercase italic">SAR</span>
+                            </div>
+                        </td>
+                        <td class="px-10 py-7 text-center">
+                            @php $targetCount = $profile->routers->count() + $profile->mikrotikServers->count(); @endphp
+                            @if($targetCount > 0)
+                                <span class="px-3 py-1 bg-slate-900 text-neon-cyan rounded-full text-[8px] font-black uppercase tracking-widest shadow-glow-cyan">
+                                    {{ $targetCount }} ASSETS
+                                </span>
+                            @else
+                                <span class="text-[9px] font-bold text-slate-300 italic uppercase">Unaligned</span>
+                            @endif
+                        </td>
+                        <td class="px-10 py-7">
+                            <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-[-10px] transition-all duration-500">
+                                <a href="{{ route('broadband.profiles.edit', $profile) }}" class="w-11 h-11 bg-white border border-slate-100 rounded-xl text-primary flex items-center justify-center shadow-lg hover:bg-primary hover:text-white hover:shadow-glow-purple transition-all italic">
+                                    <span class="material-symbols-outlined text-lg">edit_note</span>
+                                </a>
+                                <form action="{{ route('broadband.profiles.destroy', $profile) }}" method="POST" onsubmit="return confirm('PROTOCOL TERMINATION: Confirm deletion of this profile from registry and MikroTik nodes?')" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="w-11 h-11 bg-white border border-slate-100 rounded-xl text-rose-500 flex items-center justify-center shadow-lg hover:bg-rose-500 hover:text-white transition-all italic">
+                                        <span class="material-symbols-outlined text-lg">delete_forever</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        @else
+        <div class="py-32 flex flex-col items-center justify-center gap-8 glass-card rounded-[2.5rem] border-dashed italic group">
+            <div class="w-24 h-24 bg-slate-50 rounded-[2rem] flex items-center justify-center text-slate-300 border border-slate-100 shadow-inner group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-5xl font-light">inventory_2</span>
+            </div>
+            <div class="text-center">
+                <h3 class="text-lg font-black text-slate-900 uppercase italic tracking-tighter">Spectral Matrix Void</h3>
+                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-[0.3em] mt-3">No active broadband profiles synchronized with registry.</p>
+            </div>
+            <a href="{{ route('broadband.profiles.create') }}" class="mt-6 px-10 py-4 bg-primary text-white font-black rounded-2xl text-[11px] uppercase tracking-[0.3em] shadow-glow-purple flex items-center gap-4 italic transition-all active:scale-95">
+                <span class="material-symbols-outlined text-sm">add_circle</span>
+                Initialize New Profile
             </a>
         </div>
+        @endif
     </div>
-    @endif
 </div>
 @endsection

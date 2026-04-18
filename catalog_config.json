@@ -1,0 +1,8 @@
+{
+  "cat1": ["auth", "layouts", "components", "vendor", "welcome.blade.php", "privacy.blade.php", "terms.blade.php", "app.blade.php"],
+  "cat2": ["crm", "whatsapp"],
+  "cat3": ["network", "routers", "router-management", "towers", "servers"],
+  "cat4": ["broadband", "hotspot"],
+  "cat5": ["portal", "subscription", "support", "accounting"],
+  "cat6": ["settings", "staff", "tools", "activity-logs"]
+}

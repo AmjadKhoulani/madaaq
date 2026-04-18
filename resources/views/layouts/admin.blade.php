@@ -1,162 +1,164 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Admin Command Center</title>
-
-    <!-- Google Font - Rubik -->
+    <title>MadaaQ | @yield('title', 'Intelligence Hub')</title>
+    
+    <!-- Fonts: High Intensity Matrix -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    
+    <!-- Radiant Assets -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
-        body { font-family: 'Rubik', sans-serif; background: radial-gradient(circle at top right, #f8fafc, #f1f5f9); }
-        .font-inter { font-family: 'Inter', sans-serif; }
-        
-        /* Premium Translucent Scrollbar */
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.05); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.1); }
-
-        /* Glassmorphism Utilities */
-        .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.3); }
-        .glass-sidebar { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-left: 1px solid rgba(255, 255, 255, 0.2); }
-        
-        /* Subtle Glow */
-        .nav-active-glow { box-shadow: 0 0 20px -5px rgba(79, 70, 229, 0.3); }
-
-        img { max-width: 100%; height: auto; }
-
-        /* Fallback sizes if Tailwind CSS fails to load */
-        .w-3 { width: 0.75rem; } .h-3 { height: 0.75rem; }
-        .w-4 { width: 1rem; } .h-4 { height: 1rem; }
-        .w-5 { width: 1.25rem; } .h-5 { height: 1.25rem; }
-        .w-6 { width: 1.5rem; } .h-6 { height: 1.5rem; }
-        .w-7 { width: 1.75rem; } .h-7 { height: 1.75rem; }
-        .w-8 { width: 2rem; } .h-8 { height: 2rem; }
+        [x-cloak] { display: none !important; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; font-size: 20px; }
     </style>
 </head>
-    <div class="min-h-screen flex selection:bg-indigo-100 selection:text-indigo-900 overflow-hidden" x-data="{ sidebarOpen: true }">
+<body class="bg-surface-light text-slate-800 font-body antialiased overflow-x-hidden" x-data="{ sidebarOpen: true }">
+    
+    <!-- Radiant Sidebar Shell -->
+    <aside class="fixed inset-y-0 right-0 z-50 w-72 bg-slate-900 shadow-2xl transition-transform duration-500 ease-out lg:translate-x-0"
+           :class="sidebarOpen ? 'translate-x-0' : 'translate-x-full'">
         
-        <!-- Sidebar -->
-        <aside class="fixed inset-y-0 right-0 z-50 w-72 glass-sidebar transition-transform duration-500 ease-in-out transform lg:translate-x-0 lg:static lg:inset-0 shadow-[20px_0_50px_-30px_rgba(0,0,0,0.05)]"
-               :class="sidebarOpen ? 'translate-x-0' : 'translate-x-full'">
-            
-            <!-- Logo Section -->
-            <div class="h-20 flex items-center px-8 border-b border-white/20 bg-white/30">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-blue-600 flex items-center justify-center text-white font-black shadow-lg shadow-indigo-200/50 transform -rotate-3">
-                        M
-                    </div>
-                    <div>
-                        <span class="text-xl font-black tracking-tight text-gray-900">Madaa<span class="text-indigo-600 font-extrabold italic">Q</span></span>
-                        <p class="text-[9px] uppercase tracking-widest text-indigo-400 font-bold -mt-1 font-inter">Control Panel</p>
-                    </div>
-                </div>
+        <!-- Branding Pulse -->
+        <div class="h-24 flex items-center px-10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-accent-gradient opacity-10 blur-3xl -mr-16 -mt-16"></div>
+            <div class="relative z-10">
+                <h1 class="text-3xl font-black text-white tracking-tighter italic">مدى كيو</h1>
+                <p class="text-[9px] font-black text-neon-cyan uppercase tracking-[0.3em] mt-1 font-headline opacity-60">Intelligence Hub v3</p>
             </div>
-
-            <!-- Nav -->
-            <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
-                <p class="px-3 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">النظام</p>
-                
-                <a href="{{ route('admin.dashboard') }}" 
-                   class="flex items-center px-4 py-3 rounded-xl text-sm font-bold transition-all duration-300 group {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-600 text-white nav-active-glow translate-x-[-4px]' : 'text-gray-500 hover:text-indigo-600 hover:bg-white/50' }}">
-                    <svg class="w-5 h-5 ml-3 {{ request()->routeIs('admin.dashboard') ? 'text-white' : 'text-gray-400 group-hover:text-indigo-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                    لوحة القيادة
-                </a>
-
-                <p class="px-3 text-xs font-bold text-gray-400 uppercase tracking-wider mt-6 mb-2">إدارة المشتركين</p>
-
-                <a href="{{ route('admin.tenants.index') }}" 
-                   class="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group {{ request()->routeIs('admin.tenants.*') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' }}">
-                    <svg class="w-5 h-5 ml-3 {{ request()->routeIs('admin.tenants.*') ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                    الشركات (Tenants)
-                </a>
-
-                <a href="{{ route('admin.subscriptions.index') }}" 
-                   class="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group {{ request()->routeIs('admin.subscriptions.*') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' }}">
-                    <svg class="w-5 h-5 ml-3 {{ request()->routeIs('admin.subscriptions.*') ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                    الاشتراكات والمدفوعات
-                </a>
-
-                <a href="{{ route('admin.users.index') }}" 
-                   class="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group {{ request()->routeIs('admin.users.*') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' }}">
-                    <svg class="w-5 h-5 ml-3 {{ request()->routeIs('admin.users.*') ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                    إدارة المستخدمين (Staff)
-                </a>
-
-                <a href="{{ route('admin.reports.index') }}" 
-                   class="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group {{ request()->routeIs('admin.reports.*') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' }}">
-                    <svg class="w-5 h-5 ml-3 {{ request()->routeIs('admin.reports.*') ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z"/></svg>
-                    مركز التقارير
-                </a>
-
-                <p class="px-3 text-xs font-bold text-gray-400 uppercase tracking-wider mt-6 mb-2">الأدوات</p>
-
-                <a href="{{ route('admin.settings.index') }}" class="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group text-gray-600 hover:text-gray-900 hover:bg-gray-100">
-                    <svg class="w-5 h-5 ml-3 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    الإعدادات العامة
-                </a>
-            </nav>
-            
-            <!-- User Footer -->
-            <div class="p-4 border-t border-gray-200 bg-gray-50">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-600">SA</div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-900">{{ Auth::user()->name }}</p>
-                        <p class="text-xs text-gray-500">Super Admin</p>
-                    </div>
-                </div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-2 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                        تسجيل خروج
-                    </button>
-                </form>
-            </div>
-        </aside>
-
-        <!-- Content Wrapper -->
-        <div class="flex-1 flex flex-col min-h-screen overflow-hidden">
-            
-            <!-- Mobile Header -->
-            <header class="h-16 flex items-center justify-between px-6 lg:hidden bg-white/70 backdrop-blur-md border-b border-white/20">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">M</div>
-                    <span class="text-lg font-black text-gray-900 tracking-tight">MadaaQ</span>
-                </div>
-                <button @click="sidebarOpen = !sidebarOpen" class="p-2 text-gray-500 hover:text-indigo-600 transition-colors">
-                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                </button>
-            </header>
-
-            <!-- Main Scrollable Area -->
-            <main class="flex-1 overflow-y-auto p-4 lg:p-10">
-                @if(session('success'))
-                    <div class="mb-8 px-6 py-4 rounded-2xl glass-panel text-gray-800 flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
-                        <div class="w-10 h-10 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center">
-                            <svg class="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        </div>
-                        <div>
-                            <p class="font-bold text-sm">تمت العملية بنجاح</p>
-                            <p class="text-xs text-gray-500">{{ session('success') }}</p>
-                        </div>
-                    </div>
-                @endif
-                
-                <div class="max-w-7xl mx-auto">
-                    @yield('content')
-                </div>
-            </main>
         </div>
+
+        <!-- Navigation Matrix -->
+        <nav class="mt-8 space-y-2 px-4 selection:bg-neon-cyan/30">
+            <p class="px-6 text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4 italic">Core Governance</p>
+            
+            <a href="{{ route('admin.dashboard') }}" 
+               class="nav-item group @if(request()->routeIs('admin.dashboard')) nav-item-active @else nav-item-inactive @endif">
+                <span class="material-symbols-outlined group-hover:rotate-12 transition-transform">dashboard</span>
+                <span class="text-xs uppercase font-black tracking-widest">لوحة القيادة</span>
+            </a>
+
+            <p class="px-6 text-[10px] font-black text-slate-500 uppercase tracking-widest mt-10 mb-4 italic">Asset Management</p>
+
+            <a href="{{ route('admin.tenants.index') }}" 
+               class="nav-item group @if(request()->routeIs('admin.tenants.*') || request()->routeIs('crm.clients.*')) nav-item-active @else nav-item-inactive @endif">
+                <span class="material-symbols-outlined">group</span>
+                <span class="text-xs uppercase font-black tracking-widest">المشتركين والعملاء</span>
+            </a>
+
+            <a href="{{ route('servers.index') }}" 
+               class="nav-item group @if(request()->routeIs('servers.*') || request()->routeIs('routers.*')) nav-item-active @else nav-item-inactive @endif">
+                <span class="material-symbols-outlined">dns</span>
+                <span class="text-xs uppercase font-black tracking-widest">البنية التحتية</span>
+            </a>
+
+            <a href="{{ route('network.live-monitoring') }}" 
+               class="nav-item group @if(request()->routeIs('network.live-monitoring')) nav-item-active @else nav-item-inactive @endif">
+                <span class="material-symbols-outlined">leak_add</span>
+                <span class="text-xs uppercase font-black tracking-widest">المراقبة الحية</span>
+            </a>
+
+            <p class="px-6 text-[10px] font-black text-slate-500 uppercase tracking-widest mt-10 mb-4 italic">System Registry</p>
+
+            <a href="{{ route('admin.settings.index') }}" 
+               class="nav-item group @if(request()->routeIs('admin.settings.*')) nav-item-active @else nav-item-inactive @endif">
+                <span class="material-symbols-outlined">tune</span>
+                <span class="text-xs uppercase font-black tracking-widest">الإعدادات</span>
+            </a>
+        </nav>
+
+        <!-- Profile Decommission -->
+        <div class="absolute bottom-6 w-full px-8">
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="w-full flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl text-slate-400 hover:text-error hover:bg-error/10 hover:border-error/20 transition-all group">
+                    <span class="text-[10px] font-black uppercase tracking-widest">Sign Out Hub</span>
+                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">logout</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Content Matrix -->
+    <div class="transition-all duration-500 ease-in-out" :class="sidebarOpen ? 'mr-72' : 'mr-0'">
+        
+        <!-- Floating Glass Header -->
+        <header class="sticky top-0 z-40 h-20 px-10 flex items-center justify-between glass-panel mx-6 mt-4 rounded-2xl shadow-2xl shadow-primary/5">
+            <div class="flex items-center gap-6">
+                <button @click="sidebarOpen = !sidebarOpen" class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all shadow-sm">
+                    <span class="material-symbols-outlined" x-text="sidebarOpen ? 'menu_open' : 'menu'"></span>
+                </button>
+                <div class="h-8 w-px bg-slate-200 hidden md:block"></div>
+                <div class="relative hidden md:block group">
+                    <input type="text" placeholder="Quick Command Discovery..." 
+                           class="bg-slate-50 border-none rounded-xl pr-12 pl-6 py-2.5 text-[11px] font-black uppercase tracking-widest text-slate-500 focus:ring-4 focus:ring-primary/5 w-80 transition-all">
+                    <span class="material-symbols-outlined absolute right-4 top-2 text-slate-300 group-hover:text-primary transition-colors">search</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <!-- Status Notifications -->
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 relative">
+                        <span class="material-symbols-outlined">notifications</span>
+                        <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+                    </div>
+                </div>
+
+                <!-- Admin Identity -->
+                <div class="flex items-center gap-4 pl-2">
+                    <div class="text-left hidden sm:block">
+                        <p class="text-[11px] font-black text-primary uppercase italic tracking-tighter leading-none">{{ Auth::user()->name }}</p>
+                        <p class="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">Authorized Architect</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-accent-gradient p-0.5 shadow-glow-purple">
+                        <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center font-black text-white text-sm">
+                            {{ substr(Auth::user()->name, 0, 1) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Operational Content -->
+        <main class="p-10 min-h-screen animate-in fade-in slide-in-from-bottom-4 duration-700">
+            @if(session('success'))
+                <div class="mb-10 p-6 glass-card bg-emerald-500/10 border-emerald-500/20 rounded-2xl flex items-center gap-5">
+                    <div class="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center text-white shadow-glow-cyan">
+                        <span class="material-symbols-outlined">verified</span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-black text-emerald-600 uppercase tracking-widest">Protocol Executed Successfully</p>
+                        <p class="text-[10px] font-bold text-slate-600 mt-0.5">{{ session('success') }}</p>
+                    </div>
+                </div>
+            @endif
+
+            <div class="max-w-7xl mx-auto">
+                @yield('content')
+            </div>
+        </main>
+
+        <!-- Footer Registry -->
+        <footer class="px-10 py-8 border-t border-slate-200/50 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">MadaaQ ISP Management Systems &copy; 2026</p>
+            <div class="flex items-center gap-6">
+                <a href="#" class="text-[9px] font-black text-slate-400 hover:text-primary transition-colors uppercase tracking-widest">Registry Terms</a>
+                <a href="#" class="text-[9px] font-black text-slate-400 hover:text-primary transition-colors uppercase tracking-widest">Core Status</a>
+            </div>
+        </footer>
     </div>
+
 </body>
 </html>
