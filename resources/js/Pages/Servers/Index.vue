@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 import axios from 'axios';
@@ -36,141 +36,164 @@ const deleteServer = (serverId) => {
         });
     }
 };
+
+const formatNumber = (num) => {
+    return new Intl.NumberFormat('ar-SY').format(num);
+};
 </script>
 
 <template>
     <InstitutionalLayout title="حوكمة العقد المركزية">
         <Head title="إدارة العقد السيادية (Core Nodes) - MadaaQ" />
 
-        <div class="max-w-7xl mx-auto pb-24 text-right px-4" dir="rtl">
-            <!-- Strategic Header Intel -->
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-10 mb-16 flex-row-reverse text-right">
-                <div class="text-right">
-                    <h1 class="text-4xl font-black text-primary tracking-tight mb-2 uppercase">مصفوفة التحكم المركزية (Cluster Inventory)</h1>
-                    <div class="flex items-center gap-4 justify-end">
-                        <p class="text-slate-500 font-bold text-sm uppercase tracking-wider">حوكمة العقد التشغيلية، بروتوكولات المزامنة القطبية، وتأمين المسارات السيادية</p>
-                        <span class="flex h-3 w-3 relative">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
-                        </span>
+        <div class="max-w-[1600px] mx-auto pb-24 text-right px-4" dir="rtl">
+            <!-- Strategic Command Header -->
+            <div class="relative mb-20 p-12 bg-slate-950 text-white rounded-[3rem] overflow-hidden shadow-2xl border border-white/5">
+                <div class="absolute inset-0 bg-grid-slate-50 opacity-5 pointer-events-none"></div>
+                <div class="absolute -top-32 -left-32 w-96 h-96 bg-primary/20 rounded-full blur-[100px] animate-pulse"></div>
+                
+                <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-12 flex-row-reverse text-right">
+                    <div class="text-right">
+                        <div class="flex items-center gap-4 justify-end mb-4">
+                            <span class="px-4 py-1.5 bg-white/10 text-white/60 rounded-full text-[10px] font-black uppercase tracking-[0.4em] border border-white/5">Operational_Node_Array</span>
+                            <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
+                        </div>
+                        <h1 class="text-5xl lg:text-6xl font-black tracking-tighter mb-4 leading-none">مصفوفة التحكم المركزية</h1>
+                        <p class="text-white/40 font-bold text-base max-w-2xl ml-auto">
+                            حوكمة العقد التشغيلية (MikroTik Cores)، إدارة بروتوكولات المزامنة القطبية، وتأمين المسارات السيادية لتدفق البيانات عبر الشبكة.
+                        </p>
+                    </div>
+                    
+                    <div class="flex flex-wrap items-center gap-6">
+                        <div class="bg-white/5 border border-white/10 p-6 rounded-3xl flex items-center gap-8 flex-row-reverse shadow-inner">
+                            <div class="text-right">
+                                <p class="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] mb-1">إجمالي العقد</p>
+                                <p class="text-3xl font-headline font-black text-white leading-none">{{ formatNumber(servers.length) }}</p>
+                            </div>
+                            <div class="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-[28px]">hub</span>
+                            </div>
+                        </div>
+                        
+                        <Link 
+                            :href="route('servers.create')" 
+                            class="px-14 py-7 bg-white text-slate-950 rounded-3xl font-black text-xs uppercase tracking-[0.4em] shadow-[0_20px_60px_rgba(255,255,255,0.1)] hover:bg-emerald-500 hover:text-white transition-all transform hover:-translate-y-2 active:scale-95 flex items-center gap-6 group"
+                        >
+                            <span class="material-symbols-outlined text-[32px] group-hover:rotate-180 transition-all duration-700">dns</span>
+                            حقن عقدة سيادية (Inject)
+                        </Link>
                     </div>
                 </div>
-                <Link 
-                    :href="route('servers.create')" 
-                    class="px-12 py-5 bg-slate-950 text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.3em] shadow-2xl hover:bg-primary transition-all active:scale-95 flex items-center gap-4 border border-white/10 group"
-                >
-                    <span class="material-symbols-outlined text-[24px] group-hover:rotate-180 transition-transform">rebase</span>
-                    حقن عقدة جديدة (Inject Node)
-                </Link>
             </div>
 
-            <!-- Fleet Registry Ledger -->
-            <div class="surface-card rounded-[2.5rem] overflow-hidden shadow-2xl border border-outline-variant/10 bg-white relative">
-                <div class="absolute inset-0 bg-grid-slate-50 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] pointer-events-none opacity-20"></div>
-                
-                <div class="overflow-x-auto relative z-10">
-                    <table class="w-full text-right border-separate border-spacing-0">
-                        <thead>
-                            <tr class="bg-slate-950 text-white border-b border-white/5">
-                                <th class="px-10 py-8 text-[11px] font-black uppercase tracking-[0.2em] text-white/30">هوية العقدة (Edge Hub)</th>
-                                <th class="px-10 py-8 text-[11px] font-black uppercase tracking-[0.2em] text-white/30 text-center">بروتوكول الواجهة (Interface)</th>
-                                <th class="px-10 py-8 text-[11px] font-black uppercase tracking-[0.2em] text-center text-white/30 border-r border-white/5">التوضع الجغرافي</th>
-                                <th class="px-10 py-8 text-[11px] font-black uppercase tracking-[0.2em] text-center text-white/30">نبض المزامنة (Pulse)</th>
-                                <th class="px-10 py-8 w-48"></th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-outline-variant/5">
-                            <tr v-for="server in servers" :key="server.id" class="group hover:bg-slate-50/80 transition-all duration-500">
-                                <td class="px-10 py-10">
-                                    <div class="flex items-center gap-10 justify-end text-right">
-                                        <div>
-                                            <h4 class="text-2xl font-black text-primary leading-tight group-hover:translate-x-2 transition-transform tracking-tight uppercase">{{ server.name }}</h4>
-                                            <div class="flex items-center gap-3 mt-3 opacity-40 justify-end">
-                                                <p class="text-[10px] font-black uppercase tracking-[0.2em] leading-none">{{ server.device_model?.model_name || 'MikroTik Infrastructure Core' }}</p>
-                                                <span class="material-symbols-outlined text-[16px]">memory</span>
-                                            </div>
-                                        </div>
-                                        <div class="w-20 h-20 rounded-3xl bg-slate-950 text-white flex items-center justify-center shadow-2xl group-hover:bg-primary group-hover:scale-110 group-hover:rotate-6 transition-all duration-700 relative overflow-hidden shrink-0 border border-white/10">
-                                             <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/20 to-transparent"></div>
-                                             <span class="material-symbols-outlined text-[36px] relative z-10" style="font-variation-settings: 'FILL' 1; font-weight: 700;">dns</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-10 py-10 text-center">
-                                    <div class="inline-flex flex-col items-center gap-3">
-                                        <span class="text-xl font-headline font-black text-primary tracking-widest bg-white shadow-xl px-6 py-2.5 rounded-2xl border border-outline-variant/10 group-hover:bg-slate-900 group-hover:text-white transition-all">{{ server.ip }}</span>
-                                        <div class="flex items-center gap-3 opacity-30">
-                                            <span class="text-[9px] font-black uppercase tracking-[0.3em]">API_PORT: <span class="font-headline text-primary">{{ server.api_port }}</span></span>
-                                            <span class="w-1.5 h-1.5 bg-current rounded-full animate-pulse"></span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-10 py-10 text-center border-r border-outline-variant/5">
-                                    <div class="flex flex-col items-center gap-3">
-                                        <div class="flex items-center gap-3 bg-surface-container-low px-5 py-2.5 rounded-2xl border border-outline-variant/10 shadow-inner group-hover:shadow-none transition-all">
-                                            <span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1">location_on</span>
-                                            <span class="text-[14px] font-black text-slate-700 tracking-tight">{{ server.location || 'نقطة الربط السيادية' }}</span>
-                                        </div>
-                                        <p class="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">CORE_TOPOLOGY_COORDINATE</p>
-                                    </div>
-                                </td>
-                                <td class="px-10 py-10 text-center">
-                                    <button 
-                                        @click="testConnection(server.id)"
-                                        :disabled="testingStatus[server.id] === 'testing'"
-                                        class="inline-flex items-center gap-4 px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all border-2 group-hover:shadow-xl relative overflow-hidden group/btn"
-                                        :class="{
-                                            'bg-white text-slate-400 border-outline-variant/10 hover:border-primary hover:text-primary': !testingStatus[server.id],
-                                            'bg-primary/5 text-primary border-primary/20 animate-pulse': testingStatus[server.id] === 'testing',
-                                            'bg-rose-500/5 text-rose-500 border-rose-500/20': testingStatus[server.id] === 'error',
-                                            'bg-emerald-500/5 text-emerald-600 border-emerald-500/20 shadow-xl shadow-emerald-500/10': testingStatus[server.id] === 'success'
-                                        }"
-                                    >
-                                        <span class="material-symbols-outlined text-[20px]" :class="{'animate-spin': testingStatus[server.id] === 'testing'}">
-                                            {{ testingStatus[server.id] === 'testing' ? 'progress_activity' : (testingStatus[server.id] === 'error' ? 'report_problem' : (testingStatus[server.id] === 'success' ? 'verified' : 'pulse')) }}
-                                        </span>
-                                        {{ testingStatus[server.id] === 'testing' ? 'جاري الفحص البرمجي...' : (testingStatus[server.id] === 'error' ? 'فشل المسار' : (testingStatus[server.id] === 'success' ? 'العقدة مستقرة' : 'اختبار زمن الاستجابة')) }}
-                                    </button>
-                                </td>
-                                <td class="px-10 py-10">
-                                    <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                                         <Link 
-                                            :href="route('servers.show', server.id)"
-                                            class="w-14 h-14 bg-white shadow-2xl border border-outline-variant/10 rounded-2xl flex items-center justify-center text-slate-400 hover:text-primary hover:scale-110 active:scale-95 transition-all group/icon"
-                                         >
-                                            <span class="material-symbols-outlined text-[28px] group-hover/icon:rotate-12 transition-transform" style="font-variation-settings: 'wght' 700">terminal</span>
-                                         </Link>
-                                         <Link 
-                                            :href="route('servers.edit', server.id)"
-                                            class="w-14 h-14 bg-white shadow-2xl border border-outline-variant/10 rounded-2xl flex items-center justify-center text-slate-400 hover:text-amber-600 hover:scale-110 active:scale-95 transition-all group/icon"
-                                         >
-                                            <span class="material-symbols-outlined text-[28px] group-hover/icon:-rotate-12 transition-transform" style="font-variation-settings: 'wght' 700">architecture</span>
-                                         </Link>
-                                         <button 
-                                            @click="deleteServer(server.id)"
-                                            class="w-14 h-14 bg-white shadow-2xl border border-outline-variant/10 rounded-2xl flex items-center justify-center text-slate-400 hover:text-rose-600 hover:scale-110 active:scale-95 transition-all group/icon"
-                                         >
-                                            <span class="material-symbols-outlined text-[28px] group-hover/icon:scale-75 transition-transform" style="font-variation-settings: 'wght' 700">power_settings_new</span>
-                                         </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <!-- The Node Matrix Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+                <div 
+                    v-for="server in servers" 
+                    :key="server.id" 
+                    class="surface-card group relative p-10 rounded-[3rem] bg-white border border-outline-variant/10 shadow-2xl overflow-hidden transition-all duration-500 hover:scale-[1.03] hover:shadow-primary/10"
+                >
+                    <!-- Background Grid Motif -->
+                    <div class="absolute inset-x-0 bottom-0 h-48 bg-grid-slate-50 opacity-[0.03] pointer-events-none group-hover:opacity-[0.07] transition-opacity"></div>
+                    
+                    <!-- Tactical Status Bar -->
+                    <div class="flex items-center justify-between mb-12 flex-row-reverse">
+                        <div class="flex items-center gap-4">
+                            <span class="text-[9px] font-black text-slate-400 font-headline tracking-[0.3em] uppercase">STATUS_ACTIVE</span>
+                            <div class="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)] animate-pulse"></div>
+                        </div>
+                        <div class="w-16 h-16 rounded-[1.5rem] bg-slate-950 text-white flex items-center justify-center shadow-2xl group-hover:bg-primary group-hover:rotate-6 transition-all duration-700 relative overflow-hidden shrink-0 border border-white/10">
+                             <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/20 to-transparent"></div>
+                             <span class="material-symbols-outlined text-[32px] relative z-10" style="font-variation-settings: 'FILL' 1; font-weight: 200;">memory</span>
+                        </div>
+                    </div>
+
+                    <!-- Core Identification -->
+                    <div class="text-right mb-12">
+                        <h3 class="text-3xl font-black text-primary tracking-tighter mb-2 truncate group-hover:translate-x-2 transition-transform">{{ server.name }}</h3>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] leading-relaxed italic opacity-70">
+                            {{ server.device_model?.model_name || 'MikroTik Infrastructure Core' }}
+                        </p>
+                    </div>
+
+                    <!-- Technical Metrics Layer -->
+                    <div class="grid grid-cols-2 gap-8 mb-12 p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 shadow-inner group-hover:bg-slate-900 group-hover:border-slate-800 transition-all duration-500 relative z-10">
+                        <div class="text-right">
+                            <p class="text-[9px] font-black text-slate-400 group-hover:text-white/30 uppercase tracking-[0.2em] mb-2 leading-none">PROTOCOL_IP</p>
+                            <p class="text-xl font-headline font-black text-primary group-hover:text-white tracking-widest">{{ server.ip }}</p>
+                        </div>
+                        <div class="text-right border-r border-slate-200 group-hover:border-white/10 pr-6">
+                            <p class="text-[9px] font-black text-slate-400 group-hover:text-white/30 uppercase tracking-[0.2em] mb-2 leading-none">API_INTERFACE</p>
+                            <p class="text-xl font-headline font-black text-secondary group-hover:text-amber-400 tracking-widest">{{ server.api_port }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Geographic Anchoring -->
+                    <div class="flex items-center gap-4 justify-end mb-14 text-right flex-row-reverse px-2">
+                        <div class="w-10 h-10 bg-slate-50 group-hover:bg-white/5 rounded-xl flex items-center justify-center border border-slate-100 group-hover:border-white/10 shadow-sm transition-all">
+                            <span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1">location_on</span>
+                        </div>
+                        <div>
+                             <p class="text-[14px] font-black text-slate-700 group-hover:text-white transition-colors leading-none mb-1">{{ server.location || 'نقطة الربط السيادية' }}</p>
+                             <p class="text-[8px] font-black text-slate-300 group-hover:text-white/20 uppercase tracking-[0.3em] font-headline italic">CORE_TOPOLOGY_COORDINATE</p>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Diagnostic Protocol -->
+                    <div class="flex flex-col gap-4 relative z-10">
+                        <button 
+                            @click="testConnection(server.id)"
+                            :disabled="testingStatus[server.id] === 'testing'"
+                            class="w-full h-16 rounded-2xl text-[11px] font-black uppercase tracking-[0.3em] transition-all border-2 flex items-center justify-center gap-4 shadow-xl active:scale-95 group/btn"
+                            :class="{
+                                'bg-white text-slate-400 border-slate-100 hover:border-primary hover:text-primary hover:bg-slate-50': !testingStatus[server.id],
+                                'bg-primary/5 text-primary border-primary/20 animate-pulse': testingStatus[server.id] === 'testing',
+                                'bg-rose-500/5 text-rose-500 border-rose-500/20': testingStatus[server.id] === 'error',
+                                'bg-emerald-500/5 text-emerald-600 border-emerald-500/20': testingStatus[server.id] === 'success'
+                            }"
+                        >
+                            <span class="material-symbols-outlined text-[24px]" :class="{'animate-spin': testingStatus[server.id] === 'testing'}">
+                                {{ testingStatus[server.id] === 'testing' ? 'progress_activity' : (testingStatus[server.id] === 'error' ? 'report_problem' : (testingStatus[server.id] === 'success' ? 'verified' : 'pulse')) }}
+                            </span>
+                            {{ testingStatus[server.id] === 'testing' ? 'جاري الفحص...' : (testingStatus[server.id] === 'error' ? 'فشل المسار' : (testingStatus[server.id] === 'success' ? 'العقدة مستقرة' : 'اختبار النبض (Pulse Test)')) }}
+                        </button>
+
+                        <div class="flex items-center gap-3">
+                             <Link 
+                                :href="route('servers.show', server.id)"
+                                class="flex-1 h-16 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-slate-500 hover:bg-slate-950 hover:text-white hover:border-slate-950 transition-all active:scale-95 group/icon"
+                             >
+                                <span class="material-symbols-outlined text-[26px] group-hover/icon:rotate-90 transition-transform">terminal</span>
+                                <span class="mr-3 text-[9px] font-black uppercase tracking-widest">Console</span>
+                             </Link>
+                             <Link 
+                                :href="route('servers.edit', server.id)"
+                                class="w-16 h-16 bg-slate-100/50 border border-slate-100 rounded-2xl flex items-center justify-center text-slate-400 hover:text-amber-600 hover:bg-white transition-all active:scale-95"
+                             >
+                                <span class="material-symbols-outlined text-[24px]">architecture</span>
+                             </Link>
+                             <button 
+                                @click="deleteServer(server.id)"
+                                class="w-16 h-16 bg-slate-100/50 border border-slate-100 rounded-2xl flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-white transition-all active:scale-95"
+                             >
+                                <span class="material-symbols-outlined text-[24px]">power_settings_new</span>
+                             </button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Empty Fleet Protocol -->
-                <div v-if="servers.length === 0" class="py-64 flex flex-col items-center gap-12 group/empty relative z-10">
-                    <div class="w-40 h-40 rounded-[3rem] bg-slate-950 text-white flex items-center justify-center border-4 border-white/10 shadow-[0_0_50px_rgba(2,6,23,0.1)] group-hover/empty:scale-110 group-hover/empty:rotate-12 transition-all duration-1000 relative">
-                        <div class="absolute inset-0 bg-primary opacity-20 blur-2xl animate-pulse"></div>
-                        <span class="material-symbols-outlined text-[80px] relative z-10" style="font-variation-settings: 'wght' 100">dns</span>
+                <div v-if="servers.length === 0" class="col-span-full py-64 flex flex-col items-center gap-12 group/empty relative z-10">
+                    <div class="w-64 h-64 rounded-[4rem] bg-slate-950 text-white flex items-center justify-center border-8 border-white shadow-[0_0_80px_rgba(2,6,23,0.1)] group-hover/empty:scale-110 group-hover/empty:rotate-12 transition-all duration-1000 relative">
+                        <div class="absolute inset-0 bg-primary opacity-20 blur-3xl animate-pulse"></div>
+                        <span class="material-symbols-outlined text-[100px] relative z-10" style="font-variation-settings: 'wght' 100">dns</span>
                     </div>
                     <div class="text-center">
-                        <h3 class="text-3xl font-black text-primary mb-4 tracking-tight uppercase">مصفوفة العقد غير مكتملة (Null Fleet)</h3>
-                        <p class="text-[12px] font-black text-slate-400 uppercase tracking-[0.4em] max-w-sm leading-relaxed italic opacity-60">لم يتم حقن أي بيانات لعقد MikroTik المركزية ضمن هذا القطاع. يُرجى تفعيل بروتوكول الربط الأولي.</p>
+                        <h3 class="text-5xl font-black text-primary mb-6 tracking-tight uppercase">مصفوفة العقد صفرية (Null Fleet)</h3>
+                        <p class="text-lg font-black text-slate-400 uppercase tracking-[0.4em] max-w-lg leading-relaxed italic opacity-60">لم يتم رصد أي عقد MikroTik سيادية ضمن هذا القطاع. يُرجى تفعيل بروتوكول Inject Core الأولي.</p>
                     </div>
-                    <Link :href="route('servers.create')" class="px-14 py-6 bg-primary text-white rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-[0_20px_40px_rgba(37,99,235,0.2)] hover:bg-emerald-600 hover:-translate-y-1 transition-all active:scale-95 border border-white/10 flex items-center gap-5">
-                        <span class="material-symbols-outlined text-[28px]">rebase</span> تأسيس النواة الأولى
+                    <Link :href="route('servers.create')" class="px-20 py-8 bg-primary text-white rounded-3xl font-black text-sm uppercase tracking-[0.4em] shadow-[0_30px_60px_rgba(37,99,235,0.2)] hover:bg-emerald-600 hover:-translate-y-2 transition-all active:scale-95 border border-white/10 flex items-center gap-8">
+                        <span class="material-symbols-outlined text-[36px]">dns</span> تأسيس النواة الأولى
                     </Link>
                 </div>
             </div>
@@ -183,6 +206,6 @@ const deleteServer = (serverId) => {
     font-family: 'Manrope', sans-serif;
 }
 .bg-grid-slate-50 {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(15 23 42 / 0.04)'%3E%3Cpath d='M0 .5H31.5V32'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='white'%3E%3Cpath d='M0 .5H31.5V32'/%3E%3C/svg%3E");
 }
 </style>
