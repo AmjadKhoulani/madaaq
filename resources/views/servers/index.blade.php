@@ -1,143 +1,168 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
-@push('styles')
-<style>
-    .glass-panel { background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
-    [x-cloak] { display: none !important; }
-    .status-pulse { position: relative; display: flex; align-items: center; justify-content: center; }
-    .status-pulse::after { content: ''; position: absolute; width: 100%; height: 100%; border-radius: 50%; opacity: 0; animation: pulse 2s infinite; }
-    @keyframes pulse { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(2.5); opacity: 0; } }
-</style>
-@endpush
+@section('title', 'أسطول العقد المركزية | Network Nodes')
 
 @section('content')
-<div class="max-w-7xl mx-auto space-y-10 pb-20">
+<div class="max-w-7xl mx-auto space-y-8" x-data="serverGrid()">
+    
     <!-- Infrastructure Fleet Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-10 glass-panel border border-white/40 rounded-[3rem] p-10 md:p-12 shadow-2xl relative overflow-hidden">
-        <div class="absolute -top-24 -right-24 w-64 h-64 bg-indigo-600/5 rounded-full blur-3xl"></div>
-        <div class="relative z-10">
-            <h1 class="text-4xl font-black text-gray-900 tracking-tighter uppercase">Core Node Fleet</h1>
-            <p class="text-xs font-bold text-indigo-600 uppercase tracking-[0.3em] mt-2 flex items-center gap-3">
-                <span class="w-2 h-2 rounded-full bg-indigo-600 status-pulse shadow-[0_0_12px_rgba(79,70,229,0.5)]"></span>
-                Primary Network Infrastructure Management
-            </p>
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+            <h2 class="text-3xl font-black text-primary tracking-tight">إدارة أسطول العقد المركزية</h2>
+            <p class="text-slate-500 font-medium mt-1 uppercase tracking-widest text-[10px] font-headline">MikroTik Core Infrastructure Control</p>
         </div>
-        <div class="flex items-center gap-6 relative z-10">
-            <a href="{{ route('servers.create') }}" class="px-10 py-5 bg-gray-900 text-white font-black text-[11px] uppercase tracking-[0.2em] rounded-2xl shadow-2xl hover:bg-indigo-600 transition-all hover:scale-105 active:scale-95 group flex items-center gap-3 leading-none">
-                <svg class="w-5 h-5 group-hover:rotate-90 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v12m8-8H4"/></svg>
-                Deploy New Node
+        <div class="flex gap-3">
+            <a href="{{ route('servers.create') }}" class="px-8 py-2.5 bg-primary text-white font-bold rounded-lg text-sm shadow-lg shadow-primary/10 hover:scale-[1.02] transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">add</span>
+                نشر عقدة جديدة
             </a>
+        </div>
+    </div>
+
+    <!-- Stats Snapshot -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-surface-container-low p-5 rounded-lg border border-outline-variant/10 flex items-center gap-4">
+            <div class="w-10 h-10 rounded bg-primary/5 flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined">dns</span>
+            </div>
+            <div>
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">إجمالي العقد</p>
+                <p class="text-xl font-manrope font-black text-primary">{{ $servers->count() }}</p>
+            </div>
+        </div>
+        <div class="bg-surface-container-low p-5 rounded-lg border border-outline-variant/10 flex items-center gap-4">
+            <div class="w-10 h-10 rounded bg-secondary/10 flex items-center justify-center text-secondary">
+                <span class="material-symbols-outlined">check_circle</span>
+            </div>
+            <div>
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">عقد متصلة</p>
+                <p class="text-xl font-manrope font-black text-secondary">{{ $servers->where('connection_status', 'connected')->count() }}</p>
+            </div>
+        </div>
+        <div class="bg-surface-container-low p-5 rounded-lg border border-outline-variant/10 flex items-center gap-4">
+            <div class="w-10 h-10 rounded bg-error/10 flex items-center justify-center text-error">
+                <span class="material-symbols-outlined">report</span>
+            </div>
+            <div>
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">أعطال الاتصال</p>
+                <p class="text-xl font-manrope font-black text-error">{{ $servers->where('connection_status', 'error')->count() }}</p>
+            </div>
+        </div>
+        <div class="bg-surface-container-low p-5 rounded-lg border border-outline-variant/10 flex items-center gap-4">
+            <div class="w-10 h-10 rounded bg-surface-container-highest flex items-center justify-center text-slate-500">
+                <span class="material-symbols-outlined">router</span>
+            </div>
+            <div>
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">إجمالي المشتركين</p>
+                <p class="text-xl font-manrope font-black text-primary">--</p>
+            </div>
         </div>
     </div>
 
     <!-- Active Node Matrix -->
     @if($servers->count() > 0)
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10" x-data="serverGrid()">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($servers as $server)
-            <div class="glass-panel border border-white/40 rounded-[3rem] p-4 group hover:shadow-[0_32px_64px_-12px_rgba(79,70,229,0.15)] transition-all duration-700 hover:-translate-y-3 relative overflow-hidden flex flex-col min-h-[480px]">
-                <div class="absolute -top-20 -right-20 w-48 h-48 bg-indigo-500/5 rounded-full blur-[100px] group-hover:bg-indigo-500/10 transition-all duration-700"></div>
-                
-                <div class="p-8 pb-4 flex-grow relative z-10">
-                    <!-- Identity Shield -->
-                    <div class="flex items-start justify-between mb-10">
-                        <div class="flex items-center gap-6">
-                            <div class="w-24 h-24 bg-white/60 backdrop-blur-md rounded-[2rem] border border-white/80 shadow-2xl p-4 flex items-center justify-center group-hover:scale-110 group-hover:-rotate-3 transition-all duration-700 overflow-hidden relative">
-                                <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent"></div>
+            <div class="bg-surface-container-lowest rounded-lg border border-outline-variant/10 overflow-hidden flex flex-col group hover:shadow-xl hover:shadow-primary/5 transition-all duration-500">
+                <!-- Node Identity Header -->
+                <div class="p-6 border-b border-outline-variant/10 bg-surface-container-low/30 relative">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-white rounded border border-outline-variant/10 p-2 flex items-center justify-center shadow-sm">
                                 <img src="{{ $server->deviceModel->image_url ?? '/images/devices/mikrotik_node.png' }}" 
-                                     class="max-w-full max-h-full object-contain filter drop-shadow-md brightness-[0.95] group-hover:brightness-100 transition-all"
+                                     class="max-w-full max-h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500"
                                      onerror="this.src='https://placehold.co/150x100?text=Node'">
                             </div>
                             <div class="min-w-0">
-                                <h3 class="text-2xl font-black text-gray-900 tracking-tighter truncate uppercase mb-2">{{ $server->name }}</h3>
-                                <div class="bg-gray-900/5 px-4 py-2 rounded-xl inline-flex items-center gap-2 border border-white/40 shadow-inner">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
-                                    <p class="text-[10px] font-black font-mono text-gray-600 leading-none uppercase tracking-widest">{{ $server->ip }}:{{ $server->api_port }}</p>
-                                </div>
+                                <h3 class="text-lg font-black text-primary tracking-tight truncate uppercase italic">{{ $server->name }}</h3>
+                                <p class="text-[10px] font-manrope font-bold text-slate-400 flex items-center gap-2 mt-0.5">
+                                    <span class="material-symbols-outlined text-[12px]">podcasts</span>
+                                    {{ $server->ip }}
+                                </p>
                             </div>
                         </div>
                         
-                        <!-- Real-time Status Orb -->
-                        <div id="status-orb-{{ $server->id }}" class="shrink-0">
+                        <!-- Status Indicator -->
+                        <div id="status-orb-{{ $server->id }}">
                             @if($server->connection_status === 'connected')
-                                <div class="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-600 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
-                                    <svg class="w-6 h-6 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <div class="w-8 h-8 bg-secondary/10 rounded-lg flex items-center justify-center text-secondary border border-secondary/20 shadow-sm animate-pulse">
+                                    <span class="material-symbols-outlined text-sm">check_circle</span>
                                 </div>
                             @elseif($server->connection_status === 'error')
-                                <div class="w-12 h-12 bg-rose-500/10 rounded-2xl flex items-center justify-center text-rose-500 border border-rose-500/20 shadow-[0_0_20px_rgba(244,63,94,0.1)]">
-                                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                <div class="w-8 h-8 bg-error/10 rounded-lg flex items-center justify-center text-error border border-error/20 shadow-sm animate-bounce">
+                                    <span class="material-symbols-outlined text-sm">warning</span>
                                 </div>
                             @else
-                                <div class="w-12 h-12 bg-gray-500/10 rounded-2xl flex items-center justify-center text-gray-400 border border-gray-500/20">
-                                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <div class="w-8 h-8 bg-surface-container-highest rounded-lg flex items-center justify-center text-slate-400 border border-outline-variant/10 shadow-sm">
+                                    <span class="material-symbols-outlined text-sm">link_off</span>
                                 </div>
                             @endif
                         </div>
                     </div>
+                </div>
 
-                    <!-- Telemetry Summary -->
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div class="p-6 bg-white/40 backdrop-blur-md rounded-[2rem] border border-white/60 group-hover:bg-white/70 transition-all duration-500 shadow-sm relative overflow-hidden">
-                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1 relative z-10">Uplink Access</p>
-                            <p class="text-xs font-black text-gray-800 tracking-tight truncate relative z-10">{{ $server->username }}</p>
-                            <div class="absolute bottom-0 right-0 w-16 h-16 bg-indigo-500/5 rounded-full blur-xl -mb-8 -mr-8"></div>
+                <!-- Telemetry Metrics -->
+                <div class="p-6 flex-1 space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-3 bg-surface-container-low rounded border border-outline-variant/10">
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Site Location</p>
+                            <p class="text-xs font-bold text-primary truncate">📍 {{ $server->location ?? 'Headquarters' }}</p>
                         </div>
-                        <div class="p-6 bg-white/40 backdrop-blur-md rounded-[2rem] border border-white/60 group-hover:bg-white/70 transition-all duration-500 shadow-sm relative overflow-hidden">
-                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1 relative z-10">Site Registry</p>
-                            <p class="text-xs font-black text-indigo-600 tracking-tight truncate relative z-10">📍 {{ $server->location ?? 'Independent Node' }}</p>
-                            <div class="absolute bottom-0 right-0 w-16 h-16 bg-rose-500/5 rounded-full blur-xl -mb-8 -mr-8"></div>
+                        <div class="p-3 bg-surface-container-low rounded border border-outline-variant/10">
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Uplink Account</p>
+                            <p class="text-xs font-manrope font-bold text-primary truncate">{{ $server->username }}</p>
                         </div>
                     </div>
 
-                    <!-- Connection Protocol Diagnostics -->
-                    <div class="flex items-center gap-3 mt-4">
-                        <button @click="testConnection({{ $server->id }})" class="flex-1 py-4 bg-white/60 hover:bg-white text-indigo-600 font-extrabold text-[10px] uppercase tracking-[0.2em] rounded-2xl border border-white/80 shadow-sm transition-all active:scale-95 flex items-center justify-center gap-2 group/btn">
-                            <svg class="w-4 h-4 group-hover/btn:rotate-180 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    <!-- Actions Bar -->
+                    <div class="flex items-center gap-3 pt-2">
+                        <button @click="testConnection({{ $server->id }}, $el)" class="flex-1 py-2.5 bg-surface-container-highest/20 hover:bg-primary/5 text-primary font-black text-[10px] uppercase tracking-widest rounded transition-all flex items-center justify-center gap-2 border border-outline-variant/5">
+                            <span class="material-symbols-outlined text-[16px]">sensors</span>
                             Test Handshake
                         </button>
                     </div>
                 </div>
 
-                <!-- Command Interface -->
-                <div class="p-8 pt-4 bg-white/20 backdrop-blur-xl border-t border-white/20 grid grid-cols-2 gap-4 relative z-10">
-                    <a href="{{ route('servers.show', $server) }}" class="px-4 py-5 bg-gray-900 hover:bg-black text-white text-center font-black text-[11px] uppercase tracking-[0.3em] rounded-2xl shadow-2xl hover:shadow-gray-900/40 transition-all active:scale-95 leading-none">
-                        Network Console
+                <!-- Command Control Console -->
+                <div class="p-4 bg-surface-container-low/50 border-t border-outline-variant/10 grid grid-cols-2 gap-3 items-center">
+                    <a href="{{ route('servers.show', $server) }}" class="px-3 py-3 bg-primary text-white text-center font-black text-[10px] uppercase tracking-widest rounded shadow-lg shadow-primary/10 hover:scale-[1.02] active:scale-95 transition-all">
+                        Node Console
                     </a>
-                    <a href="{{ route('servers.edit', $server) }}" class="px-4 py-5 bg-white/80 hover:bg-white text-gray-500 hover:text-indigo-600 text-center font-black text-[11px] uppercase tracking-[0.3em] rounded-2xl border border-white/60 transition-all active:scale-95 leading-none shadow-sm">
-                        Edit Node
-                    </a>
-                    <form action="{{ route('servers.destroy', $server) }}" method="POST" onsubmit="return confirm('Initiate site decommissioning protocol?');" class="col-span-2">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="w-full py-4 bg-rose-500/5 hover:bg-rose-500 hover:text-white text-rose-500 font-black text-[9px] uppercase tracking-[0.3em] rounded-2xl border border-rose-500/20 transition-all active:scale-95 leading-none group/delete mt-2">
-                            Decommission Site Registry
-                        </button>
-                    </form>
+                    <div class="flex gap-2">
+                        <a href="{{ route('servers.edit', $server) }}" class="flex-1 px-3 py-3 bg-white border border-outline-variant/20 text-slate-500 text-center font-black text-[10px] uppercase tracking-widest rounded hover:bg-slate-50 transition-all">
+                            Config
+                        </a>
+                        <form action="{{ route('servers.destroy', $server) }}" method="POST" onsubmit="return confirm('تأكيد تفكيك العقدة من النظام؟');" class="flex-1">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="w-full px-3 py-3 bg-error-container text-on-error-container font-black text-[10px] uppercase tracking-widest rounded border border-outline-variant/10 hover:bg-error hover:text-white transition-all">
+                                <span class="material-symbols-outlined text-[14px]">delete</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
             @endforeach
-            
-            <!-- Strategic Expansion Slot -->
-            <a href="{{ route('servers.create') }}" class="glass-panel border-4 border-dashed border-white/40 rounded-[3rem] p-12 flex flex-col items-center justify-center text-gray-400 hover:border-indigo-500/40 hover:text-indigo-600 hover:bg-indigo-50/20 transition-all duration-700 group min-h-[480px]">
-                <div class="w-24 h-24 rounded-[2rem] bg-white/60 backdrop-blur-md flex items-center justify-center border border-white/80 shadow-2xl group-hover:scale-110 group-hover:rotate-12 transition-all duration-700 mb-8 relative">
-                    <div class="absolute inset-0 bg-indigo-500/5 rounded-[2rem] animate-pulse"></div>
-                    <svg class="w-12 h-12 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+
+            <!-- Deploy Slot -->
+            <a href="{{ route('servers.create') }}" class="group bg-surface-container-low border-2 border-dashed border-outline-variant/20 rounded-lg p-8 flex flex-col items-center justify-center text-slate-400 hover:border-primary/50 hover:bg-primary/5 transition-all min-h-[380px]">
+                <div class="w-16 h-16 rounded-lg bg-white border border-outline-variant/10 flex items-center justify-center text-primary mb-6 shadow-sm group-hover:scale-110 transition-all">
+                    <span class="material-symbols-outlined text-4xl">add_circle</span>
                 </div>
-                <span class="font-black text-sm uppercase tracking-[0.4em] text-center">Deploy New Site Registry Node</span>
+                <span class="text-sm font-black text-primary uppercase tracking-[0.2em] italic">Deploy Cluster Node</span>
+                <p class="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">Register Hardware Instance</p>
             </a>
         </div>
     @else
-        <!-- Vacant Fleet State -->
-        <div class="glass-panel border border-white/40 rounded-[4rem] p-32 text-center relative overflow-hidden group">
-            <div class="absolute -top-10 -right-10 w-64 h-64 bg-indigo-500/5 rounded-full blur-[120px] group-hover:bg-indigo-500/10 transition-all duration-1000"></div>
-            <div class="w-32 h-32 bg-white/60 backdrop-blur-md rounded-[3rem] flex items-center justify-center mx-auto mb-12 border border-white/80 shadow-2xl group-hover:scale-110 transition-transform duration-700">
-                <svg class="w-16 h-16 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
-                </svg>
+        <!-- Fleet Vacant Message -->
+        <div class="bg-surface-container-low p-20 rounded-lg border border-outline-variant/10 text-center">
+            <div class="w-24 h-24 bg-white rounded-lg flex items-center justify-center mx-auto mb-8 border border-outline-variant/10 text-slate-200">
+                <span class="material-symbols-outlined text-6xl">grid_view</span>
             </div>
-            <h3 class="text-4xl font-black text-gray-900 tracking-tighter uppercase">Fleet Registry Empty</h3>
-            <p class="text-[11px] text-gray-400 font-bold uppercase tracking-[0.3em] mt-4 mb-12 max-w-md mx-auto">No primary core nodes found. Register your first MikroTik gateway to initialize network governance.</p>
-            <a href="{{ route('servers.create') }}" class="inline-flex items-center gap-4 px-14 py-6 bg-gray-900 text-white font-black text-[11px] uppercase tracking-[0.3em] rounded-[2rem] shadow-2xl hover:shadow-indigo-500/30 hover:bg-black transition-all hover:scale-105 active:scale-95 leading-none">
-                Deploy Core Interface
+            <h3 class="text-2xl font-black text-primary italic uppercase tracking-tighter">Fleet Registry Empty</h3>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-4 mb-8 max-w-sm mx-auto leading-relaxed">لم يتم العثور على عقد شبكة مركزية. ابدأ بربط أول راوتر ميكروتيك لتفعيل لوحة التحكم.</p>
+            <a href="{{ route('servers.create') }}" class="inline-block px-10 py-3 bg-primary text-white font-black text-xs uppercase tracking-[0.2em] rounded shadow-xl shadow-primary/10">
+                Deploy Primary Interface
             </a>
         </div>
     @endif
@@ -146,13 +171,12 @@
 <script>
 function serverGrid() {
     return {
-        async testConnection(serverId) {
-            const btn = event.currentTarget;
+        async testConnection(serverId, btn) {
             const orb = document.getElementById(`status-orb-${serverId}`);
             const originalContent = btn.innerHTML;
             
             btn.disabled = true;
-            btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Initializing...';
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">progress_activity</span> Syncing...';
             
             try {
                 const response = await fetch(`/api/servers/${serverId}/test-connection`, {
@@ -165,27 +189,23 @@ function serverGrid() {
                 const result = await response.json();
                 
                 if (result.success) {
-                    orb.innerHTML = '<div class="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-600 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.2)] animate-in zoom-in duration-500"><svg class="w-6 h-6 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg></div>';
-                    btn.innerHTML = '✅ Handshake Success';
-                    btn.classList.remove('text-indigo-600');
-                    btn.classList.add('text-emerald-600', 'border-emerald-500/40', 'bg-emerald-50/30');
+                    orb.innerHTML = '<div class="w-8 h-8 bg-secondary/20 rounded-lg flex items-center justify-center text-secondary border border-secondary/30"><span class="material-symbols-outlined text-sm">check_circle</span></div>';
+                    btn.innerHTML = '<span class="material-symbols-outlined text-sm">task_alt</span> Handshake Ready';
+                    btn.classList.add('bg-secondary/10', 'text-secondary');
                 } else {
-                    orb.innerHTML = '<div class="w-12 h-12 bg-rose-500/10 rounded-2xl flex items-center justify-center text-rose-500 border border-rose-500/20 shadow-[0_0_20px_rgba(244,63,94,0.2)] animate-in zoom-in duration-500"><svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></div>';
-                    btn.innerHTML = '❌ Link Failure';
-                    btn.classList.remove('text-indigo-600');
-                    btn.classList.add('text-rose-600', 'border-rose-500/40', 'bg-rose-50/30');
+                    orb.innerHTML = '<div class="w-8 h-8 bg-error/20 rounded-lg flex items-center justify-center text-error border border-error/30"><span class="material-symbols-outlined text-sm">warning</span></div>';
+                    btn.innerHTML = '<span class="material-symbols-outlined text-sm">signal_disconnected</span> Link Loss';
+                    btn.classList.add('bg-error/10', 'text-error');
                     alert(result.message);
                 }
             } catch (error) {
-                console.error(error);
-                btn.innerHTML = '⚠️ Engine Error';
+                btn.innerHTML = '⚠️ Engine Failure';
             } finally {
                 setTimeout(() => {
                     btn.disabled = false;
-                    if (!btn.classList.contains('text-emerald-600') && !btn.classList.contains('text-rose-600')) {
-                        btn.innerHTML = originalContent;
-                    }
-                }, 3000);
+                    btn.innerHTML = originalContent;
+                    btn.classList.remove('bg-secondary/10', 'text-secondary', 'bg-error/10', 'text-error');
+                }, 4000);
             }
         }
     }

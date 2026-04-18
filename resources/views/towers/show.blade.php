@@ -1,315 +1,306 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'تفاصيل البرج | Tower Registry: ' . $tower->name)
 
 @section('content')
-<div class="max-w-7xl mx-auto space-y-6" x-data="{ activeTab: 'info' }">
-    <!-- Header -->
-    <div class="flex items-center justify-between">
+<div class="max-w-7xl mx-auto space-y-8" x-data="{ activeTab: 'info' }">
+    
+    <!-- Strategic Asset Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-            <h2 class="text-2xl font-bold text-gray-900">🗼 {{ $tower->name }}</h2>
-            <p class="text-gray-500 mt-1">{{ $tower->location }}</p>
+            <h2 class="text-3xl font-black text-primary tracking-tight italic uppercase">🗼 {{ $tower->name }}</h2>
+            <p class="text-slate-500 font-medium mt-1 uppercase tracking-widest text-[10px] font-headline">Physical Infrastructure Node: {{ $tower->location }}</p>
         </div>
-        <a href="{{ route('network.towers.edit', $tower) }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">
-            ✏️ تعديل
-        </a>
+        <div class="flex gap-3">
+            <a href="{{ route('network.towers.edit', $tower) }}" class="px-8 py-2.5 bg-primary text-white font-bold rounded text-sm shadow-lg shadow-primary/10 hover:scale-[1.02] transition-all flex items-center gap-2 italic">
+                <span class="material-symbols-outlined text-sm">edit_square</span>
+                تعديل البيانات
+            </a>
+        </div>
     </div>
 
-    <!-- Tabs Navigation -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div class="border-b border-gray-200">
-            <nav class="flex -mb-px">
-                <button @click="activeTab = 'info'" :class="activeTab === 'info' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="px-6 py-3 border-b-2 font-medium text-sm transition">
-                    ℹ️ معلومات
+    <!-- Infrastructure Intelligence Hub -->
+    <div class="bg-surface-container-low border border-outline-variant/10 rounded-lg overflow-hidden shadow-sm flex flex-col min-h-[500px]">
+        <!-- Terminal Navigator -->
+        <div class="bg-white/50 border-b border-outline-variant/10 px-4">
+            <nav class="flex gap-1 overflow-x-auto no-scrollbar py-2">
+                <button @click="activeTab = 'info'" 
+                        class="px-6 py-3 rounded text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 whitespace-nowrap"
+                        :class="activeTab === 'info' ? 'bg-primary text-white shadow-lg' : 'text-slate-500 hover:bg-slate-100'">
+                    <span class="material-symbols-outlined text-sm">info</span>
+                    المعلومات المركزية
                 </button>
-                <button @click="activeTab = 'equipment'" :class="activeTab === 'equipment' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="px-6 py-3 border-b-2 font-medium text-sm transition">
-                    📦 المعدات
+                <button @click="activeTab = 'equipment'" 
+                        class="px-6 py-3 rounded text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 whitespace-nowrap"
+                        :class="activeTab === 'equipment' ? 'bg-primary text-white shadow-lg' : 'text-slate-500 hover:bg-slate-100'">
+                    <span class="material-symbols-outlined text-sm">inventory_2</span>
+                    مصفوفة المعدات
                 </button>
-                <button @click="activeTab = 'power'" :class="activeTab === 'power' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="px-6 py-3 border-b-2 font-medium text-sm transition">
-                    ⚡ الطاقة
+                <button @click="activeTab = 'power'" 
+                        class="px-6 py-3 rounded text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 whitespace-nowrap"
+                        :class="activeTab === 'power' ? 'bg-primary text-white shadow-lg' : 'text-slate-500 hover:bg-slate-100'">
+                    <span class="material-symbols-outlined text-sm">bolt</span>
+                    لوحة الطاقة
                 </button>
-                <button @click="activeTab = 'ssids'" :class="activeTab === 'ssids' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="px-6 py-3 border-b-2 font-medium text-sm transition">
-                    📶 SSIDs
+                <button @click="activeTab = 'ssids'" 
+                        class="px-6 py-3 rounded text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 whitespace-nowrap"
+                        :class="activeTab === 'ssids' ? 'bg-primary text-white shadow-lg' : 'text-slate-500 hover:bg-slate-100'">
+                    <span class="material-symbols-outlined text-sm">network_wifi</span>
+                    نطاقات البث (SSIDs)
                 </button>
-                <button @click="activeTab = 'costs'" :class="activeTab === 'costs' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="px-6 py-3 border-b-2 font-medium text-sm transition">
-                    💰 التكاليف
+                <button @click="activeTab = 'costs'" 
+                        class="px-6 py-3 rounded text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 whitespace-nowrap"
+                        :class="activeTab === 'costs' ? 'bg-primary text-white shadow-lg' : 'text-slate-500 hover:bg-slate-100'">
+                    <span class="material-symbols-outlined text-sm">payments</span>
+                    التكاليف والاستدامة
                 </button>
             </nav>
         </div>
 
-        <!-- Tab: Info -->
-        <div x-show="activeTab === 'info'" class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <h3 class="font-semibold text-gray-900 mb-4">موقع البرج</h3>
-                    <dl class="space-y-3">
-                        <div>
-                            <dt class="text-sm text-gray-500">الموقع</dt>
-                            <dd class="text-gray-900">{{ $tower->location }}</dd>
+        <!-- Registry Content Area -->
+        <div class="p-8 md:p-10 flex-1">
+            
+            <!-- Tab: Info -->
+            <div x-show="activeTab === 'info'" x-transition:enter="duration-300" class="space-y-10">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div class="space-y-6">
+                        <h4 class="text-sm font-black text-primary uppercase tracking-widest italic flex items-center gap-2">
+                            <span class="w-1 h-4 bg-primary rounded-full"></span>
+                            Geospatial Registry Data
+                        </h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-5 bg-surface-container-lowest border border-outline-variant/10 rounded">
+                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Site Location</p>
+                                <p class="text-xs font-bold text-primary">{{ $tower->location }}</p>
+                            </div>
+                            <div class="p-5 bg-surface-container-lowest border border-outline-variant/10 rounded">
+                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Structural Height</p>
+                                <p class="text-xs font-manrope font-black text-primary uppercase italic">{{ $tower->height }} METERS</p>
+                            </div>
+                            <div class="p-5 bg-surface-container-lowest border border-outline-variant/10 rounded col-span-2">
+                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Coordinate Synchronization</p>
+                                <p class="text-xs font-manrope font-black text-secondary tracking-widest">{{ $tower->lat }}, {{ $tower->lng }}</p>
+                            </div>
                         </div>
-                        <div>
-                            <dt class="text-sm text-gray-500">الإحداثيات</dt>
-                            <dd class="text-gray-900">{{ $tower->lat }}, {{ $tower->lng }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm text-gray-500">الارتفاع</dt>
-                            <dd class="text-gray-900">{{ $tower->height }} متر</dd>
-                        </div>
-                    </dl>
-                </div>
+                    </div>
 
-                <div>
-                    <h3 class="font-semibold text-gray-900 mb-4">المعدات المثبتة</h3>
-                    <div class="space-y-2">
-                        <p class="text-sm text-gray-600">📡 {{ $tower->routers->count() }} معدات شبكة</p>
-                        <p class="text-sm text-gray-600">👥 {{ $tower->clients->count() }} عميل</p>
-                        <p class="text-sm text-gray-600">📶 {{ $tower->ssids->count() }} SSID</p>
+                    <div class="space-y-6">
+                        <h4 class="text-sm font-black text-primary uppercase tracking-widest italic flex items-center gap-2">
+                            <span class="w-1 h-4 bg-secondary rounded-full"></span>
+                            Active Infrastructure Metrics
+                        </h4>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="p-6 bg-surface-container-lowest border border-outline-variant/10 rounded text-center">
+                                <p class="text-2xl font-manrope font-black text-primary">{{ $tower->routers->count() }}</p>
+                                <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1">Devices</p>
+                            </div>
+                            <div class="p-6 bg-surface-container-lowest border border-outline-variant/10 rounded text-center">
+                                <p class="text-2xl font-manrope font-black text-secondary">{{ $tower->clients->count() }}</p>
+                                <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1">Subscribers</p>
+                            </div>
+                            <div class="p-6 bg-surface-container-lowest border border-outline-variant/10 rounded text-center">
+                                <p class="text-2xl font-manrope font-black text-primary italic">{{ $tower->ssids->count() }}</p>
+                                <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1">SSID Pools</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Tab: Equipment -->
-        <div x-show="activeTab === 'equipment'" class="p-6">
-            <div class="space-y-6">
-                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200">
-                    <h3 class="font-bold text-xl text-gray-900 mb-2">💰 تكلفة الأجهزة</h3>
-                    <div class="flex items-center justify-center mt-4">
-                        <div>
-                            <p class="text-sm text-gray-600 text-center">إجمالي تكلفة الأجهزة</p>
-                            <p class="text-3xl font-bold text-blue-600">${{ number_format($tower->routers->sum('price'), 2) }}</p>
-                        </div>
+            <!-- Tab: Equipment -->
+            <div x-show="activeTab === 'equipment'" x-cloak x-transition:enter="duration-300" class="space-y-8">
+                <div class="flex items-center justify-between">
+                    <h4 class="text-sm font-black text-primary uppercase tracking-widest italic">Hardware Asset Inventory</h4>
+                    <div class="px-6 py-2 bg-primary/5 text-primary rounded border border-primary/10">
+                        <p class="text-[10px] font-black uppercase tracking-widest">Aggregate Value: <span class="font-manrope ml-2 tracking-normal">${{ number_format($tower->routers->sum('price'), 2) }}</span></p>
                     </div>
-                    @if($tower->equipment_notes)
-                    <p class="text-sm text-gray-600 mt-4 pt-4 border-t border-blue-200">{{ $tower->equipment_notes }}</p>
-                    @endif
                 </div>
 
-                <div>
-                    <h3 class="font-semibold text-gray-900 mb-4">المعدات المثبتة</h3>
-                    <div class="bg-white border rounded-lg overflow-hidden">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-right text-xs font-bold text-gray-600">الجهاز</th>
-                                    <th class="px-4 py-3 text-right text-xs font-bold text-gray-600">النوع</th>
-                                    <th class="px-4 py-3 text-right text-xs font-bold text-gray-600">IP</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                                @forelse($tower->routers as $router)
-                                <tr>
-                                    <td class="px-4 py-3 text-sm">{{ $router->name }}</td>
-                                    <td class="px-4 py-3 text-sm">
-                                        @if($router->device_type === 'router') 📡 راوتر
-                                        @elseif($router->device_type === 'access_point') 📶 نقطة وصول
-                                        @else 🗼 محطة بث
+                <div class="bg-surface-container-lowest rounded border border-outline-variant/10 overflow-hidden">
+                    <table class="w-full text-right">
+                        <thead>
+                            <tr class="bg-primary/5 text-primary">
+                                <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-right">Asset Identity</th>
+                                <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-right">Protocol Class</th>
+                                <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-right">Operational IP</th>
+                                <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-right">Valuation</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-outline-variant/5">
+                            @forelse($tower->routers as $router)
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-3.5 font-black text-primary text-xs italic">{{ $router->name }}</td>
+                                <td class="px-6 py-3.5">
+                                    <span class="px-2 py-0.5 bg-surface-container-low text-slate-500 rounded text-[8px] font-black uppercase border border-outline-variant/5">
+                                        @if($router->device_type === 'router') 📟 NODE
+                                        @elseif($router->device_type === 'access_point') 📶 AP
+                                        @else 🗼 PTMP
                                         @endif
-                                    </td>
-                                    <td class="px-4 py-3 text-sm font-mono">{{ $router->ip }}</td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="3" class="px-4 py-8 text-center text-gray-500">
-                                        لا توجد معدات مثبتة بعد
-                                    </td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-3.5 font-manrope font-black text-slate-500 text-[10px]">{{ $router->ip }}</td>
+                                <td class="px-6 py-3.5 font-manrope font-black text-secondary text-[10px]">${{ number_format($router->price, 2) }}</td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="4" class="px-6 py-20 text-center opacity-30 italic font-black uppercase text-[10px]">Registry Empty: No Active Assets Detected</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab: Power -->
+            <div x-show="activeTab === 'power'" x-cloak x-transition:enter="duration-300" class="space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Ampere Grid -->
+                    <div class="bg-surface-container-lowest border border-outline-variant/10 rounded-lg p-8 space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-amber-500/10 text-amber-500 rounded flex items-center justify-center border border-amber-500/20">
+                                <span class="material-symbols-outlined text-2xl">electric_bolt</span>
+                            </div>
+                            <h5 class="text-sm font-black text-primary uppercase tracking-widest">Public Utility (Ampere)</h5>
+                        </div>
+
+                        @if($tower->has_ampere)
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 bg-surface-container-low rounded border border-outline-variant/5">
+                                <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Monthly Contract</p>
+                                <p class="text-lg font-manrope font-black text-primary">${{ number_format($tower->ampere_subscription_monthly, 2) }}</p>
+                            </div>
+                            <div class="p-4 bg-surface-container-low rounded border border-outline-variant/5">
+                                <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Unit Valuation</p>
+                                <p class="text-sm font-manrope font-black text-secondary">${{ number_format($tower->kwh_price, 2) }}/kWh</p>
+                            </div>
+                        </div>
+                        @else
+                        <div class="p-8 text-center text-slate-300 italic uppercase text-[10px] font-black border border-dashed border-outline-variant/10 rounded">Offline Utility</div>
+                        @endif
+                    </div>
+
+                    <!-- Solar Matrix -->
+                    <div class="bg-surface-container-lowest border border-outline-variant/10 rounded-lg p-8 space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-orange-500/10 text-orange-500 rounded flex items-center justify-center border border-orange-500/20">
+                                <span class="material-symbols-outlined text-2xl">wb_sunny</span>
+                            </div>
+                            <h5 class="text-sm font-black text-primary uppercase tracking-widest">Photovoltaic Array (Solar)</h5>
+                        </div>
+
+                        @if($tower->has_solar)
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 bg-surface-container-low rounded border border-outline-variant/5">
+                                <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Panel Cluster</p>
+                                <p class="text-lg font-manrope font-black text-primary">{{ $tower->solar_panels_count }} UNITS</p>
+                            </div>
+                            <div class="p-4 bg-surface-container-low rounded border border-outline-variant/5">
+                                <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Peak Transmission</p>
+                                <p class="text-lg font-manrope font-black text-secondary">{{ $tower->total_solar_capacity }}W</p>
+                            </div>
+                        </div>
+                        @else
+                        <div class="p-8 text-center text-slate-300 italic uppercase text-[10px] font-black border border-dashed border-outline-variant/10 rounded">No Solar Infrastructure</div>
+                        @endif
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Tab: Power -->
-        <div x-show="activeTab === 'power'" class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Ampere -->
-                <div class="bg-white border rounded-xl p-6">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                            <span class="text-2xl">⚡</span>
-                        </div>
-                        <h3 class="font-bold text-lg">كهرباء أمبير</h3>
-                    </div>
-
-                    @if($tower->has_ampere)
-                    <div class="space-y-3">
-                        <div>
-                            <p class="text-sm text-gray-500">الاشتراك الشهري</p>
-                            <p class="text-xl font-bold text-gray-900">${{ number_format($tower->ampere_subscription_monthly, 2) }}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">سعر الكيلو واط</p>
-                            <p class="text-lg font-semibold text-gray-900">${{ number_format($tower->kwh_price, 2) }}/kWh</p>
-                        </div>
-                    </div>
-                    @else
-                    <p class="text-gray-500">⚪ غير متوفر</p>
-                    @endif
+            <!-- Tab: SSIDs -->
+            <div x-show="activeTab === 'ssids'" x-cloak x-transition:enter="duration-300" class="space-y-8">
+                <div class="flex items-center justify-between">
+                    <h4 class="text-sm font-black text-primary uppercase tracking-widest italic">Wireless Spectrum Logic</h4>
                 </div>
 
-                <!-- Solar -->
-                <div class="bg-white border rounded-xl p-6">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                            <span class="text-2xl">☀️</span>
-                        </div>
-                        <h3 class="font-bold text-lg">الطاقة الشمسية</h3>
-                    </div>
-
-                    @if($tower->has_solar)
-                    <div class="space-y-3">
-                        <div>
-                            <p class="text-sm text-gray-500">عدد الألواح</p>
-                            <p class="text-lg font-semibold text-gray-900">{{ $tower->solar_panels_count }} لوح</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">استطاعة اللوح الواحد</p>
-                            <p class="text-lg font-semibold text-gray-900">{{ $tower->solar_panel_wattage }}W</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">الاستطاعة الكلية</p>
-                            <p class="text-xl font-bold text-green-600">{{ $tower->total_solar_capacity }}W</p>
-                        </div>
-                        <div class="pt-3 border-t">
-                            <p class="text-sm text-gray-500">تكلفة التركيب</p>
-                            <p class="text-lg font-semibold text-gray-900">${{ number_format($tower->solar_installation_cost, 2) }}</p>
-                        </div>
-                    </div>
-                    @else
-                    <p class="text-gray-500">⚪ غير متوفر</p>
-                    @endif
+                <div class="bg-surface-container-lowest rounded border border-outline-variant/10 overflow-hidden">
+                    <table class="w-full text-right">
+                        <thead>
+                            <tr class="bg-secondary/5 text-secondary">
+                                <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-right">Identifier (SSID)</th>
+                                <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-right">Frequency band</th>
+                                <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-right">Host Hardware</th>
+                                <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-right">Protocol State</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-outline-variant/5">
+                            @forelse($tower->ssids as $ssid)
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-3.5 font-manrope font-black text-primary text-xs italic">{{ $ssid->ssid_name }}</td>
+                                <td class="px-6 py-3.5">
+                                    <span class="px-3 py-1 bg-white border border-outline-variant/10 rounded text-[9px] font-manrope font-black text-slate-500 uppercase italic">
+                                        {{ $ssid->frequency }} Ghz
+                                    </span>
+                                </td>
+                                <td class="px-6 py-3.5 font-black text-slate-400 text-[10px] uppercase italic">{{ $ssid->router?->name ?? 'VIRTUAL' }}</td>
+                                <td class="px-6 py-3.5">
+                                    @if($ssid->status === 'active')
+                                        <span class="text-secondary font-black text-[9px] uppercase tracking-widest flex items-center gap-1">
+                                            <span class="w-1.5 h-1.5 bg-secondary rounded-full animate-pulse"></span>
+                                            Operational
+                                        </span>
+                                    @else
+                                        <span class="text-slate-300 font-black text-[9px] uppercase tracking-widest flex items-center gap-1">
+                                            <span class="w-1.5 h-1.5 bg-slate-300 rounded-full"></span>
+                                            Offline
+                                        </span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="4" class="px-6 py-20 text-center opacity-30 italic font-black uppercase text-[10px]">Spectral Isolation: No SSIDs detected</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
 
-        <!-- Tab: SSIDs -->
-        <div x-show="activeTab === 'ssids'" class="p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-semibold text-gray-900">📶 شبكات WiFi على البرج</h3>
-                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm">
-                    + إضافة SSID
-                </button>
-            </div>
-
-            <div class="bg-white border rounded-lg overflow-hidden">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-4 py-3 text-right text-xs font-bold text-gray-600">SSID</th>
-                            <th class="px-4 py-3 text-right text-xs font-bold text-gray-600">التردد</th>
-                            <th class="px-4 py-3 text-right text-xs font-bold text-gray-600">الجهاز</th>
-                            <th class="px-4 py-3 text-right text-xs font-bold text-gray-600">الحالة</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        @forelse($tower->ssids as $ssid)
-                        <tr>
-                            <td class="px-4 py-3 text-sm font-medium">{{ $ssid->ssid_name }}</td>
-                            <td class="px-4 py-3 text-sm">{!! $ssid->frequency_badge !!}</td>
-                            <td class="px-4 py-3 text-sm">{{ $ssid->router?->name ?? '-' }}</td>
-                            <td class="px-4 py-3 text-sm">{!! $ssid->status_badge !!}</td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="4" class="px-4 py-8 text-center text-gray-500">
-                                لم يتم إضافة SSIDs بعد
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Tab: Costs -->
-        <div x-show="activeTab === 'costs'" class="p-6">
-            <div class="space-y-6">
-                <!-- Setup Costs -->
-                <div class="bg-purple-50 border border-purple-200 rounded-xl p-6">
-                    <h3 class="font-bold text-lg text-gray-900 mb-4">🛠️ تكاليف التجهيز الأولية</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <p class="text-sm text-gray-600">تكلفة الهيكل</p>
-                            <p class="text-2xl font-bold text-gray-800">${{ number_format($tower->structure_cost, 2) }}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">تكلفة الأجهزة</p>
-                            <p class="text-2xl font-bold text-gray-800">${{ number_format($tower->routers->sum('price'), 2) }}</p>
-                        </div>
-                        <div class="border-r border-purple-200 pr-4">
-                            <p class="text-sm text-purple-800 font-semibold">الإجمالي الكلي</p>
-                            <p class="text-3xl font-bold text-purple-600">${{ number_format($tower->total_equipment_cost, 2) }}</p>
-                        </div>
+            <!-- Tab: Costs -->
+            <div x-show="activeTab === 'costs'" x-cloak x-transition:enter="duration-300" class="space-y-10">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="p-8 bg-primary rounded shadow-lg shadow-primary/10">
+                        <p class="text-[9px] font-black text-white/50 uppercase tracking-widest mb-2">Original CapEx</p>
+                        <h5 class="text-3xl font-manrope font-black text-white tracking-widest">${{ number_format($tower->total_equipment_cost, 2) }}</h5>
+                        <p class="text-[8px] font-bold text-white/40 uppercase mt-2 italic">Infrastructure Deployment Value</p>
+                    </div>
+                    <div class="p-8 bg-surface-container-lowest border border-outline-variant/10 rounded">
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Fixed Monthly OpEx</p>
+                        <h5 class="text-3xl font-manrope font-black text-primary tracking-widest">${{ number_format($tower->monthly_fixed_costs, 2) }}</h5>
+                        <p class="text-[8px] font-bold text-slate-400 uppercase mt-2 italic text-left">Recurring Operational Drain</p>
+                    </div>
+                    <div class="p-8 bg-secondary rounded shadow-lg shadow-secondary/10">
+                        <p class="text-[9px] font-black text-white/50 uppercase tracking-widest mb-2">Current billing Cycle</p>
+                        <h5 class="text-3xl font-manrope font-black text-white tracking-widest">${{ number_format($tower->getCurrentMonthCost(), 2) }}</h5>
+                        <p class="text-[8px] font-bold text-white/40 uppercase mt-2 italic">{{ now()->format('Y-m') }} Protocol</p>
                     </div>
                 </div>
 
-                <!-- Fixed Costs -->
-                <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                    <h3 class="font-bold text-lg text-gray-900 mb-4">💵 التكاليف الثابتة الشهرية</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div>
-                            <p class="text-sm text-gray-600">صيانة</p>
-                            <p class="text-lg font-bold">${{ number_format($tower->monthly_maintenance, 2) }}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">إيجار</p>
-                            <p class="text-lg font-bold">${{ number_format($tower->monthly_rent, 2) }}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">أخرى</p>
-                            <p class="text-lg font-bold">${{ number_format($tower->monthly_other_costs, 2) }}</p>
-                        </div>
-                    </div>
-                    <div class="mt-4 pt-4 border-t border-blue-300">
-                        <p class="text-sm text-gray-600">الإجمالي الثابت</p>
-                        <p class="text-2xl font-bold text-blue-600">${{ number_format($tower->monthly_fixed_costs, 2) }}/شهر</p>
-                    </div>
-                </div>
-
-                <!-- Current Month -->
-                <div class="bg-green-50 border border-green-200 rounded-xl p-6">
-                    <h3 class="font-bold text-lg text-gray-900 mb-2">📅 تكلفة الشهر الحالي</h3>
-                    <p class="text-3xl font-bold text-green-600">${{ number_format($tower->getCurrentMonthCost(), 2) }}</p>
-                    <p class="text-sm text-gray-600 mt-1">{{ now()->format('F Y') }}</p>
-                </div>
-
-                <!-- Monthly Costs History -->
-                <div>
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-semibold text-gray-900">📊 سجل التكاليف الشهرية</h3>
-                        <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm">
-                            + إضافة فاتورة
-                        </button>
-                    </div>
-
-                    <div class="bg-white border rounded-lg overflow-hidden">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-right text-xs font-bold text-gray-600">الشهر</th>
-                                    <th class="px-4 py-3 text-right text-xs font-bold text-gray-600">فاتورة أمبير</th>
-                                    <th class="px-4 py-3 text-right text-xs font-bold text-gray-600">مازوت (ديزل)</th>
-                                    <th class="px-4 py-3 text-right text-xs font-bold text-gray-600">صيانة</th>
-                                    <th class="px-4 py-3 text-right text-xs font-bold text-gray-600">أخرى</th>
-                                    <th class="px-4 py-3 text-right text-xs font-bold text-gray-600">الإجمالي</th>
+                <div class="space-y-6 pt-8 border-t border-outline-variant/10">
+                    <h4 class="text-sm font-black text-primary uppercase tracking-widest italic uppercase">Historical Sustainability Log</h4>
+                    <div class="bg-surface-container-lowest rounded border border-outline-variant/10 overflow-hidden">
+                        <table class="w-full text-right">
+                            <thead>
+                                <tr class="bg-slate-900 text-white">
+                                    <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest">Protocol Date</th>
+                                    <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest">Utility Charge</th>
+                                    <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest">Fuel Usage</th>
+                                    <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest">Sustain/Repair</th>
+                                    <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest">Aggregate</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-200">
+                            <tbody class="divide-y divide-outline-variant/5">
                                 @forelse($tower->monthlyCosts()->orderBy('month', 'desc')->take(6)->get() as $cost)
-                                <tr>
-                                    <td class="px-4 py-3 text-sm font-medium">{{ \Carbon\Carbon::parse($cost->month . '-01')->format('F Y') }}</td>
-                                    <td class="px-4 py-3 text-sm">${{ number_format($cost->ampere_bill, 2) }}</td>
-                                    <td class="px-4 py-3 text-sm">${{ number_format($cost->diesel_cost, 2) }}</td>
-                                    <td class="px-4 py-3 text-sm">${{ number_format($cost->maintenance_cost, 2) }}</td>
-                                    <td class="px-4 py-3 text-sm">${{ number_format($cost->other_costs, 2) }}</td>
-                                    <td class="px-4 py-3 text-sm font-bold text-green-600">${{ number_format($cost->total_cost, 2) }}</td>
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="px-6 py-3.5 font-black text-primary text-[10px] uppercase font-manrope tracking-widest">{{ \Carbon\Carbon::parse($cost->month . '-01')->format('F Y') }}</td>
+                                    <td class="px-6 py-3.5 font-manrope font-black text-slate-500 text-xs">${{ number_format($cost->ampere_bill, 2) }}</td>
+                                    <td class="px-6 py-3.5 font-manrope font-black text-slate-500 text-xs">${{ number_format($cost->diesel_cost, 2) }}</td>
+                                    <td class="px-6 py-3.5 font-manrope font-black text-slate-500 text-xs">${{ number_format($cost->maintenance_cost, 2) }}</td>
+                                    <td class="px-6 py-3.5 font-manrope font-black text-secondary text-sm">${{ number_format($cost->total_cost, 2) }}</td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="5" class="px-4 py-8 text-center text-gray-500">
-                                        لم يتم إضافة فواتير بعد
-                                    </td>
+                                    <td colspan="5" class="px-6 py-20 text-center opacity-30 italic font-black uppercase text-[10px]">Archive Registry Empty: No costs recorded</td>
                                 </tr>
                                 @endforelse
                             </tbody>

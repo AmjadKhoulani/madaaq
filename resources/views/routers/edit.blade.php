@@ -1,31 +1,35 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'تعديل بروتوكول الجهاز | Adjust Network Asset: ' . $router->name)
 
 @push('styles')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
-    #locationMap { height: 400px; width: 100%; border-radius: 0.75rem; z-index: 1; }
-    [x-cloak] { display: none !important; }
+    #locationMap { height: 400px; width: 100%; border-radius: 8px; z-index: 1; border: 1px solid rgba(0,0,0,0.1); }
 </style>
 @endpush
 
 @section('content')
-<div class="max-w-7xl mx-auto" x-data="routerEditForm({
+<div class="max-w-7xl mx-auto space-y-8 pb-20" x-data="routerEditForm({
     router: {{ Js::from($router) }},
     device: {{ Js::from($router->deviceModel) }}
 })">
-    <!-- Header -->
-    <div class="flex items-center justify-between mb-6">
+    <!-- Strategic Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-            <h2 class="text-2xl font-bold text-gray-900">تعديل بيانات الجهاز</h2>
-            <p class="text-sm text-gray-500">تحديث: <span x-text="router.name"></span></p>
+            <h2 class="text-3xl font-black text-primary tracking-tight italic uppercase">تعديل بروتوكول الجهاز</h2>
+            <p class="text-slate-500 font-medium mt-1 uppercase tracking-widest text-[10px] font-headline">Adjusting Governance Parameters for: <span x-text="router.name" class="text-secondary"></span></p>
         </div>
-        <div class="flex gap-2">
-             <a href="{{ route('routers.index') }}" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition text-sm">
-                إلغاء
+        <div class="flex gap-3">
+            <a href="{{ route('routers.index') }}" class="px-6 py-2 border border-outline-variant/20 rounded text-slate-500 font-bold text-xs uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm text-slate-400">arrow_back</span>
+                إلغاء التعديل
             </a>
-            <form action="{{ route('routers.destroy', $router->id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد؟')">
+            <form action="{{ route('routers.destroy', $router->id) }}" method="POST" onsubmit="return confirm('Confirm Device Decommissioning? This action is permanent.')">
                 @csrf @method('DELETE')
-                <button type="submit" class="px-4 py-2 bg-red-50 text-red-700 border border-red-200 font-medium rounded-lg hover:bg-red-100 transition text-sm">حذف</button>
+                <button type="submit" class="px-6 py-2 bg-error text-white font-black text-xs uppercase tracking-widest rounded shadow-lg shadow-error/10 hover:bg-red-700 transition-all italic">
+                    إيقاف التشغيل / حذف
+                </button>
             </form>
         </div>
     </div>
@@ -34,207 +38,226 @@
         @csrf
         @method('PUT')
         
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             
-            <!-- RIGHT COLUMN: Main Form -->
-            <div class="lg:col-span-2 space-y-6">
+            <!-- Technical Blueprint Controls -->
+            <div class="lg:col-span-2 space-y-8">
                 
-                <!-- 1. Device Selection & Identity -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
-                        بيانات الجهاز
-                    </h3>
+                <!-- 1. Asset Identity -->
+                <div class="bg-surface-container-low border border-outline-variant/10 rounded-lg p-10">
+                    <div class="flex items-center gap-4 mb-10">
+                        <div class="w-10 h-10 bg-primary/5 rounded border border-primary/10 flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined text-2xl font-light">identity_platform</span>
+                        </div>
+                        <h3 class="text-xl font-black text-primary tracking-tight uppercase italic">Identity Adjustment</h3>
+                    </div>
                     
-                    <!-- Search -->
-                    <div class="mb-6 relative">
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">موديل الجهاز</label>
-                        <input type="text" x-model="deviceQuery" @input.debounce.300ms="searchDevices()" @click.away="showDevices = false"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-indigo-500 outline-none placeholder-gray-400" 
-                               placeholder="ابحث لتغيير الموديل...">
+                    <!-- Search Registry -->
+                    <div class="mb-8 relative">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Re-map Hardware Profile</label>
+                        <div class="relative">
+                            <input type="text" x-model="deviceQuery" @input.debounce.300ms="searchDevices()" @click.away="showDevices = false"
+                                   class="w-full pl-12 pr-6 py-4 bg-white border border-outline-variant/20 rounded-lg focus:ring-4 focus:ring-primary/5 focus:border-primary/40 font-bold text-primary transition-all shadow-sm" 
+                                   placeholder="Search to update model registry...">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                                <span class="material-symbols-outlined text-lg">sync</span>
+                            </div>
+                        </div>
                         <input type="hidden" name="model_id" :value="selectedDevice ? selectedDevice.id : ''">
                         
-                        <!-- Dropdown -->
-                        <div x-show="showDevices && devices.length > 0" x-cloak class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-xl max-h-60 overflow-y-auto">
+                        <!-- Overlay Selector -->
+                        <div x-show="showDevices && devices.length > 0" x-cloak x-transition:enter="duration-200"
+                             class="absolute z-50 w-full mt-2 bg-white border border-outline-variant/20 rounded shadow-2xl max-h-80 overflow-y-auto p-2 space-y-1">
                             <template x-for="device in devices" :key="device.id">
-                                <div @click="selectDevice(device)" class="flex items-center p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 gap-3">
-                                    <img :src="device.image_url || 'https://via.placeholder.com/40'" class="w-10 h-10 object-contain p-1 border rounded bg-white">
-                                    <div>
-                                        <p class="font-bold text-sm text-gray-900" x-text="device.model_name" dir="ltr"></p>
-                                        <p class="text-xs text-gray-500" x-text="device.manufacturer"></p>
+                                <div @click="selectDevice(device)" class="flex items-center gap-4 p-3 hover:bg-primary hover:text-white rounded cursor-pointer transition-all">
+                                    <div class="w-12 h-12 bg-surface-container-lowest rounded p-1 flex items-center justify-center shrink-0 border border-outline-variant/10">
+                                        <img :src="device.image_url" class="max-w-full max-h-full object-contain" onerror="this.src='https://placehold.co/100x100?text=HW'">
                                     </div>
-                                    <span class="mr-auto text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600" x-text="device.device_type"></span>
+                                    <div>
+                                        <p class="font-black text-xs tracking-tight italic" x-text="device.manufacturer + ' ' + device.model_name" dir="ltr"></p>
+                                        <p class="text-[9px] font-bold uppercase tracking-widest opacity-60" x-text="device.device_type"></p>
+                                    </div>
                                 </div>
                             </template>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">اسم الجهاز <span class="text-red-500">*</span></label>
-                            <input type="text" name="name" x-model="routerName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-indigo-500 outline-none" required dir="ltr">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-3">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Asset Operational Name <span class="text-rose-500">*</span></label>
+                            <input type="text" name="name" x-model="routerName" class="w-full px-5 py-4 bg-white border border-outline-variant/20 rounded-lg focus:ring-4 focus:ring-primary/5 focus:border-primary/40 font-black text-primary transition-all shadow-sm" required dir="ltr">
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">نوع الجهاز <span class="text-red-500">*</span></label>
-                             <select name="device_type" x-model="deviceType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-indigo-500 outline-none">
-                                <option value="router">راوتر (Router)</option>
-                                <option value="switch">سويتش (Switch)</option>
-                                <option value="access_point">نقطة وصول (Access Point)</option>
-                                <option value="base_station">محطة بث (Base Station)</option>
+                        <div class="space-y-3">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Functional Category <span class="text-rose-500">*</span></label>
+                            <select name="device_type" x-model="deviceType" class="w-full px-5 py-4 bg-white border border-outline-variant/20 rounded-lg focus:ring-4 focus:ring-primary/5 focus:border-primary/40 font-black text-primary transition-all shadow-sm italic">
+                                <option value="router">Gateway Node (Router)</option>
+                                <option value="switch">Matrix Core (Switch)</option>
+                                <option value="access_point">Spectral Hub (Access Point)</option>
+                                <option value="base_station">Transmission Array (Base Station)</option>
                             </select>
                         </div>
                     </div>
 
-                     <!-- Antenna Options -->
-                    <div x-show="['access_point', 'base_station'].includes(deviceType)" x-transition class="mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                        <label class="block text-xs font-bold text-yellow-800 uppercase mb-2">نوع الأنتينا</label>
-                        <div class="flex gap-4">
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="radio" name="antenna_type" value="sector" x-model="antennaType" class="text-indigo-600 focus:ring-indigo-500">
-                                <span class="text-sm text-gray-700">Sector</span>
+                    <!-- Antenna Specs -->
+                    <div x-show="['access_point', 'base_station'].includes(deviceType)" x-transition class="mt-8 p-6 bg-primary/5 rounded border border-primary/10 space-y-4">
+                        <label class="block text-[10px] font-black text-primary uppercase tracking-widest italic">Spectral Radiation Profile (Antenna)</label>
+                        <div class="flex gap-6">
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" name="antenna_type" value="sector" x-model="antennaType" class="text-primary focus:ring-primary">
+                                <span class="text-[10px] font-black uppercase text-slate-600 group-hover:text-primary transition-all italic">Sector Axis</span>
                             </label>
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="radio" name="antenna_type" value="omni" x-model="antennaType" class="text-indigo-600 focus:ring-indigo-500">
-                                <span class="text-sm text-gray-700">Omni</span>
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" name="antenna_type" value="omni" x-model="antennaType" class="text-primary focus:ring-primary">
+                                <span class="text-[10px] font-black uppercase text-slate-600 group-hover:text-primary transition-all italic">Omni Sphere</span>
                             </label>
-                             <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="radio" name="antenna_type" value="dish" x-model="antennaType" class="text-indigo-600 focus:ring-indigo-500">
-                                <span class="text-sm text-gray-700">Dish</span>
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" name="antenna_type" value="dish" x-model="antennaType" class="text-primary focus:ring-primary">
+                                <span class="text-[10px] font-black uppercase text-slate-600 group-hover:text-primary transition-all italic">Directional Dish</span>
                             </label>
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. Connection Details -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-1.015 1.09-2.132 1.335-3.354M10 9l5 5m0 0l-5 5m5-5H5"/></svg>
-                        الاتصال والدخول
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">عنوان IP <span class="text-red-500">*</span></label>
-                            <input type="text" name="ip" x-model="ip" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-green-500 outline-none font-mono" required>
+                <!-- 2. Connectivity Stack -->
+                <div class="bg-surface-container-low border border-outline-variant/10 rounded-lg p-10">
+                    <div class="flex items-center gap-4 mb-10">
+                        <div class="w-10 h-10 bg-secondary/10 rounded border border-secondary/10 flex items-center justify-center text-secondary">
+                            <span class="material-symbols-outlined text-2xl font-light">rss_feed</span>
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">منفذ API</label>
-                            <input type="number" name="api_port" x-model="apiPort" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-green-500 outline-none font-mono">
+                        <h3 class="text-xl font-black text-primary tracking-tight uppercase italic">Connectivity Protocol</h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-3">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Operational IP Registry</label>
+                            <input type="text" name="ip" x-model="ip" class="w-full px-5 py-4 bg-white border border-outline-variant/20 rounded-lg focus:ring-2 focus:ring-primary/10 font-manrope font-black text-primary shadow-sm" required dir="ltr">
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">اسم المستخدم</label>
-                            <input type="text" name="username" x-model="username" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-green-500 outline-none">
+                        <div class="space-y-3">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">API Governance Port Index</label>
+                            <input type="number" name="api_port" x-model="apiPort" class="w-full px-5 py-4 bg-white border border-outline-variant/20 rounded-lg focus:ring-2 focus:ring-primary/10 font-manrope font-black text-primary shadow-sm" dir="ltr">
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">كلمة المرور</label>
-                            <input type="password" name="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-green-500 outline-none" placeholder="اترك فارغاً لعدم التغيير">
+                        <div class="space-y-3">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Identity Access ID</label>
+                            <input type="text" name="username" x-model="username" class="w-full px-5 py-4 bg-white border border-outline-variant/20 rounded-lg focus:ring-2 focus:ring-primary/10 font-black text-primary shadow-sm" dir="ltr">
+                        </div>
+                        <div class="space-y-3">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Secret Index (Leave blank if unchanged)</label>
+                            <input type="password" name="password" autocomplete="new-password" class="w-full px-5 py-4 bg-white border border-outline-variant/20 rounded-lg focus:ring-2 focus:ring-primary/10 font-black text-primary shadow-sm" placeholder="••••••••••••" dir="ltr">
                         </div>
                     </div>
                 </div>
 
-                <!-- 3. Location (Collapsible Map) -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <button type="button" @click="showMap = !showMap" class="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition">
-                         <h3 class="font-bold text-gray-900 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            الموقع والتغطية
-                        </h3>
-                        <svg class="w-5 h-5 text-gray-400 transform transition-transform" :class="showMap ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                <!-- 3. Geospatial Topology -->
+                <div class="bg-surface-container-low border border-outline-variant/10 rounded-lg overflow-hidden">
+                    <button type="button" @click="showMap = !showMap" class="w-full p-10 flex items-center justify-between hover:bg-slate-50/50 transition-all">
+                        <div class="flex items-center gap-4 text-primary">
+                            <span class="material-symbols-outlined text-2xl font-light">map</span>
+                            <h3 class="text-xl font-black tracking-tight uppercase italic">Geospatial Topology Registry</h3>
+                        </div>
+                        <span class="material-symbols-outlined text-slate-400 transform transition-transform" :class="showMap ? 'rotate-180' : ''">keyboard_arrow_down</span>
                     </button>
                     
                     <div x-show="showMap" x-collapse>
-                        <div class="p-5 pt-0">
-                            <!-- Helper Options -->
-                            <div class="mb-4">
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">نسخ إحداثيات برج</label>
-                                <select @change="selectTower($event)" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-red-500 outline-none text-sm">
-                                    <option value="">-- اختر البرج --</option>
-                                    @foreach($towers as $tower)
-                                    <option value="{{ $tower->id }}" data-lat="{{ $tower->lat }}" data-lng="{{ $tower->lng }}" {{ $router->tower_id == $tower->id ? 'selected' : '' }}>
-                                        {{ $tower->name }}
-                                    </option>
-                                    @endforeach
-                                </select>
+                        <div class="px-10 pb-10 space-y-8">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-outline-variant/5 pt-8">
+                                <div class="space-y-3">
+                                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Structural Parent Alignment (Tower)</label>
+                                    <select @change="selectTower($event)" class="w-full px-5 py-3.5 bg-white border border-outline-variant/20 rounded-lg focus:ring-2 focus:ring-primary/10 font-black text-primary italic">
+                                        <option value="">-- Preserve Manual Plotting --</option>
+                                        @foreach($towers as $tower)
+                                        <option value="{{ $tower->id }}" data-lat="{{ $tower->lat }}" data-lng="{{ $tower->lng }}" {{ $router->tower_id == $tower->id ? 'selected' : '' }}>
+                                            🗼 {{ $tower->name }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="flex gap-4 items-end">
+                                    <div class="flex-1 space-y-3">
+                                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 italic">N-LAT</label>
+                                        <input type="text" name="lat" x-model="lat" class="w-full px-4 py-3 bg-surface-container-highest/10 border-none rounded text-[11px] font-manrope font-black text-primary text-center ring-1 ring-outline-variant/10" readonly>
+                                    </div>
+                                    <div class="flex-1 space-y-3">
+                                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 italic">E-LNG</label>
+                                        <input type="text" name="lng" x-model="lng" class="w-full px-4 py-3 bg-surface-container-highest/10 border-none rounded text-[11px] font-manrope font-black text-primary text-center ring-1 ring-outline-variant/10" readonly>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div id="locationMap" class="mb-4 bg-gray-100"></div>
+                            <div id="locationMap"></div>
                             
-                            <div class="grid grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Latitude</label>
-                                    <input type="text" name="lat" x-model="lat" class="w-full px-3 py-2 bg-gray-50 border rounded-lg text-xs" readonly>
+                            <!-- Coverage Matrix -->
+                            <div class="grid grid-cols-3 gap-6 pt-4 border-t border-outline-variant/5">
+                                <div class="space-y-2">
+                                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest">Effective Range (m)</label>
+                                    <input type="number" name="coverage_radius" x-model="coverageRadius" @input="updateCoverageCircle()" class="w-full px-4 py-2 bg-white border border-outline-variant/10 rounded focus:ring-2 focus:ring-primary/10 font-manrope font-black text-primary text-xs">
                                 </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Longitude</label>
-                                    <input type="text" name="lng" x-model="lng" class="w-full px-3 py-2 bg-gray-50 border rounded-lg text-xs" readonly>
+                                <div class="space-y-2">
+                                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest">Azimuth Index (0-360)</label>
+                                    <input type="number" name="azimuth" x-model="azimuth" @input="updateCoverageCircle()" class="w-full px-4 py-2 bg-white border border-outline-variant/10 rounded focus:ring-2 focus:ring-primary/10 font-manrope font-black text-primary text-xs">
                                 </div>
-                            </div>
-                            
-                            <!-- Coverage Inputs -->
-                            <div class="grid grid-cols-3 gap-4 border-t pt-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">المدى (متر)</label>
-                                    <input type="number" name="coverage_radius" x-model="coverageRadius" @input="updateCoverageCircle()" class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none text-sm">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">الاتجاه (0-360)</label>
-                                    <input type="number" name="azimuth" x-model="azimuth" @input="updateCoverageCircle()" class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none text-sm">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">العرض (درجة)</label>
-                                    <input type="number" name="beam_width" x-model="beamWidth" @input="updateCoverageCircle()" class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none text-sm">
+                                <div class="space-y-2">
+                                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest">Beamwidth Aperture</label>
+                                    <input type="number" name="beam_width" x-model="beamWidth" @input="updateCoverageCircle()" class="w-full px-4 py-2 bg-white border border-outline-variant/10 rounded focus:ring-2 focus:ring-primary/10 font-manrope font-black text-primary text-xs">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
 
-            <!-- LEFT COLUMN: Sticky Summary -->
+            <!-- Handshake Preview Registry -->
             <div class="lg:col-span-1">
-                <div class="sticky top-6">
-                    <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                        <!-- Preview Image -->
-                        <div class="h-32 bg-gray-50 flex items-center justify-center p-4 border-b border-gray-100">
-                             <img :src="selectedDevice ? selectedDevice.image_url : 'https://via.placeholder.com/150?text=Device'" 
-                                  class="max-h-full max-w-full object-contain" :class="!selectedDevice ? 'opacity-30' : ''">
+                <div class="sticky top-8 space-y-6">
+                    <div class="bg-surface-container-low border border-outline-variant/10 rounded-lg overflow-hidden shadow-2xl">
+                        <!-- Technical Blueprint Image -->
+                        <div class="h-40 bg-white flex items-center justify-center p-6 border-b border-outline-variant/10">
+                             <img :src="selectedDevice ? selectedDevice.image_url : 'https://placehold.co/150x150?text=Registry'" 
+                                  class="max-h-full max-w-full object-contain filter drop-shadow-lg" :class="!selectedDevice ? 'opacity-20 grayscale' : ''">
                         </div>
                         
-                        <div class="p-5">
-                            <div class="text-center mb-4">
-                                <h3 class="font-bold text-gray-900 text-lg mb-1" x-text="routerName || 'جهاز جديد'"></h3>
+                        <div class="p-8 space-y-8">
+                            <div class="text-center">
+                                <h3 class="text-lg font-black text-primary uppercase italic tracking-tight mb-2" x-text="routerName"></h3>
                                 <div class="flex items-center justify-center gap-2">
-                                    <span class="px-2 py-0.5 rounded text-xs font-mono bg-gray-100" x-text="ip || 'Pending IP'"></span>
-                                    <span class="px-2 py-0.5 rounded text-xs font-bold uppercase text-white" 
+                                    <span class="px-3 py-1 rounded bg-surface-container-highest/10 border border-outline-variant/10 font-manrope font-black text-[10px] text-slate-500 italic tracking-widest" x-text="ip"></span>
+                                    <span class="px-3 py-1 rounded font-black text-[9px] uppercase tracking-widest text-white shadow-sm" 
                                           :class="{
-                                              'bg-blue-500': deviceType === 'router',
-                                              'bg-green-500': deviceType === 'access_point',
-                                              'bg-teal-500': deviceType === 'switch',
-                                              'bg-purple-500': deviceType === 'base_station'
+                                              'bg-primary': deviceType === 'router',
+                                              'bg-secondary': deviceType === 'access_point',
+                                              'bg-slate-700': deviceType === 'switch',
+                                              'bg-slate-900': deviceType === 'base_station'
                                           }" 
                                           x-text="deviceType"></span>
                                 </div>
                             </div>
                             
-                            <dl class="space-y-2 text-sm border-t border-gray-100 pt-3">
-                                <div class="flex justify-between">
-                                    <dt class="text-gray-500">الموديل</dt>
-                                    <dd class="font-medium text-gray-900" x-text="selectedDevice ? selectedDevice.model_name : '---'"></dd>
+                            <div class="space-y-4 border-t border-outline-variant/5 pt-8">
+                                <div class="flex justify-between items-center">
+                                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Hardware Profile</p>
+                                    <p class="text-[10px] font-bold text-primary uppercase italic" x-text="selectedDevice ? selectedDevice.model_name : 'N/A'"></p>
                                 </div>
-                                <div class="flex justify-between">
-                                    <dt class="text-gray-500">التردد</dt>
-                                    <dd class="font-medium text-gray-900" x-text="selectedDevice ? selectedDevice.frequency : '---'"></dd>
+                                <div class="flex justify-between items-center">
+                                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Spectral Band</p>
+                                    <p class="text-[10px] font-manrope font-black text-secondary italic uppercase" x-text="selectedDevice ? selectedDevice.frequency + ' GHZ' : 'N/A'"></p>
                                 </div>
-                                <div class="flex justify-between">
-                                    <dt class="text-gray-500">الإحداثيات</dt>
-                                    <dd class="font-medium text-gray-900" x-text="lat ? 'تم التحديد' : '---'"></dd>
+                                <div class="flex justify-between items-center text-secondary">
+                                    <p class="text-[9px] font-black uppercase tracking-widest">PROTOCOL STABLE</p>
+                                    <span class="material-symbols-outlined text-sm">verified_user</span>
                                 </div>
-                            </dl>
+                            </div>
                             
-                            <button type="submit" class="w-full mt-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow transition transform active:scale-95 flex items-center justify-center gap-2">
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                تحديث البيانات
+                            <button type="submit" class="w-full py-4 bg-primary text-white font-black text-xs uppercase tracking-[0.3em] rounded shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                                <span class="material-symbols-outlined text-sm">cloud_sync</span>
+                                Apply Adjustment commit
                             </button>
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-primary/5 border border-primary/10 rounded-lg flex gap-4">
+                        <span class="material-symbols-outlined text-primary text-2xl">published_with_changes</span>
+                        <div>
+                            <p class="text-[9px] font-black text-primary uppercase tracking-[0.2em] mb-1">State Adjustment Protocol</p>
+                            <p class="text-[10px] font-bold text-slate-500 leading-relaxed italic">Adjusting these parameters will re-synchronize the device mapping in the live monitoring center.</p>
                         </div>
                     </div>
                 </div>
@@ -250,25 +273,21 @@
 document.addEventListener('alpine:init', () => {
     Alpine.data('routerEditForm', (data) => ({
         router: data.router,
-        
-        routerName: data.router.name,
+        routerName: data.router.name.toUpperCase(),
         deviceType: data.router.device_type,
         ip: data.router.ip,
         username: data.router.username || 'admin',
         apiPort: data.router.api_port || 8728,
         antennaType: data.router.antenna_type || 'sector',
-        
         lat: data.router.lat,
         lng: data.router.lng,
         coverageRadius: data.router.coverage_radius,
         azimuth: data.router.azimuth,
         beamWidth: data.router.beam_width,
-        
         showMap: false,
         map: null,
         marker: null,
         circle: null,
-        
         deviceQuery: '',
         selectedDevice: data.device,
         devices: [],
@@ -285,6 +304,7 @@ document.addEventListener('alpine:init', () => {
             this.selectedDevice = device;
             this.deviceQuery = device.model_name;
             this.deviceType = device.device_type;
+            this.routerName = (device.manufacturer + ' ' + device.model_name).toUpperCase();
             if (device.default_coverage_radius) this.coverageRadius = device.default_coverage_radius;
             this.showDevices = false;
         },
@@ -304,16 +324,15 @@ document.addEventListener('alpine:init', () => {
                     setTimeout(() => this.initMap(), 100);
                 }
             });
-            // Update device query to current name if exists
             if (this.selectedDevice) this.deviceQuery = this.selectedDevice.model_name;
         },
 
         initMap() {
-            const initialLat = this.lat || 24.7136;
-            const initialLng = this.lng || 46.6753;
-            
-            this.map = L.map('locationMap').setView([initialLat, initialLng], this.lat ? 15 : 6);
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
+            const initialLat = this.lat || 33.5138;
+            const initialLng = this.lng || 36.2765;
+            this.map = L.map('locationMap', {zoomControl: false}).setView([initialLat, initialLng], this.lat ? 15 : 6);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(this.map);
+            L.control.zoom({position: 'bottomleft'}).addTo(this.map);
             
             if (this.lat && this.lng) {
                  this.marker = L.marker([this.lat, this.lng]).addTo(this.map);
@@ -321,8 +340,8 @@ document.addEventListener('alpine:init', () => {
             }
 
             this.map.on('click', (e) => {
-                this.lat = e.latlng.lat.toFixed(6);
-                this.lng = e.latlng.lng.toFixed(6);
+                this.lat = e.latlng.lat.toFixed(7);
+                this.lng = e.latlng.lng.toFixed(7);
                 this.updateMap();
             });
         },
@@ -337,34 +356,30 @@ document.addEventListener('alpine:init', () => {
         },
 
         updateCoverageCircle() {
-             if (this.circle) {
-                this.map.removeLayer(this.circle);
-                this.circle = null;
-            }
+             if (this.circle) { this.map.removeLayer(this.circle); this.circle = null; }
             if (this.marker && this.coverageRadius > 0) {
                  const latlng = this.marker.getLatLng();
-                 const color = this.deviceType === 'access_point' ? '#8b5cf6' : '#3b82f6';
-                 
+                 const color = '#00355f';
                  if (this.azimuth && this.beamWidth && this.beamWidth < 360) {
                     this.circle = this.drawSector(latlng, this.coverageRadius, this.azimuth, this.beamWidth, color);
                  } else {
-                    this.circle = L.circle(latlng, { radius: this.coverageRadius, color: color }).addTo(this.map);
+                    this.circle = L.circle(latlng, { radius: this.coverageRadius, color: color, weight: 1, fillOpacity: 0.1 }).addTo(this.map);
                  }
             }
         },
 
         drawSector(center, radius, azimuth, beamWidth, color) {
-             const startAngle = parseFloat(azimuth) - (parseFloat(beamWidth) / 2);
+            const startAngle = parseFloat(azimuth) - (parseFloat(beamWidth) / 2);
             const endAngle = parseFloat(azimuth) + (parseFloat(beamWidth) / 2);
             const points = [center];
             for (let angle = startAngle; angle <= endAngle; angle += 2) {
-                const rad = (angle * Math.PI) / 180;
+                const rad = ((90 - angle) * Math.PI) / 180;
                 const latOffset = (radius / 111320) * Math.cos(rad);
-                const lngOffset = (radius / (111320 * Math.cos(center.lat * Math.PI / 180))) * Math.sin(rad);
+                const lngOffset = (radius / (111320 * Math.cos(center.lat * Math.PI / 180))) * Math.cos(rad);
                 points.push(L.latLng(center.lat + latOffset, center.lng + lngOffset));
             }
             points.push(center);
-            return L.polygon(points, { color: color, fillColor: color, fillOpacity: 0.2 }).addTo(this.map);
+            return L.polygon(points, { color: color, fillColor: color, weight: 1, fillOpacity: 0.15 }).addTo(this.map);
         }
     }));
 });

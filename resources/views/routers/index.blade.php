@@ -1,170 +1,172 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'أجهزة الشبكة | Network Fleet')
 
 @section('content')
-<div class="space-y-6">
-    <!-- Header -->
-    <div class="flex items-center justify-between">
+<div class="space-y-8">
+    <!-- Infrastructure Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-            <h2 class="text-2xl font-bold text-gray-900">أجهزة الشبكة</h2>
-            <p class="text-gray-500 mt-1">إدارة أجهزة الراوتر ونقاط الوصول</p>
+            <h2 class="text-3xl font-black text-primary tracking-tight italic uppercase text-right">أجهزة الشبكة العالمية</h2>
+            <p class="text-slate-500 font-medium mt-1 uppercase tracking-widest text-[10px] font-headline text-right">Global Registry of Active Routing Nodes & Access Points</p>
         </div>
-        <a href="{{ route('routers.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg transition transform hover:scale-105">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+        <a href="{{ route('routers.create') }}" class="px-8 py-2.5 bg-primary text-white font-bold rounded text-sm shadow-lg shadow-primary/10 hover:scale-[1.05] transition-all flex items-center gap-2 italic">
+            <span class="material-symbols-outlined text-sm">add_circle</span>
             إضافة جهاز جديد
         </a>
     </div>
 
-    <!-- Success Message -->
+    <!-- Protocol Status -->
     @if(session('success'))
-    <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg shadow-sm">
-        <div class="flex items-center gap-3">
-            <svg class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <p class="text-green-800 font-bold">{{ session('success') }}</p>
+    <div class="bg-secondary/10 border border-secondary/20 p-5 rounded-lg flex items-center gap-4 animate-in fade-in slide-in-from-top-4">
+        <div class="w-8 h-8 bg-secondary rounded flex items-center justify-center text-white shadow-lg">
+            <span class="material-symbols-outlined text-sm">check_circle</span>
         </div>
+        <p class="text-secondary font-black text-xs uppercase italic">{{ session('success') }}</p>
     </div>
     @endif
 
-    <!-- Servers Section -->
+    <!-- Core Governance Nodes (Servers) -->
     @if($servers->count() > 0)
-    <div class="mb-8">
-        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <svg class="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
-            سيرفرات الإدارة (MikroTik Servers)
+    <div class="space-y-6">
+        <h3 class="text-sm font-black text-primary uppercase tracking-widest italic flex items-center gap-2">
+            <span class="material-symbols-outlined text-lg">dns</span>
+            سيرفرات الإدارة المركزية (Management Cores)
         </h3>
-        <div class="glass shadow-lg rounded-2xl overflow-hidden border border-indigo-100">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-indigo-50/50">
-                        <tr>
-                            <th class="px-6 py-4 text-right text-xs font-bold text-indigo-800 uppercase tracking-wider">اسم السيرفر</th>
-                            <th class="px-6 py-4 text-right text-xs font-bold text-indigo-800 uppercase tracking-wider">عنوان IP</th>
-                            <th class="px-6 py-4 text-right text-xs font-bold text-indigo-800 uppercase tracking-wider">الحالة</th>
-                            <th class="px-6 py-4 text-right text-xs font-bold text-indigo-800 uppercase tracking-wider">الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white/60 divide-y divide-gray-200 backdrop-blur-sm">
-                        @foreach($servers as $server)
-                        <tr class="hover:bg-indigo-50/50 transition duration-200">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600">
-                                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-                                    </div>
-                                    <div>
-                                        <div class="font-bold text-gray-900">{{ $server->name }}</div>
-                                        <div class="text-xs text-indigo-500">v{{ $server->version ?? 'Unknown' }}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="font-mono text-sm bg-gray-100 px-2 py-1 rounded text-gray-700">{{ $server->ip }}</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 py-1 text-xs font-bold rounded-full bg-green-100 text-green-700">متصل ✅</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                <div class="flex items-center gap-3">
-                                    <a href="{{ route('servers.show', $server->id) }}" class="text-indigo-600 hover:text-indigo-900 font-bold hover:underline">لوحة التحكم</a>
-                                    <form action="{{ route('servers.destroy', $server->id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد؟')" class="inline">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="text-red-500 hover:text-red-700">حذف</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    @endif
-
-    <!-- Routers List -->
-    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-        <svg class="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
-        أجهزة الشبكة (Routers & APs)
-    </h3>
-    <div class="glass shadow-lg rounded-2xl overflow-hidden border border-gray-100">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50/50">
+        <div class="bg-surface-container-low border border-outline-variant/10 rounded-lg overflow-hidden shadow-sm">
+            <table class="w-full text-right">
+                <thead class="bg-primary/5 text-primary border-b border-outline-variant/10">
                     <tr>
-                        <th class="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">الاسم</th>
-                        <th class="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">عنوان IP</th>
-                        <th class="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">نوع الجهاز</th>
-                        <th class="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">الموقع</th>
-                        <th class="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">الإجراءات</th>
+                        <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest">Node Identity</th>
+                        <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest">Network IP</th>
+                        <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-center">Protocol State</th>
+                        <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-left">Control Handshake</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white/60 divide-y divide-gray-200 backdrop-blur-sm">
-                    @forelse($routers as $router)
-                    <tr class="hover:bg-indigo-50/50 transition duration-200">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md">
-                                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
+                <tbody class="divide-y divide-outline-variant/5">
+                    @foreach($servers as $server)
+                    <tr class="hover:bg-white/40 transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-surface-container-highest/20 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                                    <span class="material-symbols-outlined text-lg">memory</span>
                                 </div>
                                 <div>
-                                    <div class="font-bold text-gray-900">{{ $router->name }}</div>
+                                    <div class="font-black text-primary text-xs uppercase italic">{{ $server->name }}</div>
+                                    <div class="text-[9px] font-bold text-slate-400 font-manrope">v{{ $server->version ?? 'OPERATIONAL' }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="font-manrope font-black text-slate-500 text-[10px] tracking-tight">{{ $server->ip }}</span>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <span class="px-3 py-1 bg-secondary/5 text-secondary border border-secondary/10 rounded text-[9px] font-black uppercase tracking-widest italic">
+                                Active Sync
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-left">
+                            <div class="flex items-center justify-end gap-4">
+                                <a href="{{ route('servers.show', $server->id) }}" class="text-primary hover:text-secondary font-black text-[10px] uppercase tracking-widest italic transition-all underline decoration-primary/20 hover:decoration-secondary">Manage Hub</a>
+                                <form action="{{ route('servers.destroy', $server->id) }}" method="POST" onsubmit="return confirm('Confirm Core Decommissioning?')" class="inline">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="text-slate-300 hover:text-error transition-colors">
+                                        <span class="material-symbols-outlined text-sm">delete_forever</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
+
+    <!-- Peripheral Device Matrix (Routers & APs) -->
+    <div class="space-y-6">
+        <h3 class="text-sm font-black text-primary uppercase tracking-widest italic flex items-center gap-2">
+            <span class="material-symbols-outlined text-lg">router</span>
+            مصفوفة أجهزة التوزيع (Distribution Matrix)
+        </h3>
+        <div class="bg-surface-container-low border border-outline-variant/10 rounded-lg overflow-hidden shadow-sm">
+            <table class="w-full text-right">
+                <thead class="bg-slate-900 text-white">
+                    <tr>
+                        <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest">Peripheral Identity</th>
+                        <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest">Network IP</th>
+                        <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest">Category</th>
+                        <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-center">Topology</th>
+                        <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-left">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-outline-variant/5">
+                    @forelse($routers as $router)
+                    <tr class="hover:bg-white/40 transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-primary/5 rounded-lg flex items-center justify-center text-primary border border-primary/5 shadow-sm">
+                                    <span class="material-symbols-outlined text-lg">sensors</span>
+                                </div>
+                                <div>
+                                    <div class="font-black text-primary text-xs uppercase italic">{{ $router->name }}</div>
                                     @if($router->deviceModel)
-                                        <div class="text-xs text-gray-500">{{ $router->deviceModel->manufacturer }} {{ $router->deviceModel->model_name }}</div>
+                                        <div class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">{{ $router->deviceModel->manufacturer }} {{ $router->deviceModel->model_name }}</div>
                                     @endif
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="text-sm font-mono font-medium text-gray-700 bg-gray-100 px-2 py-1 rounded-md">{{ $router->ip }}</span>
+                        <td class="px-6 py-4">
+                            <span class="font-manrope font-black text-slate-500 text-[10px] tracking-tight bg-slate-100/50 px-2 py-1 rounded">{{ $router->ip }}</span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-6 py-4">
                             @if($router->device_type === 'router')
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200">راوتر</span>
+                                <span class="px-2 py-0.5 bg-primary/5 text-primary border border-primary/10 rounded text-[8px] font-black uppercase italic">Gateway</span>
                             @elseif($router->device_type === 'access_point')
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-100 text-purple-800 border border-purple-200">نقطة وصول</span>
+                                <span class="px-2 py-0.5 bg-secondary/5 text-secondary border border-secondary/10 rounded text-[8px] font-black uppercase italic">Access Pt</span>
                             @else
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-pink-100 text-pink-800 border border-pink-200">محطة بث</span>
+                                <span class="px-2 py-0.5 bg-slate-100 text-slate-500 border border-slate-200 rounded text-[8px] font-black uppercase italic">Station</span>
                             @endif
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <td class="px-6 py-4 text-center">
                             @if($router->lat && $router->lng)
-                                <span class="inline-flex items-center gap-1 text-emerald-600 font-medium">
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                    محدد
-                                </span>
+                                <span class="material-symbols-outlined text-secondary text-sm">location_on</span>
                             @else
-                                <span class="text-gray-400 text-xs italic">غير محدد</span>
+                                <span class="material-symbols-outlined text-slate-200 text-sm">location_off</span>
                             @endif
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <div class="flex items-center gap-2">
+                        <td class="px-6 py-4 text-left">
+                            <div class="flex items-center justify-end gap-3">
                                 @php
                                     $isMikroTik = $router->deviceModel && (stripos($router->deviceModel->manufacturer, 'MikroTik') !== false);
                                 @endphp
                                 
                                 @if($isMikroTik || !$router->deviceModel)
-                                    <a href="{{ route('routers.webfig', $router->id) }}" target="_blank" class="text-emerald-500 hover:text-emerald-700 font-bold hover:underline transition flex items-center gap-1" title="وصول آمن">
-                                        WebFig
-                                    </a>
+                                    <a href="{{ route('routers.webfig', $router->id) }}" target="_blank" class="px-3 py-1 bg-emerald-500 text-white font-black text-[9px] uppercase tracking-widest rounded shadow-sm hover:bg-emerald-600 transition-all italic">WebFig</a>
                                 @endif
 
-                                <a href="{{ route('routers.edit', $router->id) }}" class="text-yellow-600 hover:text-yellow-900 font-bold hover:underline transition">تعديل</a>
-                                <button onclick="showScript({{ $router->id }})" class="text-indigo-600 hover:text-indigo-900 font-bold hover:underline transition">سكريبت</button>
-                                <form action="{{ route('routers.destroy', $router->id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف هذا الجهاز؟')" class="inline">
+                                <a href="{{ route('routers.edit', $router->id) }}" class="text-primary hover:text-secondary p-1 transition-colors">
+                                    <span class="material-symbols-outlined text-sm">edit</span>
+                                </a>
+                                <button onclick="showScript({{ $router->id }})" class="text-slate-400 hover:text-primary p-1 transition-colors">
+                                    <span class="material-symbols-outlined text-sm">terminal</span>
+                                </button>
+                                <form action="{{ route('routers.destroy', $router->id) }}" method="POST" onsubmit="return confirm('Confirms Device Removal Index?')" class="inline">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="text-red-500 hover:text-red-700 font-bold hover:underline transition">حذف</button>
+                                    <button type="submit" class="text-slate-200 hover:text-error transition-colors p-1">
+                                        <span class="material-symbols-outlined text-sm">delete</span>
+                                    </button>
                                 </form>
                             </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="px-6 py-12 text-center text-gray-500">
-                            <div class="flex flex-col items-center gap-3">
-                                <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center border-2 border-dashed border-gray-200">
-                                    <svg class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
-                                </div>
-                                <p class="text-gray-500 font-medium">لا توجد أجهزة مضافة بعد</p>
-                                <a href="{{ route('routers.create') }}" class="text-indigo-600 hover:text-indigo-700 font-bold text-sm">أضف جهازك الأول</a>
+                        <td colspan="5" class="px-6 py-24 text-center">
+                            <div class="flex flex-col items-center gap-4 opacity-30">
+                                <span class="material-symbols-outlined text-5xl font-light">router</span>
+                                <p class="text-[10px] font-black uppercase tracking-widest italic">Registry Void: No Distributions Active</p>
                             </div>
                         </td>
                     </tr>
@@ -175,19 +177,21 @@
     </div>
 </div>
 
-<!-- Script Modal -->
-<div id="scriptModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onclick="hideScript()">
-    <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full" onclick="event.stopPropagation()">
-        <div class="flex items-center justify-between p-6 border-b border-gray-200">
-            <h3 class="text-xl font-bold text-gray-900">سكريبت MikroTik</h3>
-            <button onclick="hideScript()" class="text-gray-400 hover:text-gray-600">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+<!-- Terminal Script Overlay -->
+<div id="scriptModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-6" onclick="hideScript()">
+    <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full overflow-hidden border border-outline-variant/20" onclick="event.stopPropagation()">
+        <div class="flex items-center justify-between p-6 bg-slate-50 border-b border-outline-variant/10">
+            <h3 class="text-sm font-black text-primary uppercase tracking-widest italic">MikroTik Sovereign Script</h3>
+            <button onclick="hideScript()" class="text-slate-400 hover:text-primary transition-colors">
+                <span class="material-symbols-outlined">close</span>
             </button>
         </div>
-        <div class="p-6">
-            <pre id="scriptContent" class="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-xs font-mono" dir="ltr"></pre>
-            <button onclick="copyScript()" class="mt-4 w-full px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition">
-                نسخ السكريبت
+        <div class="p-8 space-y-6">
+            <div class="bg-slate-900 rounded p-6 font-manrope text-xs text-emerald-400/90 leading-relaxed overflow-x-auto border border-white/5" dir="ltr">
+                <pre id="scriptContent" class="whitespace-pre-wrap"></pre>
+            </div>
+            <button onclick="copyScript()" class="w-full py-4 bg-primary text-white font-black text-xs uppercase tracking-[0.3em] rounded shadow-xl shadow-primary/10 hover:scale-[1.01] active:scale-[0.98] transition-all">
+                Copy Protocol to Clipboard
             </button>
         </div>
     </div>
@@ -210,7 +214,7 @@ function hideScript() {
 function copyScript() {
     const script = document.getElementById('scriptContent').textContent;
     navigator.clipboard.writeText(script).then(() => {
-        alert('تم نسخ السكريبت!');
+        alert('Protocol Copied Successfully');
     });
 }
 </script>
