@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@utility bg-mesh-gradient {
+    background-image: radial-gradient(at top left, #f8fafc, #f1f5f9, #e2e8f0);
+}
+
 /* 
    MadaaQ DESIGN SYSTEM v4 - RADIANT MONOLITH
    Production-Safe Build configuration
