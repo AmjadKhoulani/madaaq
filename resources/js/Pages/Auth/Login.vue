@@ -133,7 +133,7 @@ const submit = () => {
                     <div class="space-y-3">
                         <div class="flex justify-between items-center px-4">
                             <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">كلمة المرور</label>
-                            <Link :href="route('password.request')" class="text-[10px] font-black text-indigo-600 uppercase tracking-widest hover:underline italic">نسيت كلمة المرور؟</Link>
+                            <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest italic">حوكمة الوصول الآمن</span>
                         </div>
                         <div class="relative group">
                             <div class="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-600 transition-colors">
