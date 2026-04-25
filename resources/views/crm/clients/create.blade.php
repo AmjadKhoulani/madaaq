@@ -1,20 +1,21 @@
 @extends('layouts.admin')
 
-@section('title', 'إضافة شريك جديد')
+@section('title', 'إضافة شريك جديد | Identity Synthesis Protocol')
 
 @push('styles')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@19.2.16/build/css/intlTelInput.css">
 <style>
-    #map { height: 350px; width: 100%; border-radius: 8px; z-index: 1; }
+    #map { height: 350px; width: 100%; border-radius: 2.5rem; z-index: 1; filter: grayscale(1) invert(1) contrast(1.2) brightness(0.9); }
     [x-cloak] { display: none !important; }
     .iti { width: 100%; border: none; }
-    .iti__country-list { z-index: 50; }
+    .iti__country-list { z-index: 100; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); border-radius: 1.5rem; border: 1px solid rgba(0,0,0,0.05); }
+    .iti__flag-container { border-radius: 1rem 0 0 1rem; }
 </style>
 @endpush
 
 @section('content')
-<div class="max-w-7xl mx-auto" 
+<div class="space-y-12 pb-24" 
      x-data="clientForm({ 
         servers: {{ Js::from($servers) }}, 
         deviceModels: {{ Js::from($deviceModels) }},
@@ -22,18 +23,23 @@
      })"
      x-cloak>
      
-    <!-- Command Header -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-        <div>
-            <h2 class="text-3xl font-black text-primary tracking-tight">بروتوكول تسجيل مشترك</h2>
-            <p class="text-slate-500 font-medium mt-1 uppercase tracking-widest text-[10px] font-headline">New Node Provisioning</p>
+    <!-- Radiant Hub Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-10">
+        <div class="space-y-2">
+            <div class="flex items-center gap-3">
+                <span class="w-12 h-1 bg-accent-flow rounded-full"></span>
+                <p class="text-[10px] font-black text-primary uppercase tracking-[0.3em] font-headline">New Node Provisioning</p>
+            </div>
+            <h2 class="text-4xl font-black text-slate-900 tracking-tighter italic uppercase">بروتوكول تركيب مشترك جديد</h2>
+            <p class="text-slate-400 font-bold uppercase tracking-widest text-[11px] font-headline opacity-80">Synthesizing Network Identity & Physical Distribution Parameters</p>
         </div>
-        <div class="flex gap-3">
-            <a href="{{ route('crm.clients.index') }}" class="px-6 py-2.5 bg-surface-container-low text-slate-500 font-bold rounded-lg text-sm border border-outline-variant/10 hover:bg-slate-200 transition-all">
+        <div class="flex gap-4">
+            <a href="{{ route('crm.clients.index') }}" class="px-8 py-4 bg-white border border-slate-200 text-slate-500 font-black rounded-2xl text-[10px] uppercase tracking-[0.2em] transition-all hover:bg-slate-50 italic">
                 إلغاء العملية
             </a>
-            <button type="submit" form="clientForm" class="px-8 py-2.5 bg-primary text-white font-bold rounded-lg text-sm shadow-lg shadow-primary/10 hover:scale-[1.02] transition-all">
-                إتمام التسجيل
+            <button type="submit" form="clientForm" class="px-10 py-4 bg-slate-900 text-white font-black rounded-2xl text-[11px] uppercase tracking-[0.2em] shadow-glow-purple hover:scale-[1.05] active:scale-[0.95] transition-all flex items-center gap-4 italic group">
+                <span class="material-symbols-outlined text-sm group-hover:rotate-180 transition-transform duration-500">terminal</span>
+                إتمام التسجيل والتركيب
             </button>
         </div>
     </div>
@@ -41,25 +47,27 @@
     <form action="{{ route('crm.clients.store') }}" method="POST" id="clientForm">
         @csrf
         
-        <div class="grid grid-cols-12 gap-8 items-start">
+        <div class="grid grid-cols-12 gap-10 items-start">
             
-            <!-- Main Content Area -->
-            <div class="col-span-12 lg:col-span-8 space-y-8">
+            <!-- Matrix Content Area -->
+            <div class="col-span-12 lg:col-span-8 space-y-10">
 
-                <!-- Section 1: Identity & Contact -->
-                <div class="bg-surface-container-low p-8 rounded-lg border border-outline-variant/10">
-                    <h3 class="text-xl font-black text-primary mb-8 flex items-center gap-3 italic">
-                        <span class="w-1 h-6 bg-primary rounded-full"></span>
-                        بيانات الهوية والاتصال
-                    </h3>
+                <!-- Section 1: Identity Matrix -->
+                <div class="glass-panel p-10 rounded-[3rem] !bg-white/80 border-slate-100 group">
+                    <div class="flex items-center gap-6 mb-10">
+                        <div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-inner border border-primary/20">
+                            <span class="material-symbols-outlined">fingerprint</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-900 uppercase italic tracking-tighter">بيانات الهوية والاتصال المعتمدة</h3>
+                    </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-black text-slate-400 border-r-2 border-primary/20 pr-2 uppercase tracking-widest font-headline">الاسم الكامل للمشترك</label>
-                            <input type="text" name="name" class="w-full px-4 py-3 bg-white border border-outline-variant/20 rounded-lg focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none text-sm font-bold" required>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4 italic">الاسم الكامل (Subscriber Name)</label>
+                            <input type="text" name="name" class="input-radiant !py-4 text-[11px] font-black uppercase italic" required>
                         </div>
 
-                        <div class="space-y-1.5" x-data="{ 
+                        <div class="space-y-3" x-data="{ 
                             iti: null, 
                             initPhone() {
                                 if (window.intlTelInput) {
@@ -82,87 +90,92 @@
                                 }
                             }
                         }" x-init="initPhone()">
-                            <label class="text-[10px] font-black text-slate-400 border-r-2 border-primary/20 pr-2 uppercase tracking-widest font-headline">قناة الواتساب / الهاتف</label>
-                            <div dir="ltr">
-                                <input type="tel" x-ref="phoneInput" class="w-full px-4 py-3 bg-white border border-outline-variant/20 rounded-lg focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none text-sm font-manrope font-bold">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4 italic">قناة التواصل (WhatsApp / Tel)</label>
+                            <div dir="ltr" class="relative">
+                                <input type="tel" x-ref="phoneInput" class="input-radiant !py-4 pr-16 text-[12px] font-manrope font-black tracking-widest">
                                 <input type="hidden" name="phone" id="hiddenPhone">
                             </div>
                         </div>
 
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-black text-slate-400 border-r-2 border-primary/20 pr-2 uppercase tracking-widest font-headline">البريد الإلكتروني (إشعارات)</label>
-                            <input type="email" name="email" class="w-full px-4 py-3 bg-white border border-outline-variant/20 rounded-lg focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none text-sm font-bold">
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4 italic">البريد الإلكتروني (Email Index)</label>
+                            <input type="email" name="email" class="input-radiant !py-4 text-[11px] font-black italic">
                         </div>
 
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-black text-slate-400 border-r-2 border-primary/20 pr-2 uppercase tracking-widest font-headline">كلمة مرور بوابة العميل</label>
-                            <input type="text" name="password" class="w-full px-4 py-3 bg-white border border-outline-variant/20 rounded-lg focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none text-sm font-bold" required value="{{ Str::random(8) }}">
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4 italic">كلمة مرور البوابة (Portal Access Key)</label>
+                            <div class="relative">
+                                <input type="text" name="password" class="input-radiant !py-4 pr-12 text-[11px] font-black uppercase italic" required value="{{ Str::random(10) }}">
+                                <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-300">vpn_key</span>
+                            </div>
                         </div>
 
-                        <div class="md:col-span-2 space-y-1.5">
-                            <label class="text-[10px] font-black text-slate-400 border-r-2 border-primary/20 pr-2 uppercase tracking-widest font-headline">تفاصيل الموقع الجغرافي</label>
-                            <input type="text" name="address" class="w-full px-4 py-3 bg-white border border-outline-variant/20 rounded-lg outline-none text-sm font-bold" placeholder="المدينة، المنطقة، اسم البناء">
+                        <div class="md:col-span-2 space-y-3">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4 italic">تفاصيل الموقع الفيزيائي (Physical Address)</label>
+                            <input type="text" name="address" class="input-radiant !py-4 text-[11px] font-black italic" placeholder="City Node, Street Cluster, Terminal Point">
                         </div>
                     </div>
                 </div>
 
-                <!-- Section 2: Infrastructure Configuration -->
-                <div class="bg-surface-container-low p-8 rounded-lg border border-outline-variant/10">
-                    <h3 class="text-xl font-black text-primary mb-8 flex items-center gap-3 italic">
-                        <span class="w-1 h-6 bg-secondary rounded-full"></span>
-                        إعدادات بروتوكول الشبكة
-                    </h3>
+                <!-- Section 2: Infrastructure Topology -->
+                <div class="glass-panel p-10 rounded-[3rem] !bg-white/80 border-slate-100 group">
+                    <div class="flex items-center gap-6 mb-10">
+                        <div class="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-inner border border-emerald-500/20">
+                            <span class="material-symbols-outlined">router</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-900 uppercase italic tracking-tighter">إعدادات بروتوكول واتجاهات الشبكة</h3>
+                    </div>
                     
-                    <div class="space-y-8">
-                        <!-- Mode Switcher -->
-                        <div class="flex gap-2 p-1.5 bg-surface-container rounded-lg w-fit">
+                    <div class="space-y-10">
+                        <!-- Mode Switcher Pills -->
+                        <div class="flex gap-2 p-2 bg-slate-900 rounded-[2rem] w-fit shadow-glow-purple/20">
                             <button type="button" @click="connectionType = 'pppoe'" 
-                                    class="px-8 py-2 rounded font-black text-[10px] uppercase tracking-widest transition-all"
-                                    :class="connectionType === 'pppoe' ? 'bg-primary text-white shadow-md' : 'text-slate-500 hover:text-primary'">
-                                PPPoE Link
+                                    class="px-10 py-3 rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.2em] transition-all italic"
+                                    :class="connectionType === 'pppoe' ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-500 hover:text-white'">
+                                Broadband (PPPoE)
                             </button>
                             <button type="button" @click="connectionType = 'hotspot'" 
-                                    class="px-8 py-2 rounded font-black text-[10px] uppercase tracking-widest transition-all"
-                                    :class="connectionType === 'hotspot' ? 'bg-primary text-white shadow-md' : 'text-slate-500 hover:text-primary'">
-                                Hotspot Portal
+                                    class="px-10 py-3 rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.2em] transition-all italic"
+                                    :class="connectionType === 'hotspot' ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-500 hover:text-white'">
+                                Identity (Hotspot)
                             </button>
                             <input type="hidden" name="type" :value="connectionType">
                         </div>
 
-                        <!-- PPPoE Settings -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" x-show="connectionType === 'pppoe'">
-                            <div class="space-y-1.5">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest font-headline">المركز الرئيسي (Edge Node)</label>
-                                <select name="mikrotik_server_id" x-model="selectedServerId" @change="updateTowers()" class="w-full px-4 py-3 bg-white border border-outline-variant/20 rounded-lg text-sm font-bold outline-none border-r-4 border-r-primary">
-                                    <option value="">-- اختر السيرفر --</option>
+                        <!-- Hub Connectivity Fields -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                            <div class="space-y-3">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4 italic">المركز الرئيسي (Edge Node)</label>
+                                <select name="mikrotik_server_id" x-model="selectedServerId" @change="updateTowers()" class="input-radiant !py-4 text-[11px] font-black uppercase italic appearance-none !bg-white">
+                                    <option value="">-- SELECT ACCESS SERVER --</option>
                                     <template x-for="server in servers" :key="server.id">
                                         <option :value="server.id" x-text="server.name"></option>
                                     </template>
                                 </select>
                             </div>
-                            <div class="space-y-1.5">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest font-headline">محطة البث (Tower / Field)</label>
-                                <select name="tower_id" x-model="selectedTowerId" @change="updateTowerData()" class="w-full px-4 py-3 bg-white border border-outline-variant/20 rounded-lg text-sm font-bold outline-none" :disabled="!selectedServerId">
-                                    <option value="">-- اختر المحطة --</option>
+                            <div class="space-y-3">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4 italic">محطة التوزيع (Tower Field)</label>
+                                <select name="tower_id" x-model="selectedTowerId" @change="updateTowerData()" class="input-radiant !py-4 text-[11px] font-black uppercase italic appearance-none !bg-white" :disabled="!selectedServerId">
+                                    <option value="">-- SELECT DISTRIBUTION TOWER --</option>
                                     <template x-for="tower in towers" :key="tower.id">
                                         <option :value="tower.id" x-text="tower.name"></option>
                                     </template>
                                 </select>
                             </div>
 
-                            <div class="space-y-1.5">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest font-headline">تكنولوجيا الربط</label>
-                                <select name="connection_mode" x-model="connectionMode" class="w-full px-4 py-3 bg-surface-container-highest/20 border border-outline-variant/20 rounded-lg text-sm font-black text-primary">
-                                    <option value="wireless">Wireless (AirMax/LTU)</option>
-                                    <option value="tower_switch">Direct Ethernet / LAN</option>
-                                    <option value="fiber">Fiber Optic (GPON)</option>
+                            <div class="space-y-3" x-show="connectionType === 'pppoe'">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4 italic">تكنولوجيا الاتصال (Link Protocol)</label>
+                                <select name="connection_mode" x-model="connectionMode" class="input-radiant !py-4 text-[11px] font-black uppercase italic appearance-none !bg-slate-900 !text-neon-cyan shadow-glow-cyan/20">
+                                    <option value="wireless">RF Wireless Link (AirMax)</option>
+                                    <option value="tower_switch">Direct Ethernet Switch</option>
+                                    <option value="fiber">Active Fiber Optic (PON)</option>
                                 </select>
                             </div>
 
-                            <div class="space-y-1.5">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest font-headline">جهاز التوزيع (Distribution Unit)</label>
-                                <select name="tower_device_id" x-model="selectedTowerDeviceId" class="w-full px-4 py-3 bg-white border border-outline-variant/20 rounded-lg text-sm font-bold outline-none" :disabled="!selectedTowerId">
-                                    <option value="">-- اختر الجهاز --</option>
+                            <div class="space-y-3" x-show="connectionType === 'pppoe'">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4 italic">وحدة التوزيع (Access Device)</label>
+                                <select name="tower_device_id" x-model="selectedTowerDeviceId" class="input-radiant !py-4 text-[11px] font-black uppercase italic appearance-none !bg-white" :disabled="!selectedTowerId">
+                                    <option value="">-- SELECT TOWER DEVICE --</option>
                                     <template x-for="device in towerDevices.filter(d => (connectionMode === 'wireless' ? d.type === 'wireless' : d.type === 'switch'))" :key="device.id">
                                         <option :value="device.id" x-text="device.name"></option>
                                     </template>
@@ -170,71 +183,69 @@
                             </div>
                         </div>
 
-                        <!-- Hardware Deployment Cards -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" x-show="connectionType === 'pppoe'">
-                            <!-- CPE Module -->
-                            <div class="bg-surface-container-lowest p-6 rounded border border-outline-variant/10 space-y-4">
-                                <h4 class="text-[10px] font-black text-primary uppercase tracking-widest mb-4 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm">router</span>
-                                    Interior Hub (CPE)
-                                </h4>
-                                <div class="space-y-4">
-                                    <div class="grid grid-cols-2 gap-3">
-                                        <input type="text" name="cpe_model" x-model="cpeModel" class="px-4 py-2 bg-white border border-outline-variant/10 rounded text-xs font-bold" placeholder="Model (e.g. hAP ax2)">
-                                        <input type="text" name="cpe_ip" class="px-4 py-2 bg-white border border-outline-variant/10 rounded text-xs font-manrope font-bold" placeholder="IP Address">
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-3">
-                                        <input type="text" name="cpe_username" value="admin" class="px-4 py-2 bg-white border border-outline-variant/10 rounded text-xs font-bold" placeholder="Admin User">
-                                        <input type="password" name="cpe_password" class="px-4 py-2 bg-white border border-outline-variant/10 rounded text-xs font-bold" placeholder="Terminal Pass">
+                        <!-- Hardware Deployment Shards -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10" x-show="connectionType === 'pppoe'">
+                            <!-- CPE Shard -->
+                            <div class="glass-card p-10 rounded-[2.5rem] space-y-8 bg-white border-slate-100">
+                                <div class="flex items-center gap-4">
+                                    <span class="material-symbols-outlined text-primary text-2xl">modem</span>
+                                    <h4 class="text-[11px] font-black text-slate-900 uppercase tracking-[0.2em] italic">Interior Node (CPE)</h4>
+                                </div>
+                                <div class="grid grid-cols-1 gap-6">
+                                    <input type="text" name="cpe_model" x-model="cpeModel" class="input-radiant !py-3 text-[11px] font-black italic" placeholder="CPE MODEL SHARD">
+                                    <input type="text" name="cpe_ip" class="input-radiant !py-3 text-[11px] font-manrope font-black tracking-widest" placeholder="CPE IP ENDPOINT">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <input type="text" name="cpe_username" value="admin" class="input-radiant !py-3 text-[10px] font-black italic" placeholder="ADMIN USER">
+                                        <input type="password" name="cpe_password" class="input-radiant !py-3 text-[10px] font-black italic" placeholder="SEC PASS">
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Radio Module -->
-                            <div class="bg-surface-container-lowest p-6 rounded border border-outline-variant/10 space-y-4" x-show="connectionMode === 'wireless'">
-                                <h4 class="text-[10px] font-black text-secondary uppercase tracking-widest mb-4 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm">settings_input_antenna</span>
-                                    Outdoor Radio (STA)
-                                </h4>
-                                <div class="space-y-4">
-                                    <div class="grid grid-cols-2 gap-3">
-                                        <input type="text" name="receiver_model" class="px-4 py-2 bg-white border border-outline-variant/10 rounded text-xs font-bold" placeholder="Model (e.g. LiteBeam)">
-                                        <input type="text" name="receiver_ip" class="px-4 py-2 bg-white border border-outline-variant/10 rounded text-xs font-manrope font-bold" placeholder="Radio IP">
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-3">
-                                        <input type="text" name="receiver_username" value="admin" class="px-4 py-2 bg-white border border-outline-variant/10 rounded text-xs font-bold" placeholder="Radio User">
-                                        <input type="password" name="receiver_password" class="px-4 py-2 bg-white border border-outline-variant/10 rounded text-xs font-bold" placeholder="Access Pass">
+                            <!-- Radio Shard -->
+                            <div class="glass-card p-10 rounded-[2.5rem] space-y-8 bg-white border-slate-100" x-show="connectionMode === 'wireless'">
+                                <div class="flex items-center gap-4 text-emerald-600">
+                                    <span class="material-symbols-outlined text-2xl">wifi_tethering</span>
+                                    <h4 class="text-[11px] font-black uppercase tracking-[0.2em] italic">RF Access (STA)</h4>
+                                </div>
+                                <div class="grid grid-cols-1 gap-6">
+                                    <input type="text" name="receiver_model" class="input-radiant !py-3 text-[11px] font-black italic" placeholder="RF UNIT ARCHITECTURE">
+                                    <input type="text" name="receiver_ip" class="input-radiant !py-3 text-[11px] font-manrope font-black tracking-widest" placeholder="BACKHAUL IP">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <input type="text" name="receiver_username" value="admin" class="input-radiant !py-3 text-[10px] font-black italic" placeholder="UNIT ADMIN">
+                                        <input type="password" name="receiver_password" class="input-radiant !py-3 text-[10px] font-black italic" placeholder="ACCESS KEY">
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Credentials Bar -->
-                        <div class="p-6 bg-primary/5 rounded-lg grid grid-cols-1 md:grid-cols-2 gap-6 border-r-4 border-primary">
-                            <div class="space-y-1.5">
-                                <label class="text-[10px] font-black text-primary uppercase tracking-widest font-headline italic">Service Login Username</label>
-                                <input type="text" :name="connectionType === 'pppoe' ? 'pppoe_username' : 'hotspot_username'" class="w-full px-4 py-3 bg-white border border-outline-variant/20 rounded-lg text-sm font-manrope font-black text-primary outline-none" required>
+                        <!-- High-Intensity Credentials Matrix -->
+                        <div class="p-10 bg-slate-900 rounded-[3rem] grid grid-cols-1 md:grid-cols-2 gap-10 border border-white/5 shadow-neon-purple/20">
+                            <div class="space-y-3">
+                                <label class="text-[10px] font-black text-neon-cyan uppercase tracking-[0.3em] pr-4 italic">Protocol Access Identity</label>
+                                <input type="text" :name="connectionType === 'pppoe' ? 'pppoe_username' : 'hotspot_username'" class="input-radiant !py-4 pr-12 text-[13px] font-manrope font-black text-white bg-white/5 border-white/10 italic tracking-widest uppercase focus:border-neon-cyan shadow-glow-cyan/5" required>
                             </div>
-                            <div class="space-y-1.5">
-                                <label class="text-[10px] font-black text-primary uppercase tracking-widest font-headline italic">Service Access Password</label>
-                                <input type="text" name="service_password" class="w-full px-4 py-3 bg-white border border-outline-variant/20 rounded-lg text-sm font-manrope font-black text-primary outline-none" required>
+                            <div class="space-y-3">
+                                <label class="text-[10px] font-black text-vibrant-purple uppercase tracking-[0.3em] pr-4 italic">Auth Token Protocol</label>
+                                <input type="text" name="service_password" class="input-radiant !py-4 pr-12 text-[13px] font-manrope font-black text-white bg-white/5 border-white/10 italic tracking-widest uppercase focus:border-vibrant-purple shadow-glow-purple/5" required>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Section 3: Billing & Tiers -->
-                <div class="bg-surface-container-low p-8 rounded-lg border border-outline-variant/10">
-                    <h3 class="text-xl font-black text-primary mb-8 flex items-center gap-3 italic">
-                        <span class="w-1 h-6 bg-error rounded-full"></span>
-                        المستوى المالي والتعاقد
-                    </h3>
+                <!-- Section 3: Fiscal Architecture -->
+                <div class="glass-panel p-10 rounded-[3rem] !bg-white/80 border-slate-100 group">
+                    <div class="flex items-center gap-6 mb-10">
+                        <div class="w-12 h-12 bg-rose-500/10 rounded-2xl flex items-center justify-center text-rose-600 group-hover:bg-rose-600 group-hover:text-white transition-all shadow-inner border border-rose-500/20">
+                            <span class="material-symbols-outlined">payments</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-900 uppercase italic tracking-tighter">النموذج المالي والتعاقدي للمشترك</h3>
+                    </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div class="lg:col-span-3 space-y-1.5">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest font-headline">باقة الاشتراك</label>
-                            <select name="package_id" x-model="selectedPackageId" @change="loadPackageDefaults()" class="w-full px-4 py-3 bg-white border border-outline-variant/20 rounded-lg text-sm font-bold outline-none">
-                                <option value="">-- حساب مخصص (يدوي) --</option>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                        <div class="lg:col-span-3 space-y-3">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4 italic">فئة الاشتراك المركزية (Service Tier)</label>
+                            <select name="package_id" x-model="selectedPackageId" @change="loadPackageDefaults()" class="input-radiant !py-4 text-[11px] font-black uppercase italic appearance-none !bg-white">
+                                <option value="">-- CUSTOM PROTOCOL (MANUAL) --</option>
                                 @foreach($packages as $package)
                                     <option value="{{ $package->id }}" 
                                             data-price="{{ $package->price }}" 
@@ -246,38 +257,49 @@
                             </select>
                         </div>
 
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest font-headline">السعة الشهرية (GB)</label>
-                            <input type="number" name="data_limit" x-model="customDataLimit" class="w-full px-4 py-3 bg-white border border-outline-variant/20 rounded-lg text-sm font-manrope font-bold outline-none" placeholder="Unlimited">
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4 italic">سعة التدفق (Temporal Data GB)</label>
+                            <input type="number" name="data_limit" x-model="customDataLimit" class="input-radiant !py-4 text-[12px] font-black font-manrope" placeholder="∞">
                         </div>
 
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest font-headline">سعر التجديد (SAR)</label>
-                            <input type="number" step="0.01" name="price" x-model="customPrice" class="w-full px-4 py-3 bg-white border border-outline-variant/20 rounded-lg text-sm font-manrope font-bold outline-none" placeholder="0.00">
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4 italic">تكلفة الوحدة (Unit Cost SAR)</label>
+                            <input type="number" step="0.01" name="price" x-model="customPrice" class="input-radiant !py-4 text-[12px] font-black font-manrope" placeholder="0.00">
                         </div>
 
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest font-headline">صلاحية الحساب (يوم)</label>
-                            <input type="number" name="duration_days" x-model="durationDays" class="w-full px-4 py-3 bg-white border border-outline-variant/20 rounded-lg text-sm font-manrope font-black text-primary outline-none">
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4 italic">صلاحية النبضة (Pulse Duration Days)</label>
+                            <input type="number" name="duration_days" x-model="durationDays" class="input-radiant !py-4 text-[12px] font-black font-manrope text-primary">
                         </div>
                     </div>
                 </div>
 
-                <!-- Section 4: Map Location -->
-                <div class="bg-surface-container-low rounded-lg border border-outline-variant/10 overflow-hidden">
-                    <button type="button" @click="showMap = !showMap" class="w-full p-6 flex justify-between items-center bg-surface-container-low hover:bg-slate-200 transition-all">
-                        <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-primary">location_on</span>
-                            <span class="text-sm font-black text-primary italic">تثبيت الموقع الجغرافي للمحطة</span>
+                <!-- Section 4: Physical Geospatial Node -->
+                <div class="glass-panel p-0 rounded-[3.5rem] !bg-white/80 border-slate-100 overflow-hidden group shadow-2xl">
+                    <button type="button" @click="showMap = !showMap" class="w-full p-10 flex justify-between items-center bg-white/60 hover:bg-slate-900 hover:text-white transition-all duration-500">
+                        <div class="flex items-center gap-6">
+                            <div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-inner">
+                                <span class="material-symbols-outlined text-3xl">location_on</span>
+                            </div>
+                            <div class="text-right">
+                                <h3 class="text-xl font-black uppercase italic tracking-tighter">الموقع الجغرافي للمحطة</h3>
+                                <p class="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 group-hover:opacity-100 transition-opacity">Geospatial Station Point Mapping</p>
+                            </div>
                         </div>
-                        <span class="material-symbols-outlined transition-transform" :class="showMap ? 'rotate-180' : ''">keyboard_arrow_down</span>
+                        <span class="material-symbols-outlined text-3xl transition-transform duration-700" :class="showMap ? 'rotate-180' : ''">expand_more</span>
                     </button>
                     <div x-show="showMap" x-collapse>
-                        <div class="p-8 border-t border-outline-variant/10 space-y-4">
-                            <div id="map"></div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <input type="text" name="lat" x-model="lat" readonly class="px-4 py-2.5 bg-surface rounded text-xs font-manrope font-bold text-slate-400" placeholder="Latitude">
-                                <input type="text" name="lng" x-model="lng" readonly class="px-4 py-2.5 bg-surface rounded text-xs font-manrope font-bold text-slate-400" placeholder="Longitude">
+                        <div class="p-10 space-y-8">
+                            <div id="map" class="shadow-glow-purple/20"></div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="space-y-2">
+                                    <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest italic pr-4">Latitude Shard</label>
+                                    <input type="text" name="lat" x-model="lat" readonly class="input-radiant border-dashed !bg-slate-50 text-slate-500 text-[11px] font-manrope font-black">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest italic pr-4">Longitude Shard</label>
+                                    <input type="text" name="lng" x-model="lng" readonly class="input-radiant border-dashed !bg-slate-50 text-slate-500 text-[11px] font-manrope font-black">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -285,48 +307,52 @@
 
             </div>
 
-            <!-- Sticky Control Panel -->
-            <div class="col-span-12 lg:col-span-4 lg:sticky lg:top-8 space-y-8">
-                <div class="bg-primary p-8 rounded-lg text-white shadow-2xl relative overflow-hidden">
+            <!-- Radiant Sticky Summary Control -->
+            <div class="col-span-12 lg:col-span-4 lg:sticky lg:top-24 space-y-10">
+                <div class="glass-panel !bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group animate-enter">
                     <div class="absolute inset-0 opacity-10 pointer-events-none">
-                        <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                            <path d="M0 100 C 30 0 70 0 100 100 Z" fill="white" />
-                        </svg>
+                         <div class="absolute -top-24 -right-24 w-64 h-64 bg-accent-flow rounded-full blur-3xl animate-pulse"></div>
                     </div>
                     
-                    <div class="relative z-10 space-y-6">
-                        <h3 class="text-xl font-black italic tracking-tighter">ملخص الإعداد الفوري</h3>
+                    <div class="relative z-10 space-y-8">
+                        <div class="flex items-center gap-4">
+                            <span class="w-10 h-1 bg-neon-cyan rounded-full"></span>
+                            <h3 class="text-xl font-black italic tracking-tighter uppercase">Provisioning Summary</h3>
+                        </div>
                         
-                        <div class="space-y-4 border-y border-white/10 py-6">
+                        <div class="space-y-6 border-y border-white/10 py-8">
                             <div class="flex justify-between items-center">
-                                <span class="text-[10px] font-black uppercase tracking-widest text-primary-fixed opacity-70">قيمة الاشتراك</span>
-                                <div class="flex items-baseline gap-1">
-                                    <span class="text-4xl font-manrope font-black tracking-tight" x-text="customPrice || '0'"></span>
-                                    <span class="text-xs font-bold text-primary-fixed">SAR</span>
+                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Protocol Cost</p>
+                                <div class="flex items-baseline gap-2">
+                                    <span class="text-4xl font-manrope font-black tracking-tighter text-neon-cyan" x-text="customPrice || '0'"></span>
+                                    <span class="text-[10px] font-black text-slate-500 uppercase">SAR</span>
                                 </div>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-[10px] font-black uppercase tracking-widest text-primary-fixed opacity-70">باي لود الخدمة</span>
-                                <span class="text-xs font-black uppercase" x-text="packageName || 'حساب مخصص'"></span>
+                            <div class="flex justify-between items-center p-4 bg-white/5 rounded-2xl border border-white/5">
+                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Service Tier</p>
+                                <span class="text-[11px] font-black text-white italic uppercase tracking-tighter" x-text="packageName || 'Custom Pulse'"></span>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-[10px] font-black uppercase tracking-widest text-primary-fixed opacity-70">نوع الربط</span>
-                                <span class="text-xs font-black uppercase" x-text="connectionType"></span>
+                            <div class="flex justify-between items-center p-4 bg-white/5 rounded-2xl border border-white/5">
+                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Access Method</p>
+                                <span class="text-[11px] font-black text-white italic uppercase tracking-tighter underline decoration-primary decoration-2 underline-offset-4" x-text="connectionType"></span>
                             </div>
                         </div>
 
-                        <button type="submit" form="clientForm" class="w-full py-4 bg-white text-primary font-black rounded-lg text-[11px] uppercase tracking-[0.2em] shadow-lg hover:bg-slate-50 transition-all active:scale-95">
-                            EXECUTE PROVISIONING
+                        <button type="submit" form="clientForm" class="w-full py-5 bg-accent-flow text-white font-black rounded-2xl text-[12px] uppercase tracking-[0.3em] shadow-glow-purple hover:scale-[1.05] active:scale-[0.95] transition-all flex items-center justify-center gap-4 italic group">
+                            <span class="material-symbols-outlined text-xl group-hover:translate-x-[-10px] transition-transform">rocket_launch</span>
+                            EXECUTE SYNTHESIS
                         </button>
                     </div>
                 </div>
 
-                <!-- Alert Box -->
-                <div class="bg-surface-container-low p-6 rounded-lg border border-primary/20 flex gap-4">
-                    <span class="material-symbols-outlined text-primary">info</span>
-                    <div>
-                        <p class="text-[11px] font-black text-primary uppercase tracking-widest font-headline">تنبيه المزامنة</p>
-                        <p class="text-[10px] text-slate-500 font-medium mt-1 leading-relaxed">سيتم إرسال بيانات الدخول آلياً عبر واتساب للمشترك فور إتمام العملية في حال تفعيل المديول.</p>
+                <!-- Atmospheric Alert Shard -->
+                <div class="glass-panel p-8 rounded-[2.5rem] !bg-emerald-500/10 border-emerald-500/20 flex gap-6 italic group">
+                    <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-emerald-600 shadow-md group-hover:rotate-12 transition-transform">
+                        <span class="material-symbols-outlined text-2xl">sensors</span>
+                    </div>
+                    <div class="flex-1 space-y-1">
+                        <p class="text-[11px] font-black text-emerald-600 uppercase tracking-[0.2em]">Automated Handshake</p>
+                        <p class="text-[10px] text-emerald-700 font-bold leading-relaxed opacity-70">Client access credentials will be automatically transmitted via WhatsApp protocol upon matrix commitment.</p>
                     </div>
                 </div>
             </div>
@@ -425,7 +451,7 @@
 
             initMap() {
                 this.map = L.map('map').setView([33.5138, 36.2765], 13);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
+                L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(this.map);
                 this.map.on('click', (e) => {
                     this.lat = e.latlng.lat.toFixed(6);
                     this.lng = e.latlng.lng.toFixed(6);

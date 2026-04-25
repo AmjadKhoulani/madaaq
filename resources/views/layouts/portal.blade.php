@@ -1,85 +1,84 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="h-full scroll-smooth">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>بوابة المشتركين | مدى كيو</title>
+    <title>{{ config('app.name', 'MadaaQ') }} - بوابة المشترك</title>
     
-    <!-- Fonts -->
+    <!-- Google Fonts: Tajawal, Rubik, Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Rubik:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS (Vite) -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
+    <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <style>
-        [x-cloak] { display: none !important; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-    </style>
+    <style>[x-cloak] { display: none !important; }</style>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('styles')
 </head>
-<body class="bg-surface text-on-surface font-body overflow-x-hidden antialiased">
+<body class="h-full selection:bg-customer/10 selection:text-customer antialiased relative overflow-x-hidden bg-slate-50">
     
-    <!-- Navigation Monolith -->
-    <nav class="bg-white/80 backdrop-blur-md border-b border-outline-variant/15 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center gap-10">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-lg">M</div>
-                        <span class="font-black text-xl text-primary tracking-tight">مدى كيو</span>
+    <!-- Customer Focused Background Orbs -->
+    <div class="bg-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-customer/5"></div>
+    <div class="bg-orb bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-blue-400/5"></div>
+
+    <!-- Navigation Architecture -->
+    <header class="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-slate-200/60">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="flex items-center justify-center w-11 h-11 rounded-2xl bg-radiant-indigo text-white shadow-lg shadow-customer/20 transform rotate-2">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <div>
+                    <span class="text-2xl font-black text-slate-900 tracking-tighter">بوابة<span class="text-customer">المشتركين</span></span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center gap-2">
+                    <a href="{{ route('portal.dashboard', ['tenant_domain' => request()->getHost()]) }}" 
+                       class="px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 {{ request()->routeIs('portal.dashboard') ? 'bg-customer text-white shadow-lg shadow-customer/20' : 'text-slate-500 hover:text-customer hover:bg-customer/5' }}">الرئيسية</a>
+                    
+                    <a href="{{ route('portal.invoices.index', ['tenant_domain' => request()->getHost()]) }}" 
+                       class="px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 {{ request()->routeIs('portal.invoices.*') ? 'bg-customer text-white shadow-lg shadow-customer/20' : 'text-slate-500 hover:text-customer hover:bg-customer/5' }}">الفواتير</a>
+                </nav>
+                
+                <div class="h-8 w-px bg-slate-200 hidden md:block"></div>
+
+                <!-- User Context -->
+                <div class="flex items-center gap-4">
+                    <div class="hidden sm:block text-left">
+                        <p class="text-xs font-black text-slate-900 leading-tight">{{ Auth::guard('client')->user()->username }}</p>
+                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Subscriber Account</p>
                     </div>
                     
-                    <!-- Desktop Nav -->
-                    <div class="hidden md:flex items-center gap-2">
-                        <a href="{{ route('portal.dashboard', ['tenant_domain' => request()->getHost()]) }}" 
-                           class="px-4 py-2 rounded-lg text-sm font-bold transition-all {{ request()->routeIs('portal.dashboard') ? 'bg-primary text-white' : 'text-slate-500 hover:text-primary hover:bg-surface-container-low' }}">
-                            لوحة التحكم
-                        </a>
-                        <a href="{{ route('portal.invoices.index', ['tenant_domain' => request()->getHost()]) }}" 
-                           class="px-4 py-2 rounded-lg text-sm font-bold transition-all {{ request()->routeIs('portal.invoices.*') ? 'bg-primary text-white' : 'text-slate-500 hover:text-primary hover:bg-surface-container-low' }}">
-                            الفواتير
-                        </a>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-6">
-                    <div class="flex items-center gap-3">
-                        <div class="text-left">
-                            <p class="text-xs font-bold text-primary leading-tight">{{ Auth::guard('client')->user()->username }}</p>
-                            <p class="text-[9px] text-slate-400 font-headline uppercase tracking-widest">Subscriber Account</p>
-                        </div>
-                        <form method="POST" action="{{ route('portal.logout', ['tenant_domain' => request()->getHost()]) }}">
-                            @csrf
-                            <button type="submit" class="p-2 text-slate-400 hover:text-error transition-colors">
-                                <span class="material-symbols-outlined text-xl">logout</span>
-                            </button>
-                        </form>
-                    </div>
+                    <form method="POST" action="{{ route('portal.logout', ['tenant_domain' => request()->getHost()]) }}">
+                        @csrf
+                        <button type="submit" class="p-2.5 rounded-xl bg-slate-100 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <!-- Main Content Monolith -->
-    <main class="py-12 min-h-screen">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            @yield('content')
-        </div>
+    <!-- Main Content Mainframe -->
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        @yield('content')
     </main>
 
     <!-- Footer -->
-    <footer class="bg-surface-container-low border-t border-outline-variant/10 py-12 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-400">
-            <p class="text-xs font-bold uppercase tracking-widest font-headline">&copy; {{ date('Y') }} MadaaQ Networking Solutions</p>
+    <footer class="bg-white border-t border-slate-200/60 py-12">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">&copy; {{ date('Y') }} MadaaQ ISP Management Systems</p>
         </div>
     </footer>
 
+    @stack('scripts')
 </body>
 </html>

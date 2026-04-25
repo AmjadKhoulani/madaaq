@@ -6,63 +6,96 @@ export default {
     ],
     theme: {
         extend: {
-            "colors": {
-                // Core Brand
-                "primary": "#00355f",
-                "primary-light": "#0f4c81",
-                "primary-dark": "#001c37",
+            colors: {
+                // Core Brand - Madaaq Deep Blue
+                "primary": {
+                    DEFAULT: "#00355f",
+                    50: "#e6f1f9",
+                    100: "#cce3f3",
+                    200: "#99c6e7",
+                    300: "#66a9db",
+                    400: "#338ccf",
+                    500: "#006fc3",
+                    600: "#00599c",
+                    700: "#004275",
+                    800: "#002b4e",
+                    900: "#001427",
+                },
+                
+                // Role Specific Palettes
+                "vendor": {
+                    DEFAULT: "#4f46e5", // Indigo
+                    light: "#818cf8",
+                    dark: "#3730a3",
+                    glow: "rgba(79, 70, 229, 0.15)",
+                },
+                "super-admin": {
+                    DEFAULT: "#7c3aed", // Violet/Purple
+                    light: "#a78bfa",
+                    dark: "#5b21b6",
+                    glow: "rgba(124, 58, 237, 0.15)",
+                },
+                "customer": {
+                    DEFAULT: "#0284c7", // Sky Blue
+                    light: "#38bdf8",
+                    dark: "#075985",
+                    glow: "rgba(2, 132, 199, 0.15)",
+                },
                 
                 // Radiant Accents
                 "neon-cyan": "#00e5ff",
                 "vibrant-purple": "#7c4dff",
                 "electric-blue": "#3b82f6",
+                "magic-pink": "#ff00e5",
                 
                 // Functional Tones
-                "success": "#00c853",
-                "warning": "#ffd600",
-                "error": "#ff1744",
+                "success": "#10b981",
+                "warning": "#f59e0b",
+                "error": "#ef4444",
                 
                 // Surfaces (Radiant Monolith Hybrid)
-                "surface-dark": "#0f172a",
-                "surface-light": "#f8f9ff",
-                "surface-glass": "rgba(255, 255, 255, 0.7)",
-                
-                // Legacy Mappings (Maintain compatibility during transition)
-                "background": "#f8f9ff",
-                "surface": "#f8f9ff",
-                "on-surface": "#121c28",
-                "surface-container": "#e5eeff",
-                "surface-container-low": "#eef4ff",
-                "surface-container-lowest": "#ffffff",
-                "outline-variant": "#c2c7d1",
-                "secondary": "#006c4a",
-                "secondary-container": "#82f5c1",
-                "on-secondary-container": "#00714e",
+                "surface": {
+                    "dark": "#0f172a",
+                    "darker": "#020617",
+                    "light": "#f8fafc",
+                    "glass": "rgba(255, 255, 255, 0.75)",
+                    "glass-dark": "rgba(15, 23, 42, 0.75)",
+                }
             },
             fontFamily: {
-                headline: ["Manrope", "sans-serif"],
-                body: ["IBM Plex Sans Arabic", "sans-serif"],
+                tajawal: ["Tajawal", "sans-serif"],
+                rubik: ["Rubik", "sans-serif"],
+                inter: ["Inter", "sans-serif"],
             },
             borderRadius: {
-                "none": "0",
-                "sm": "0.25rem",
-                "DEFAULT": "0.5rem",
-                "md": "0.75rem",
-                "lg": "1rem",
-                "xl": "1.5rem",
-                "2xl": "2rem",
-                "full": "9999px",
+                "xl": "1rem",
+                "2xl": "1.5rem",
+                "3xl": "2rem",
+                "4xl": "2.5rem",
             },
             boxShadow: {
-                "radiant": "0 10px 40px -10px rgba(0, 53, 95, 0.15)",
-                "glow-cyan": "0 0 20px rgba(0, 229, 255, 0.3)",
-                "glow-purple": "0 0 20px rgba(124, 77, 255, 0.3)",
-                "glass": "inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 8px 32px 0 rgba(31, 38, 135, 0.07)",
+                "radiant": "0 20px 50px -12px rgba(0, 0, 0, 0.1)",
+                "glow-indigo": "0 0 25px rgba(79, 70, 229, 0.35)",
+                "glow-cyan": "0 0 25px rgba(0, 229, 255, 0.35)",
+                "glass": "inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 8px 32px 0 rgba(0, 0, 0, 0.05)",
+                "glass-dark": "inset 0 0 0 1px rgba(255, 255, 255, 0.05), 0 8px 32px 0 rgba(0, 0, 0, 0.3)",
             },
             backgroundImage: {
-                "radiant-gradient": "linear-gradient(135deg, #00355f 0%, #0f4c81 100%)",
-                "cyber-gradient": "linear-gradient(135deg, #001c37 0%, #0f172a 100%)",
-                "accent-gradient": "linear-gradient(90deg, #00e5ff 0%, #7c4dff 100%)",
+                "mesh-gradient": "radial-gradient(at top left, #f8fafc, #f1f5f9, #e2e8f0)",
+                "radiant-indigo": "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
+                "radiant-purple": "linear-gradient(135deg, #7c3aed 0%, #ec4899 100%)",
+                "radiant-dark": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+                "glass-gradient": "linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%)",
+            },
+            animation: {
+                "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+                "float": "float 6s ease-in-out infinite",
+            },
+            keyframes: {
+                float: {
+                    "0%, 100%": { transform: "translateY(0)" },
+                    "50%": { transform: "translateY(-10px)" },
+                }
             }
         },
     },

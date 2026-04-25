@@ -1,115 +1,150 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'سجل النشاطات | Temporal Event Registry')
 
 @section('content')
-<div class="space-y-6">
-    <div class="flex items-center justify-between">
-        <div>
-            <h2 class="text-2xl font-bold text-gray-900">سجل النشاطات</h2>
-            <p class="text-gray-500 mt-1">تتبع جميع العمليات التي تمت على النظام</p>
+<div class="space-y-12 pb-24">
+    
+    <!-- Radiant Hub Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div class="space-y-2">
+            <div class="flex items-center gap-3">
+                <span class="w-12 h-1 bg-accent-flow rounded-full"></span>
+                <p class="text-[10px] font-black text-primary uppercase tracking-[0.3em] font-headline">Operations Audit Trail</p>
+            </div>
+            <h2 class="text-4xl font-black text-slate-900 tracking-tighter italic uppercase">سجل النشاطات المركزية</h2>
+            <p class="text-slate-400 font-bold uppercase tracking-widest text-[11px] font-headline opacity-80">Monitoring System Mutation Events & Temporal Governance Shards</p>
         </div>
     </div>
 
-    <!-- Filters -->
-    <form method="GET" class="glass rounded-2xl shadow-lg border border-white/30 p-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">بحث</label>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="ابحث..." class="w-full px-4 py-2 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 bg-white/80">
+    <!-- Radiant Filter Node -->
+    <div class="glass-panel p-10 rounded-[2.5rem] !bg-white/80 border-slate-100 shadow-sm">
+        <form method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="space-y-3">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4 italic">بحث عن حدث (Event Search)</label>
+                <div class="relative">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Action type, target..." class="input-radiant !py-3.5 pr-12 text-[11px] font-bold">
+                    <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-300">search</span>
+                </div>
             </div>
             
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">الموظف</label>
-                <select name="user_id" class="w-full px-4 py-2 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 bg-white/80">
-                    <option value="">الكل</option>
-                    @foreach($users as $user)
-                        <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
-                            {{ $user->name }}
-                        </option>
-                    @endforeach
-                </select>
+            <div class="space-y-3">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4 italic">موظف العمليات (Operator)</label>
+                <div class="relative group">
+                    <select name="user_id" class="input-radiant !py-3.5 pr-12 text-[11px] font-black uppercase italic appearance-none">
+                        <option value="">جميع المصادر (All Sources)</option>
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
+                                {{ $user->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none group-focus-within:text-primary">expand_more</span>
+                </div>
             </div>
 
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">من تاريخ</label>
-                <input type="date" name="date_from" value="{{ request('date_from') }}" class="w-full px-4 py-2 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 bg-white/80">
+            <div class="space-y-3 lg:col-span-2">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4 italic">نطاق السجل الزمني (Temporal Range)</label>
+                <div class="flex items-center gap-4">
+                    <input type="date" name="date_from" value="{{ request('date_from') }}" class="input-radiant !py-3.5 text-[11px] font-bold">
+                    <span class="text-slate-300 italic text-[10px] font-black uppercase">To</span>
+                    <input type="date" name="date_to" value="{{ request('date_to') }}" class="input-radiant !py-3.5 text-[11px] font-bold">
+                </div>
             </div>
 
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">إلى تاريخ</label>
-                <input type="date" name="date_to" value="{{ request('date_to') }}" class="w-full px-4 py-2 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 bg-white/80">
+            <div class="lg:col-span-4 flex justify-end gap-3 pt-4">
+                <a href="{{ route('activity-logs.index') }}" class="px-8 py-3 bg-slate-100 text-slate-500 font-black rounded-xl text-[10px] uppercase tracking-widest italic transition-all hover:bg-slate-200">Reset Scopes</a>
+                <button type="submit" class="px-12 py-3 bg-slate-900 text-white font-black rounded-xl text-[11px] uppercase tracking-[0.3em] shadow-glow-purple italic transition-all active:scale-95">Filter Timeline</button>
             </div>
-        </div>
+        </form>
+    </div>
 
-        <div class="flex gap-3 mt-4">
-            <button type="submit" class="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold rounded-xl shadow-lg transition">
-                تطبيق الفلاتر
-            </button>
-            <a href="{{ route('activity-logs.index') }}" class="px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition">
-                إعادة تعيين
-            </a>
-        </div>
-    </form>
+    <!-- Temporal Registry Matrix -->
+    <div class="space-y-6">
+        @forelse($logs as $log)
+            <div class="glass-panel p-8 rounded-[2.5rem] !bg-white/70 border-white/40 flex flex-col md:flex-row gap-8 group hover:bg-white/90 transition-all duration-500 hover:translate-x-[-10px]">
+                <!-- Event Identity Shard -->
+                <div class="flex-shrink-0 flex items-start">
+                    <div class="w-16 h-16 rounded-[1.5rem] flex items-center justify-center shadow-lg transition-all duration-500 group-hover:scale-110
+                        @if(str_contains($log->description, 'إنشاء')) bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 shadow-emerald-500/10
+                        @elseif(str_contains($log->description, 'تعديل')) bg-blue-500/10 text-blue-600 border border-blue-500/20 shadow-blue-500/10
+                        @elseif(str_contains($log->description, 'حذف')) bg-rose-500/10 text-rose-600 border border-rose-500/20 shadow-rose-500/10
+                        @else bg-slate-900/10 text-slate-900 border border-slate-900/20 @endif">
+                        <span class="material-symbols-outlined text-3xl">
+                            @if(str_contains($log->description, 'إنشاء')) add_circle
+                            @elseif(str_contains($log->description, 'تعديل')) contract_edit
+                            @elseif(str_contains($log->description, 'حذف')) delete_forever
+                            @else history @endif
+                        </span>
+                    </div>
+                </div>
 
-    <!-- Activity Timeline -->
-    <div class="glass rounded-2xl shadow-lg border border-white/30 p-6">
-        <div class="space-y-4">
-            @forelse($logs as $log)
-                <div class="flex gap-4 p-4 bg-white/50 rounded-xl border border-purple-100 hover:border-purple-300 transition">
-                    <!-- Icon -->
-                    <div class="flex-shrink-0">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white shadow-lg">
-                            @if(str_contains($log->description, 'إنشاء'))
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                            @elseif(str_contains($log->description, 'تعديل'))
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                            @elseif(str_contains($log->description, 'حذف'))
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            @else
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            @endif
+                <!-- Event Content Matrix -->
+                <div class="flex-1 space-y-4">
+                    <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                        <div class="space-y-1">
+                            <h4 class="text-sm font-black text-slate-900 uppercase italic tracking-tighter">{{ $log->description }}</h4>
+                            <div class="flex items-center gap-3">
+                                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">Executed By:</span>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-5 h-5 bg-primary/10 rounded-full flex items-center justify-center text-primary text-[6px] font-black">
+                                         {{ strtoupper(substr($log->causer->name ?? 'SYS', 0, 2)) }}
+                                    </div>
+                                    <span class="text-[10px] font-black text-primary uppercase italic">{{ $log->causer->name ?? 'Central System' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end gap-1">
+                            <span class="text-[11px] font-black text-slate-900 font-manrope italic tracking-tighter">{{ $log->created_at->format('H : i : s') }}</span>
+                            <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest opacity-60">{{ $log->created_at->format('Y . m . d') }}</span>
+                            <span class="text-[7px] font-black text-slate-300 uppercase tracking-widest italic mt-1">{{ $log->created_at->diffForHumans() }}</span>
                         </div>
                     </div>
 
-                    <!-- Content -->
-                    <div class="flex-1">
-                        <div class="flex items-start justify-between">
-                            <div>
-                                <p class="font-semibold text-gray-900">{{ $log->description }}</p>
-                                <p class="text-sm text-gray-600 mt-1">
-                                    بواسطة: <span class="font-medium text-purple-600">{{ $log->causer->name ?? 'نظام' }}</span>
-                                </p>
-                            </div>
-                            <span class="text-xs text-gray-500">{{ $log->created_at->diffForHumans() }}</span>
-                        </div>
-
-                        @if($log->properties && isset($log->properties['changes']))
-                            <details class="mt-2">
-                                <summary class="text-xs text-blue-600 cursor-pointer hover:text-blue-800">عرض التفاصيل</summary>
-                                <div class="mt-2 p-3 bg-blue-50 rounded-lg text-xs space-y-1">
-                                    @foreach($log->properties['changes'] as $key => $value)
-                                        <div class="flex gap-2">
-                                            <span class="font-semibold text-gray-700">{{ $key }}:</span>
-                                            <span class="text-gray-500">{{ $log->properties['old'][$key] ?? '--' }}</span>
-                                            <span class="text-gray-400">→</span>
-                                            <span class="text-blue-600 font-medium">{{ $value }}</span>
+                    @if($log->properties && (isset($log->properties['changes']) || isset($log->properties['attributes'])))
+                        <div class="mt-4 pt-4 border-t border-white/40">
+                            <details class="group/details">
+                                <summary class="flex items-center gap-3 text-[9px] font-black text-primary uppercase tracking-[0.2em] italic cursor-pointer list-none hover:text-vibrant-purple transition-all">
+                                    <span class="material-symbols-outlined text-sm group-open/details:rotate-180 transition-transform">database</span>
+                                    Inspection Registry Data
+                                    <span class="w-20 h-px bg-primary/20 flex-1"></span>
+                                </summary>
+                                <div class="mt-4 p-6 bg-slate-900 rounded-[1.5rem] border border-white/5 space-y-3 shadow-inner">
+                                    @php 
+                                        $changes = $log->properties['changes'] ?? $log->properties['attributes'] ?? [];
+                                        $old = $log->properties['old'] ?? [];
+                                    @endphp
+                                    @foreach($changes as $key => $value)
+                                        @if($key !== 'updated_at' && $key !== 'created_at')
+                                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                                            <span class="md:col-span-3 text-[9px] font-black text-slate-500 uppercase italic tracking-widest">{{ str_replace('_', ' ', $key) }}</span>
+                                            <div class="md:col-span-9 flex items-center gap-4 text-[10px] font-manrope">
+                                                <span class="px-2 py-1 bg-white/5 text-slate-400 rounded-md border border-white/5 line-through italic opacity-50">{{ is_array($old[$key] ?? '--') ? 'ARRAY' : ($old[$key] ?? '--') }}</span>
+                                                <span class="material-symbols-outlined text-[12px] text-neon-cyan animate-pulse">keyboard_double_arrow_left</span>
+                                                <span class="px-2 py-1 bg-neon-cyan/10 text-neon-cyan rounded-md border border-neon-cyan/20 font-black italic">{{ is_array($value) ? 'ARRAY' : $value }}</span>
+                                            </div>
                                         </div>
+                                        @endif
                                     @endforeach
                                 </div>
                             </details>
-                        @endif
-                    </div>
+                        </div>
+                    @endif
                 </div>
-            @empty
-                <div class="text-center py-12">
-                    <svg class="w-16 h-16 text-purple-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                    <p class="text-gray-500">لا توجد نشاطات محفوظة</p>
-                </div>
-            @endforelse
-        </div>
-
-        <div class="mt-6 pt-6 border-t border-purple-100">
-            {{ $logs->links() }}
-        </div>
+            </div>
+        @empty
+            <div class="py-40 flex flex-col items-center justify-center gap-8 glass-panel !bg-white/60 rounded-[3rem] italic opacity-40">
+                <span class="material-symbols-outlined text-6xl font-light">history_toggle_off</span>
+                <p class="text-[11px] font-black uppercase tracking-[0.3em]">No Temporal Events Detected in the Registry Scope</p>
+            </div>
+        @endforelse
     </div>
+
+    <!-- Radiant Pagination -->
+    @if($logs->hasPages())
+    <div class="glass-panel rounded-[2rem] p-8 !bg-white/60 border-white/40">
+        {{ $logs->links() }}
+    </div>
+    @endif
 </div>
 @endsection

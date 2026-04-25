@@ -1,112 +1,85 @@
 @import "tailwindcss";
 
-@theme {
-    /* Radiant Monolith: Unified Theme Engine */
-    --color-primary: #00355f;
-    --color-primary-light: #0f4c81;
-    --color-primary-dark: #001c37;
-    
-    --color-neon-cyan: #00e5ff;
-    --color-vibrant-purple: #7c4dff;
-    --color-electric-blue: #3b82f6;
-    
-    --color-surface-dark: #0f172a;
-    --color-surface-light: #f8f9ff;
-    
-    --font-headline: "Manrope", sans-serif;
-    --font-body: "IBM Plex Sans Arabic", sans-serif;
-}
-
 /* 
-   RADIANT MONOLITH: DESIGN SYSTEM v3
-   Pivot: Breathtaking SaaS Aesthetics & High-Intensity Vibrancy
+   MadaaQ DESIGN SYSTEM v4 - RADIANT MONOLITH
+   High-Intensity Vibrancy, Premium Glassmorphism, and Data-Driven UI
 */
 
-body {
-    @apply bg-surface-light text-slate-800 font-body antialiased;
-    background-image: radial-gradient(at 0% 0%, rgba(0, 229, 255, 0.03) 0, transparent 50%),
-                      radial-gradient(at 100% 100%, rgba(124, 77, 255, 0.03) 0, transparent 50%);
+@layer base {
+    body {
+        @apply bg-mesh-gradient text-slate-800 font-rubik antialiased selection:bg-vendor/10 selection:text-vendor;
+        background-attachment: fixed;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-tajawal font-bold tracking-tight text-slate-900;
+    }
 }
 
-/* Glassmorphism Matrix */
-.glass-panel {
-    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-glass;
+@layer components {
+    /* Glassmorphism Core */
+    .glass-card {
+        @apply bg-surface-glass backdrop-blur-xl border border-white/40 shadow-glass rounded-3xl transition-all duration-500;
+    }
+    
+    .glass-card:hover {
+        @apply border-white/60 shadow-radiant -translate-y-1;
+    }
+
+    .glass-sidebar {
+        @apply bg-white/80 backdrop-blur-2xl border-l border-white/20 shadow-2xl;
+    }
+    
+    .glass-sidebar-dark {
+        @apply bg-slate-950/80 backdrop-blur-2xl border-l border-white/5 shadow-2xl;
+    }
+
+    /* Role-Specific Glows */
+    .glow-vendor { @apply shadow-glow-indigo; }
+    .glow-admin { @apply shadow-glow-purple; } /* Need to add glow-purple to config if not there */
+    .glow-cyan { @apply shadow-glow-cyan; }
+
+    /* Advanced Inputs */
+    .input-premium {
+        @apply w-full px-5 py-3.5 bg-white/50 border border-slate-200/60 rounded-2xl focus:ring-4 focus:ring-vendor/10 focus:border-vendor transition-all font-medium text-slate-700 outline-none;
+    }
+
+    /* Metrics & Stats */
+    .stat-value {
+        @apply font-inter font-black text-3xl tracking-tighter text-slate-900;
+    }
+    
+    .stat-label {
+        @apply font-tajawal font-bold text-xs uppercase tracking-widest text-slate-400;
+    }
+
+    /* Buttons */
+    .btn-radiant {
+        @apply px-6 py-3 rounded-2xl font-bold text-white transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] shadow-lg;
+    }
+    
+    .btn-vendor { @apply bg-radiant-indigo shadow-vendor-glow; }
+    .btn-admin { @apply bg-radiant-purple shadow-admin-glow; }
 }
 
-.glass-card {
-    @apply bg-white/40 backdrop-blur-md border border-white/20 shadow-radiant hover:shadow-2xl transition-all duration-300;
-}
-
-/* Radiant Gradients */
-.bg-radiant {
-    background: linear-gradient(135deg, #00355f 0%, #0f4c81 100%);
-}
-
-.bg-accent-flow {
-    background: linear-gradient(90deg, #00e5ff 0%, #3b82f6 50%, #7c4dff 100%);
-    background-size: 200% auto;
-    animation: flow 5s linear infinite;
-}
-
-@keyframes flow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* Technical Metrics (Manrope Intensity) */
-.metric-value-radiant {
-    @apply font-headline font-black text-primary tracking-tight italic uppercase;
-}
-
-.metric-vibe-cyan { @apply text-neon-cyan drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]; }
-.metric-vibe-purple { @apply text-vibrant-purple drop-shadow-[0_0_8px_rgba(124,77,255,0.4)]; }
-
-/* UI Surface Hierarchy */
-.surface-monolith {
-    @apply bg-surface-light border border-slate-200/50 rounded-2xl;
-}
-
-/* Navigation Shell Overhaul */
-.monolith-sidebar {
-    @apply fixed inset-y-0 right-0 z-50 w-72 bg-slate-900 border-l border-white/5 transition-transform duration-500 ease-out;
-}
-
-.nav-item {
-    @apply flex items-center gap-4 px-6 py-4 rounded-xl transition-all duration-300 mx-4;
-}
-
-.nav-item-active {
-    @apply bg-accent-gradient text-white font-black shadow-glow-purple scale-[1.05];
-}
-
-.nav-item-inactive {
-    @apply text-slate-400 hover:text-white hover:bg-white/5;
-}
-
-/* Forms: High-Fidelity Execution */
-.input-radiant {
-    @apply w-full px-6 py-4 bg-white/50 border border-slate-200 rounded-xl focus:ring-8 focus:ring-primary/5 focus:border-primary transition-all font-bold text-slate-700 outline-none shadow-inner;
-}
-
-/* Professional Scrollbar */
+/* Custom Scrollbar (Premium Invisible Style) */
 ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
+    height: 6px;
 }
 ::-webkit-scrollbar-track {
-    @apply bg-slate-50;
+    background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-    @apply bg-primary/20 rounded-full border-4 border-slate-50 hover:bg-primary/40 transition-colors;
+    @apply bg-slate-300/50 rounded-full hover:bg-slate-400/50 transition-colors;
 }
 
-/* Micro-animations */
-@keyframes pulse-soft {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.02); opacity: 0.8; }
+/* Background Animations */
+.bg-orb {
+    @apply absolute rounded-full blur-[120px] pointer-events-none -z-10 animate-pulse-slow;
 }
-.animate-pulse-soft { animation: pulse-soft 3s infinite ease-in-out; }
 
-.hover-glow:hover {
-    @apply shadow-glow-cyan scale-[1.02] transition-all;
+/* RTL Specific Tweaks */
+[dir="rtl"] .sidebar-icon {
+    @apply ml-3 mr-0;
 }

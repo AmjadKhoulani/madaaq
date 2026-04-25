@@ -1,6 +1,17 @@
 <script setup>
 import { useForm, Head } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
+import { 
+    ShieldCheck, 
+    Mail, 
+    Lock, 
+    Eye, 
+    EyeOff, 
+    ChevronLeft, 
+    Fingerprint,
+    Cpu,
+    Globe
+} from 'lucide-vue-next';
 
 const form = useForm({
     email: '',
@@ -23,196 +34,138 @@ const submit = () => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-[#020617] flex items-center justify-center p-6 selection:bg-primary selection:text-white relative overflow-hidden font-sans" dir="rtl">
-        <Head title="Sovereign Entry Hub - MadaaQ" />
+    <div class="min-h-screen bg-white selection:bg-vendor selection:text-white relative overflow-hidden font-sans flex items-center justify-center p-6 sm:p-12" dir="rtl">
+        <Head title="دخول بوابة الاستخبارات الإدارية - MadaaQ" />
 
-        <!-- 1. SOVEREIGN BACKGROUND ECOSYSTEM -->
-        <div class="absolute inset-0 pointer-events-none overflow-hidden">
-            <!-- Data Grid Overlay -->
-            <div class="absolute inset-0 opacity-[0.15] bg-[radial-gradient(circle_at_center,#334155_1px,transparent_1px)] [background-size:40px_40px]"></div>
-            
-            <!-- Strategic Light Orbs (Navy Alignment) -->
-            <div class="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] bg-primary/10 rounded-full blur-[120px] animate-pulse duration-[10s]"></div>
-            <div class="absolute -bottom-[20%] -right-[10%] w-[70%] h-[70%] bg-blue-600/10 rounded-full blur-[120px] animate-pulse duration-[15s]"></div>
-            
-            <!-- Circuit Pulse Lines (SVG Architecture) -->
-            <svg class="absolute inset-0 w-full h-full opacity-20" xmlns="http://www.w3.org/2000/svg">
-                <path d="M-100 100 L500 100 L550 150 L1200 150" fill="none" stroke="currentColor" stroke-width="0.5" class="text-primary/30" />
-                <path d="M1200 800 L800 800 L750 750 L-100 750" fill="none" stroke="currentColor" stroke-width="0.5" class="text-blue-500/30" />
-                <circle cx="550" cy="150" r="2" class="fill-primary animate-ping" />
-                <circle cx="750" cy="750" r="2" class="fill-blue-500 animate-ping" style="animation-delay: 2s" />
-            </svg>
+        <!-- Strategic Background Mesh -->
+        <div class="fixed inset-0 pointer-events-none z-0">
+            <div class="absolute inset-0 bg-[radial-gradient(at_0%_0%,rgba(99,102,241,0.1)_0px,transparent_50%),radial-gradient(at_100%_100%,rgba(165,180,252,0.1)_0px,transparent_50%)]"></div>
+            <div class="absolute top-[10%] left-[15%] w-64 h-64 bg-vendor/5 rounded-full blur-[100px] animate-pulse"></div>
+            <div class="absolute bottom-[10%] right-[15%] w-96 h-96 bg-indigo-500/5 rounded-full blur-[120px] animate-pulse"></div>
         </div>
 
-        <!-- 2. ADVANCED GLASSMORPHISM LOGIN PANEL -->
         <div 
-            class="w-full max-w-[540px] relative z-20 transition-all duration-1000 transform"
+            class="max-w-md w-full relative z-10 transition-all duration-1000 transform"
             :class="isVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-12 opacity-0 scale-95'"
         >
-            <div class="relative group">
-                <!-- Panel Glow Backdrop -->
-                <div class="absolute -inset-1 bg-gradient-to-tr from-primary/20 to-blue-600/20 rounded-[3.5rem] blur-2xl opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
-                
-                <div class="relative surface-card p-12 lg:p-16 bg-white/[0.02] backdrop-blur-[60px] border border-white/10 rounded-[3.5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] overflow-hidden">
-                    
-                    <!-- Internal Glass Accent -->
-                    <div class="absolute top-0 right-0 w-full h-1 bg-gradient-to-l from-transparent via-primary/40 to-transparent"></div>
+            <!-- Brand Unit -->
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center justify-center w-24 h-24 rounded-[2.5rem] bg-slate-900 shadow-radiant mb-8 relative group transition-transform hover:rotate-6 duration-500">
+                    <div class="absolute inset-0 bg-vendor/20 opacity-0 group-hover:opacity-100 blur-2xl transition-opacity duration-1000"></div>
+                    <ShieldCheck class="w-10 h-10 text-vendor relative z-10 stroke-[2.5]" />
+                </div>
+                <h1 class="text-4xl font-black text-slate-900 tracking-tighter italic uppercase mb-2 font-inter">Madaa<span class="text-vendor">Q</span></h1>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] italic font-inter opacity-70">Administrative Intelligence Gateway</p>
+            </div>
 
-                    <!-- 3. BRANDING SYNTHESIS -->
-                    <div class="flex flex-col items-center mb-16 text-center">
-                        <div class="w-24 h-24 bg-white text-primary rounded-[2rem] flex items-center justify-center text-5xl font-black shadow-[0_20px_50px_rgba(0,0,0,0.3)] mb-8 relative border-4 border-white/5 overflow-hidden transition-transform hover:rotate-6 duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent"></div>
-                            <span class="font-headline tracking-tighter">M</span>
-                            <div class="absolute -bottom-1 -right-1 w-7 h-7 bg-primary rounded-full border-4 border-slate-900 shadow-lg"></div>
-                        </div>
-                        
-                        <div class="space-y-2">
-                             <h1 class="text-4xl font-black text-white tracking-tight flex items-center gap-4 justify-center">
-                                <span class="bg-gradient-to-l from-white via-white to-white/60 bg-clip-text text-transparent">MadaaQ</span>
-                                <span class="text-white">مدى كيو</span>
-                             </h1>
-                             <div class="flex flex-col items-center">
-                                <p class="text-primary font-black text-[10px] uppercase tracking-[0.4em] mb-1">Sovereign Entry Hub</p>
-                                <p class="text-white/30 font-bold text-[11px] uppercase tracking-wider">محور الدخول السيادي للمنظومة</p>
-                             </div>
-                        </div>
+            <!-- Login Matrix -->
+            <div class="glass-card p-10 sm:p-12 rounded-[3rem] shadow-glass relative overflow-hidden bg-white/40 border border-white/60 backdrop-blur-2xl">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-vendor/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                
+                <div class="relative z-10">
+                    <div class="mb-10 text-right">
+                        <h2 class="text-2xl font-black text-slate-900 italic tracking-tighter mb-1">تسجيل الدخول</h2>
+                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest italic opacity-80">بروتوكول التحقق من الهوية السيادية</p>
                     </div>
 
-                    <!-- 4. AUTH MATRIX FORM -->
-                    <form @submit.prevent="submit" class="space-y-10">
-                        <div class="space-y-8">
-                            <!-- Email / Identity -->
-                            <div class="space-y-4">
-                                <div class="flex items-center justify-between px-2">
-                                    <label class="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">Username / Email</label>
-                                    <label class="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">اسم المستخدم / البريد</label>
+                    <form @submit.prevent="submit" class="space-y-8">
+                        <!-- Identity Input -->
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mr-4 block text-right">البريد الإلكتروني (Personnel ID)</label>
+                            <div class="relative group">
+                                <div class="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-vendor transition-colors">
+                                    <Mail class="w-5 h-5 stroke-[2.5]" />
                                 </div>
-                                <div class="relative group/input">
-                                    <span class="material-symbols-outlined absolute right-6 top-1/2 -translate-y-1/2 text-white/10 group-focus-within/input:text-primary transition-all text-[24px]">account_circle</span>
-                                    <input 
-                                        v-model="form.email"
-                                        type="email" 
-                                        class="w-full h-18 bg-white/[0.03] border-2 border-white/5 rounded-3xl pr-16 pl-8 text-white font-headline font-black text-lg focus:border-primary/40 focus:ring-0 focus:bg-white/[0.05] transition-all placeholder:text-white/5 shadow-inner" 
-                                        placeholder="operator@madaaq.net"
-                                        required
-                                        dir="ltr"
-                                    >
-                                    <div class="absolute inset-0 rounded-3xl border border-primary/0 group-focus-within/input:border-primary/20 pointer-events-none transition-all"></div>
-                                </div>
-                                <div v-if="form.errors.email" class="text-[10px] font-black text-rose-500 mt-2 px-2 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[14px]">report</span> {{ form.errors.email }}
-                                </div>
+                                <input 
+                                    v-model="form.email"
+                                    type="email" 
+                                    required 
+                                    class="w-full bg-white/50 border border-white/60 rounded-2xl px-6 pr-16 h-16 font-black text-slate-900 transition-all duration-300 focus:ring-4 focus:ring-vendor/5 focus:border-vendor outline-none focus:bg-white font-inter" 
+                                    placeholder="id@madaaq.net"
+                                >
                             </div>
-
-                            <!-- Password / Secret -->
-                            <div class="space-y-4">
-                                <div class="flex items-center justify-between px-2">
-                                    <label class="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">Secret Protocol</label>
-                                    <label class="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">كلمة المرور / الشيفرة</label>
-                                </div>
-                                <div class="relative group/input">
-                                    <span class="material-symbols-outlined absolute right-6 top-1/2 -translate-y-1/2 text-white/10 group-focus-within/input:text-primary transition-all text-[24px]">vpn_key</span>
-                                    <input 
-                                        v-model="form.password"
-                                        :type="showPassword ? 'text' : 'password'" 
-                                        class="w-full h-18 bg-white/[0.03] border-2 border-white/5 rounded-3xl pr-16 pl-16 text-white font-headline font-black text-lg focus:border-primary/40 focus:ring-0 focus:bg-white/[0.05] transition-all placeholder:text-white/5 shadow-inner tracking-[0.5em]" 
-                                        placeholder="••••••••"
-                                        required
-                                        dir="ltr"
-                                    >
-                                    <button 
-                                        type="button"
-                                        @click="showPassword = !showPassword"
-                                        class="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 hover:text-primary transition-colors"
-                                    >
-                                        <span class="material-symbols-outlined text-[20px]">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
-                                    </button>
-                                </div>
-                                <div class="flex justify-start px-2">
-                                    <a href="#" class="text-[10px] font-black text-primary hover:text-blue-400 transition-colors uppercase tracking-widest">Forgot Password? / نسيت كلمة المرور؟</a>
-                                </div>
-                            </div>
+                            <p v-if="form.errors.email" class="text-rose-500 text-[10px] font-black mr-4 uppercase tracking-widest mt-2 italic">{{ form.errors.email }}</p>
                         </div>
 
-                        <!-- 5. INTERACTIVE PROTOCOLS -->
-                        <div class="space-y-8 pt-4">
-                            <div class="flex items-center gap-4 px-2">
-                                <div class="relative flex items-center group/check">
-                                    <input 
-                                        v-model="form.remember" 
-                                        type="checkbox" 
-                                        id="remember" 
-                                        class="w-6 h-6 rounded-lg border-white/10 bg-white/5 text-primary focus:ring-primary/50 focus:ring-offset-0 transition-all cursor-pointer"
-                                    >
-                                </div>
-                                <label for="remember" class="text-[11px] font-black text-white/30 uppercase tracking-widest cursor-pointer select-none flex items-center justify-between flex-1">
-                                    <span>Persist Session Protocol</span>
-                                    <span class="text-[10px]">تثبيت الجلسة</span>
-                                </label>
+                        <!-- Secret Input -->
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center px-4 flex-row-reverse">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">كلمة المرور (Secret Key)</label>
+                                <Link :href="route('password.request')" class="text-[10px] font-black text-vendor uppercase tracking-widest hover:underline italic">نسيت الشيفرة؟</Link>
                             </div>
-
-                            <div class="grid grid-cols-1 gap-4">
-                                <!-- Primary Action -->
-                                <button 
-                                    type="submit" 
-                                    class="w-full h-20 bg-primary text-white rounded-[1.5rem] font-black text-[13px] uppercase tracking-[0.3em] shadow-[0_20px_40px_rgba(0,53,95,0.3)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-between px-10 group/btn overflow-hidden relative"
-                                    :disabled="form.processing"
+                            <div class="relative group">
+                                <div class="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-vendor transition-colors">
+                                    <Lock class="w-5 h-5 stroke-[2.5]" />
+                                </div>
+                                <input 
+                                    v-model="form.password"
+                                    :type="showPassword ? 'text' : 'password'" 
+                                    required 
+                                    class="w-full bg-white/50 border border-white/60 rounded-2xl px-6 pr-16 h-16 font-black text-slate-900 transition-all duration-300 focus:ring-4 focus:ring-vendor/5 focus:border-vendor outline-none focus:bg-white font-inter tracking-[0.5em]" 
+                                    placeholder="••••••••"
                                 >
-                                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000"></div>
-                                    <div class="flex items-center gap-4 relative z-10">
-                                        <span v-if="!form.processing">تسجيل الدخول / Sign In</span>
-                                        <span v-else>جاري المعالجة...</span>
+                                <button 
+                                    type="button"
+                                    @click="showPassword = !showPassword"
+                                    class="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 hover:text-vendor transition-colors"
+                                >
+                                    <Eye v-if="!showPassword" class="w-5 h-5" />
+                                    <EyeOff v-else class="w-5 h-5" />
+                                </button>
+                            </div>
+                            <p v-if="form.errors.password" class="text-rose-500 text-[10px] font-black mr-4 uppercase tracking-widest mt-2 italic">{{ form.errors.password }}</p>
+                        </div>
+
+                        <!-- Tactical Options -->
+                        <div class="flex items-center justify-end px-4">
+                            <label class="flex items-center gap-3 cursor-pointer group select-none">
+                                <span class="text-[11px] font-black text-slate-500 uppercase tracking-widest italic group-hover:text-vendor transition-colors">تذكر الهوية في هذه المحطة</span>
+                                <div class="relative">
+                                    <input v-model="form.remember" type="checkbox" class="sr-only peer">
+                                    <div class="w-5 h-5 bg-white/50 border-white/60 border rounded-lg peer-checked:bg-vendor peer-checked:border-vendor transition-all flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 peer-checked:opacity-100 transition-opacity"><polyline points="20 6 9 17 4 12"/></svg>
                                     </div>
-                                    <span class="material-symbols-outlined text-[28px] group-hover/btn:translate-x-[-8px] transition-transform">login</span>
-                                </button>
-
-                                <!-- Secondary SSO Aesthetic -->
-                                <button 
-                                    type="button" 
-                                    class="w-full h-16 bg-white/[0.02] text-white/40 rounded-[1.25rem] border border-white/5 font-black text-[10px] uppercase tracking-[0.3em] hover:bg-white/[0.05] hover:text-white transition-all flex items-center justify-center gap-4 group/sso"
-                                >
-                                    <span class="material-symbols-outlined text-[20px] group-hover/sso:rotate-12 transition-all">hub</span>
-                                    Single Sign-On (SSO) / تسجيل الدخول الموحد
-                                </button>
-                            </div>
+                                </div>
+                            </label>
                         </div>
+
+                        <!-- Commit Trigger -->
+                        <button 
+                            type="submit" 
+                            class="w-full py-5 rounded-2xl text-white font-black text-xs uppercase tracking-[0.4em] shadow-radiant flex items-center justify-center gap-4 group relative overflow-hidden bg-gradient-to-br from-vendor to-vendor-dark transition-all duration-500 active:scale-95 disabled:opacity-50"
+                            :disabled="form.processing"
+                        >
+                            <span v-if="!form.processing">دخول النظام</span>
+                            <span v-else>جاري التحقق...</span>
+                            <ChevronLeft v-if="!form.processing" class="w-5 h-5 group-hover:-translate-x-1 transition-transform stroke-[3]" />
+                        </button>
                     </form>
 
-                    <!-- 6. COMPLIANCE FOOTER -->
-                    <div class="mt-12 text-center pt-8 border-t border-white/5">
-                        <p class="text-[9px] font-black text-white/10 uppercase tracking-[0.5em] mb-6">MadaaQ Handshake Protocol v5.0 • Infrastructure Matrix</p>
-                        <div class="flex items-center justify-center gap-8 opacity-5">
-                            <span class="material-symbols-outlined text-[20px]">fingerprint</span>
-                            <span class="material-symbols-outlined text-[20px]">security</span>
-                            <span class="material-symbols-outlined text-[20px]">lan</span>
+                    <!-- Footer Protocol -->
+                    <div class="mt-12 pt-8 border-t border-white/40 text-center">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic mb-4">
+                            لا تملك هوية وصول؟
+                            <Link :href="route('register')" class="text-vendor hover:underline ml-1">بدء بروتوكول التسجيل</Link>
+                        </p>
+                        <div class="flex items-center justify-center gap-6 opacity-20 group-hover:opacity-100 transition-opacity">
+                            <Fingerprint class="w-4 h-4 text-slate-400" />
+                            <Cpu class="w-4 h-4 text-slate-400" />
+                            <Globe class="w-4 h-4 text-slate-400" />
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Decorative UI Fragments -->
-        <div class="absolute bottom-10 left-10 text-white/5 font-headline text-[120px] font-black select-none pointer-events-none uppercase tracking-tighter opacity-10">CORE</div>
-        <div class="absolute top-10 right-10 text-white/5 font-headline text-[120px] font-black select-none pointer-events-none rotate-90 uppercase tracking-tighter opacity-10">AUTH</div>
+            <!-- Compliance Notice -->
+            <p class="text-center mt-12 text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] opacity-40 italic">
+                SECURE ACCESS PROTOCOL V5.2.0 | ENCRYPTED BY MADAQA CORE
+            </p>
+        </div>
     </div>
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@800&display=swap');
-
-.font-headline {
-    font-family: 'Manrope', sans-serif;
-}
-
-input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus {
-    -webkit-text-fill-color: white !important;
-    -webkit-box-shadow: 0 0 0px 1000px #0f172a inset !important;
-    transition: background-color 5000s ease-in-out 0s;
-}
-
-.surface-card {
-    transition: box-shadow 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+.glass-card {
+    @apply border border-white/40 shadow-glass transition-all duration-500;
 }
 </style>

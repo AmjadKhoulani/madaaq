@@ -3,6 +3,22 @@ import { onMounted, ref } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 import { Chart, registerables } from 'chart.js';
+import { 
+    LayoutDashboard, 
+    Zap, 
+    Users, 
+    CreditCard, 
+    BarChart3, 
+    ShieldCheck, 
+    Activity, 
+    Globe, 
+    ArrowUpRight, 
+    PlusCircle,
+    Calendar,
+    TrendingUp,
+    Building2,
+    Settings
+} from 'lucide-vue-next';
 
 Chart.register(...registerables);
 
@@ -21,70 +37,80 @@ const tenantsChartRef = ref(null);
 
 onMounted(() => {
     // Strategic Revenue Intelligence Chart
-    new Chart(revenueChartRef.value, {
-        type: 'line',
-        data: {
-            labels: props.months,
-            datasets: [{
-                label: 'الإيرادات الشهرية',
-                data: props.chart_revenue,
-                borderColor: '#0f172a',
-                backgroundColor: 'rgba(15, 23, 42, 0.03)',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.1,
-                pointRadius: 4,
-                pointBackgroundColor: '#2563eb',
-                pointBorderWidth: 2,
-                pointBorderColor: '#ffffff'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { 
-                    grid: { color: 'rgba(0,0,0,0.02)' },
-                    ticks: { color: '#94a3b8', font: { size: 10, family: 'Manrope' } }
-                },
-                x: { 
-                    grid: { display: false }, 
-                    ticks: { color: '#94a3b8', font: { size: 10, family: 'Manrope' } } 
+    if (revenueChartRef.value) {
+        const ctx = revenueChartRef.value.getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 350);
+        gradient.addColorStop(0, 'rgba(124, 58, 237, 0.15)');
+        gradient.addColorStop(1, 'rgba(124, 58, 237, 0)');
+
+        new Chart(revenueChartRef.value, {
+            type: 'line',
+            data: {
+                labels: props.months,
+                datasets: [{
+                    label: 'إيرادات المصفوفة',
+                    data: props.chart_revenue,
+                    borderColor: '#7c3aed',
+                    backgroundColor: gradient,
+                    borderWidth: 4,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#fff',
+                    pointBorderWidth: 3,
+                    pointBorderColor: '#7c3aed'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { 
+                        position: 'right',
+                        grid: { color: 'rgba(0,0,0,0.03)' },
+                        ticks: { color: '#94a3b8', font: { size: 11, weight: 'bold' } }
+                    },
+                    x: { 
+                        grid: { display: false }, 
+                        ticks: { color: '#94a3b8', font: { size: 11, weight: 'bold' } } 
+                    }
                 }
             }
-        }
-    });
+        });
+    }
 
     // Subscriber Acquisition Growth Chart
-    new Chart(tenantsChartRef.value, {
-        type: 'bar',
-        data: {
-            labels: props.months,
-            datasets: [{
-                label: 'المشتركين الجدد',
-                data: props.chart_tenants,
-                backgroundColor: '#2563eb',
-                borderRadius: 6,
-                barThickness: 12,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { 
-                    grid: { color: 'rgba(0,0,0,0.02)' },
-                    ticks: { color: '#94a3b8', font: { size: 10, family: 'Manrope' } }
-                },
-                x: { 
-                    grid: { display: false }, 
-                    ticks: { color: '#94a3b8', font: { size: 10, family: 'Manrope' } } 
+    if (tenantsChartRef.value) {
+        new Chart(tenantsChartRef.value, {
+            type: 'bar',
+            data: {
+                labels: props.months,
+                datasets: [{
+                    label: 'النمو السيادي',
+                    data: props.chart_tenants,
+                    backgroundColor: '#7c3aed',
+                    borderRadius: 8,
+                    barThickness: 8,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { 
+                        display: false,
+                        grid: { display: false }
+                    },
+                    x: { 
+                        display: false,
+                        grid: { display: false } 
+                    }
                 }
             }
-        }
-    });
+        });
+    }
 });
 
 const formatNumber = (num) => {
@@ -94,267 +120,233 @@ const formatNumber = (num) => {
 </script>
 
 <template>
-    <InstitutionalLayout title="مركز العمليات الذكي">
+    <InstitutionalLayout title="مركز القيادة السيادي">
         <Head title="لوحة التحكم الإستراتيجية - MadaaQ" />
         
-        <div class="max-w-[1600px] mx-auto pb-24 text-right px-4" dir="rtl">
+        <div class="space-y-10 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700" dir="rtl">
+            
             <!-- Strategic Header Intel -->
-            <div class="mb-16 flex flex-col lg:flex-row lg:items-center justify-between gap-10 flex-row-reverse text-right">
-                <div class="text-right">
-                    <h1 class="text-4xl font-black text-primary tracking-tight mb-2">لوحة التحكم التكتيكية (Command Center)</h1>
-                    <div class="flex items-center gap-4 justify-end">
-                        <p class="text-slate-500 font-bold text-sm uppercase tracking-wider">مراقبة حية لأداء الشبكة، بيانات المشتركين، وتحليل المؤشرات المالية اللحظية</p>
-                        <span class="flex h-3 w-3 relative">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
-                        </span>
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+                <div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="w-12 h-1 bg-admin rounded-full"></span>
+                        <p class="text-[10px] font-black text-admin uppercase tracking-[0.3em] font-inter">Sovereign Control Node</p>
                     </div>
+                    <h1 class="text-4xl font-black text-slate-900 tracking-tighter italic">مركز <span class="text-admin">القيادة</span> السيادي</h1>
+                    <p class="text-slate-400 font-bold mt-2 uppercase tracking-widest text-[11px] opacity-80 italic">Global Infrastructure Matrix & Fiscal Intelligence Oversight</p>
                 </div>
-                <div class="flex items-center gap-6">
-                     <button class="px-8 py-3.5 bg-white border border-outline-variant/10 rounded-xl text-[11px] font-black text-slate-500 hover:text-primary transition-all flex items-center gap-3 shadow-sm active:scale-95">
-                        <span class="material-symbols-outlined text-[20px]">calendar_today</span>
-                        تقارير الجلسة الحالية
-                     </button>
-                      <Link 
-                        :href="route('crm.clients.create')" 
-                        class="px-10 py-3.5 bg-primary text-white rounded-xl font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl shadow-primary/20 hover:bg-emerald-600 transition-all active:scale-95 flex items-center gap-3 border border-white/10"
+                
+                <div class="flex items-center gap-4">
+                    <button class="px-6 py-3.5 bg-white border border-white/60 rounded-2xl text-[10px] font-black text-slate-500 hover:text-admin transition-all flex items-center gap-3 shadow-sm active:scale-95 group">
+                        <Calendar class="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                        تقارير الجلسة اللحظية
+                    </button>
+                    <Link 
+                        :href="route('admin.tenants.index')" 
+                        class="btn-radiant btn-admin px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-3"
                     >
-                        <span class="material-symbols-outlined text-[20px]">add_circle</span> تفعيل وحدة مشتركة
+                        <PlusCircle class="w-4 h-4" />
+                        تفعيل مصفوفة شريك
                     </Link>
                 </div>
             </div>
 
             <!-- Strategic KPIs Matrix -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                
                 <!-- Revenue Intelligence -->
-                <div class="surface-card p-10 rounded-3xl border border-outline-variant/5 shadow-2xl relative overflow-hidden group bg-white border-b-8 border-primary">
-                    <div class="absolute -top-16 -left-16 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
-                    <div class="relative z-10 flex flex-col gap-8">
-                        <div class="flex items-center justify-between flex-row-reverse">
-                             <div class="w-14 h-14 rounded-2xl bg-primary/5 text-primary flex items-center justify-center border border-primary/10 shadow-inner">
-                                <span class="material-symbols-outlined text-[32px]">payments</span>
-                             </div>
-                             <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none">إجمالي الإيرادات (Revenue)</p>
+                <div class="glass-card p-8 bg-white/40 group relative overflow-hidden border-b-4 border-admin/20">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-admin/5 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+                    <div class="flex justify-between items-start mb-8">
+                        <div class="w-12 h-12 bg-admin/10 rounded-2xl flex items-center justify-center text-admin shadow-sm">
+                            <CreditCard class="w-6 h-6 stroke-[2.5]" />
                         </div>
-                        <div class="flex items-baseline gap-3">
-                            <h3 class="text-4xl font-headline font-black text-primary leading-none tracking-tighter">{{ formatNumber(stats.total_revenue) }}</h3>
-                            <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest leading-none">ل.س</span>
+                        <div class="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-full text-[9px] font-black uppercase tracking-widest">
+                            <TrendingUp class="w-3 h-3" />
+                            +14.2%
                         </div>
-                        <div class="flex items-center gap-3 justify-end flex-row-reverse">
-                            <span class="text-[10px] font-black text-emerald-600 bg-emerald-500/10 px-3 py-1 rounded-lg border border-emerald-500/10 flex items-center gap-2">
-                                +14.2% <span class="material-symbols-outlined text-[14px]">trending_up</span>
-                            </span>
-                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">مقارنة بالأداء السابق</span>
-                        </div>
+                    </div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 font-inter">إجمالي الإيرادات العالمية</p>
+                    <div class="flex items-baseline gap-2">
+                        <h3 class="text-4xl font-black text-slate-900 italic tracking-tighter">{{ formatNumber(stats.total_revenue) }}</h3>
+                        <span class="text-[10px] font-black text-slate-400 italic font-inter">SAR</span>
                     </div>
                 </div>
 
                 <!-- Network Grid Operators -->
-                <div class="surface-card p-10 rounded-3xl border border-outline-variant/5 shadow-sm bg-white relative overflow-hidden border-b-8 border-slate-950">
-                    <div class="relative z-10 flex flex-col gap-8">
-                        <div class="flex items-center justify-between flex-row-reverse">
-                             <div class="w-14 h-14 rounded-2xl bg-slate-950 text-white flex items-center justify-center border border-white/10 shadow-inner">
-                                <span class="material-symbols-outlined text-[32px]">hub</span>
-                             </div>
-                             <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none">مشغلي الشبكة النشطين</p>
+                <div class="glass-card p-8 bg-white/40 group relative overflow-hidden border-b-4 border-slate-900/20">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-slate-900/5 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+                    <div class="flex justify-between items-start mb-8">
+                        <div class="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center shadow-lg">
+                            <Globe class="w-6 h-6 stroke-[2.5]" />
                         </div>
-                        <h3 class="text-5xl font-headline font-black text-slate-900 leading-none tracking-tighter">{{ stats.active_tenants }}</h3>
-                        <div class="flex items-center gap-2 justify-end opacity-40">
-                            <p class="text-[10px] font-black uppercase tracking-widest">من أصل <span class="font-headline text-slate-900">{{ stats.total_tenants }}</span> عقدة توزيع مـتاحة</p>
-                        </div>
+                        <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest font-inter">ACTIVE NODES</div>
                     </div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 font-inter">مشغلي الشبكة النشطين</p>
+                    <h3 class="text-4xl font-black text-slate-900 italic tracking-tighter">{{ stats.active_tenants }} <span class="text-sm font-bold text-slate-300">/ {{ stats.total_tenants }}</span></h3>
                 </div>
 
                 <!-- Subscription Integrity -->
-                <div class="surface-card p-10 rounded-3xl border border-outline-variant/5 shadow-sm bg-white relative overflow-hidden border-b-8 border-emerald-500">
-                    <div class="relative z-10 flex flex-col gap-8">
-                        <div class="flex items-center justify-between flex-row-reverse">
-                             <div class="w-14 h-14 rounded-2xl bg-emerald-500/5 text-emerald-600 flex items-center justify-center border border-emerald-500/10 shadow-inner">
-                                <span class="material-symbols-outlined text-[32px]">verified_user</span>
-                             </div>
-                             <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none">اشتراكات الخدمة الفعالة</p>
+                <div class="glass-card p-8 bg-white/40 group relative overflow-hidden border-b-4 border-emerald-500/20">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+                    <div class="flex justify-between items-start mb-8">
+                        <div class="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm">
+                            <ShieldCheck class="w-6 h-6 stroke-[2.5]" />
                         </div>
-                        <h3 class="text-5xl font-headline font-black text-emerald-600 leading-none tracking-tighter">{{ stats.active_subscriptions }}</h3>
-                        <div class="flex items-center gap-3 justify-end flex-row-reverse opacity-60">
-                            <div class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-lg"></div>
-                            <span class="text-[10px] text-emerald-600 font-black uppercase tracking-widest">نظام حوكمة الحزم النشط</span>
-                        </div>
+                        <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-radiant"></div>
                     </div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 font-inter">الاشتراكات الفعالة</p>
+                    <h3 class="text-4xl font-black text-emerald-600 italic tracking-tighter">{{ stats.active_subscriptions }}</h3>
                 </div>
 
                 <!-- Aggregate Clients -->
-                <div class="surface-card p-10 rounded-3xl border border-outline-variant/5 shadow-sm bg-white relative overflow-hidden border-b-8 border-indigo-600">
-                    <div class="relative z-10 flex flex-col gap-8">
-                        <div class="flex items-center justify-between flex-row-reverse">
-                             <div class="w-14 h-14 rounded-2xl bg-indigo-500/5 text-indigo-600 flex items-center justify-center border border-indigo-500/10 shadow-inner">
-                                <span class="material-symbols-outlined text-[32px]">groups</span>
-                             </div>
-                             <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none">قاعدة المشتركين المركزية</p>
+                <div class="glass-card p-8 bg-white/40 group relative overflow-hidden border-b-4 border-indigo-500/20">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+                    <div class="flex justify-between items-start mb-8">
+                        <div class="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-600 shadow-sm">
+                            <Users class="w-6 h-6 stroke-[2.5]" />
                         </div>
-                        <h3 class="text-5xl font-headline font-black text-indigo-600 leading-none tracking-tighter">{{ formatNumber(stats.total_clients) }}</h3>
-                        <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest opacity-60">إجمالي الهويات المسجلة كلياً</p>
+                        <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest font-inter">TOTAL IDENTITY</div>
                     </div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 font-inter">قاعدة المشتركين المركزية</p>
+                    <h3 class="text-4xl font-black text-indigo-600 italic tracking-tighter">{{ formatNumber(stats.total_clients) }}</h3>
                 </div>
+
             </div>
 
-            <!-- Analytical Visual Intel Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-16">
-                <!-- Primary Revenue Chart -->
-                <div class="lg:col-span-2 surface-card rounded-[2.5rem] border border-outline-variant/5 shadow-2xl bg-white overflow-hidden">
-                    <div class="p-10 flex items-center justify-between flex-row-reverse border-b border-outline-variant/5">
-                        <div class="flex items-center gap-4">
-                            <h3 class="text-xs font-black text-primary uppercase tracking-[0.3em] leading-none">تحليل الأداء المالي (Growth Intelligence)</h3>
-                            <div class="w-1.5 h-6 bg-primary rounded-full"></div>
+            <!-- Analytical Insights -->
+            <div class="grid grid-cols-12 gap-10">
+                
+                <!-- Revenue Analytics Shell -->
+                <div class="col-span-12 lg:col-span-8 glass-card p-10 bg-white/60">
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
+                        <div>
+                            <h2 class="text-2xl font-black text-admin uppercase tracking-tighter italic">تحليل الأداء المالي العالمي</h2>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] mt-2 italic font-inter opacity-70">Strategic Yield & Fiscal Growth Matrix</p>
                         </div>
-                        <span class="material-symbols-outlined text-slate-300">finance_mode</span>
+                        <div class="flex items-center gap-3 p-1.5 bg-slate-950/5 rounded-2xl border border-white/60 shadow-inner">
+                            <button class="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl">Real-Time</button>
+                            <button class="px-6 py-2.5 text-slate-400 hover:text-admin rounded-xl text-[9px] font-black uppercase tracking-widest italic">Temporal</button>
+                        </div>
                     </div>
-                    <div class="p-10">
-                        <div class="h-[350px] w-full">
-                            <canvas ref="revenueChartRef"></canvas>
+                    <div class="relative h-[400px]">
+                        <canvas ref="revenueChartRef"></canvas>
+                    </div>
+                </div>
+
+                <!-- Strategic Network Status -->
+                <div class="col-span-12 lg:col-span-4 glass-card p-10 bg-slate-900 text-white border-none relative overflow-hidden flex flex-col">
+                    <div class="absolute -top-32 -left-32 w-80 h-80 bg-admin/10 rounded-full blur-[100px] opacity-40"></div>
+                    
+                    <div class="relative z-10 flex flex-col flex-1">
+                        <div class="flex items-center justify-between mb-12">
+                            <h3 class="text-xs font-black text-admin uppercase tracking-[0.3em] italic font-inter">Node Readiness (NOC)</h3>
+                            <Activity class="w-5 h-5 text-admin animate-pulse" />
+                        </div>
+
+                        <div class="space-y-12 flex-1">
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] italic">
+                                    <span class="text-emerald-400">Global Service Quality</span>
+                                    <span class="font-inter text-lg tracking-tighter text-emerald-400">98.4%</span>
+                                </div>
+                                <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                    <div class="h-full bg-emerald-500 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.4)]" style="width: 98.4%"></div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] italic">
+                                    <span class="text-admin">Aggregate Bandwidth</span>
+                                    <span class="font-inter text-lg tracking-tighter text-admin">64%</span>
+                                </div>
+                                <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                    <div class="h-full bg-admin rounded-full shadow-[0_0_20px_rgba(124,58,237,0.4)]" style="width: 64%"></div>
+                                </div>
+                            </div>
+
+                            <div class="pt-10 mt-10 border-t border-white/5 h-48">
+                                <div class="flex items-center justify-between mb-6">
+                                    <p class="text-[9px] font-black text-white/20 uppercase tracking-[0.4em] italic font-inter">Subscriber Acquisition Gradient</p>
+                                    <div class="w-1.5 h-1.5 bg-admin rounded-full animate-ping"></div>
+                                </div>
+                                <canvas ref="tenantsChartRef"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Strategic Network Health -->
-                <div class="surface-card rounded-[2.5rem] border border-outline-variant/5 shadow-2xl bg-slate-950 text-white overflow-hidden flex flex-col relative">
-                    <div class="absolute -top-32 -left-32 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
-                    <div class="p-10 flex items-center justify-between flex-row-reverse border-b border-white/5 relative z-10">
-                        <h3 class="text-xs font-black uppercase tracking-[0.3em] leading-none">مؤشرات الجاهزية (NOC Stats)</h3>
-                        <span class="material-symbols-outlined text-white/20">query_stats</span>
-                    </div>
-                    <div class="p-10 flex-1 space-y-10 relative z-10">
-                        <div class="space-y-4">
-                            <div class="flex justify-between items-center text-[11px] font-black uppercase tracking-[0.2em] flex-row-reverse">
-                                <span class="text-emerald-500">جودة الخدمة (QoS)</span>
-                                <span class="font-headline text-lg">98.4%</span>
-                            </div>
-                            <div class="h-3 bg-white/5 rounded-full overflow-hidden border border-white/10 p-0.5">
-                                <div class="h-full bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]" style="width: 98.4%"></div>
-                            </div>
+                <!-- Global Transaction Ledger -->
+                <div class="col-span-12 glass-card overflow-hidden bg-white/40 border-white/60">
+                    <div class="p-10 border-b border-white/40 flex flex-col md:flex-row justify-between items-center bg-slate-50/20">
+                        <div>
+                            <h2 class="text-2xl font-black text-slate-900 italic tracking-tighter uppercase">سجل العمليات السيادي العالمي</h2>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] mt-2 italic font-inter">Verified Monetary Pulse & Partner Matrix Registry</p>
                         </div>
-                        <div class="space-y-4">
-                            <div class="flex justify-between items-center text-[11px] font-black uppercase tracking-[0.2em] flex-row-reverse">
-                                <span class="text-blue-400">سعة النطاق المستهلكة</span>
-                                <span class="font-headline text-lg">64%</span>
-                            </div>
-                            <div class="h-3 bg-white/5 rounded-full overflow-hidden border border-white/10 p-0.5">
-                                <div class="h-full bg-primary rounded-full shadow-[0_0_15px_rgba(37,99,235,0.5)]" style="width: 64%"></div>
-                            </div>
-                        </div>
-                        <div class="pt-10 mt-10 border-t border-white/5 h-48">
-                            <div class="flex items-center justify-between mb-6 flex-row-reverse">
-                                 <p class="text-[10px] font-black text-white/30 uppercase tracking-widest">اتجاه اكتساب المشتركين</p>
-                                 <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                            </div>
-                             <canvas ref="tenantsChartRef"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Operational Activity Ledger -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 text-right">
-                <!-- Recent Fiscal Transactions -->
-                 <div class="lg:col-span-2 surface-card rounded-[2.5rem] border border-outline-variant/5 shadow-2xl bg-white overflow-hidden border-t-8 border-primary">
-                    <div class="p-10 flex justify-between items-center flex-row-reverse border-b border-outline-variant/5">
-                        <div class="flex items-center gap-4">
-                            <h3 class="text-xs font-black text-primary uppercase tracking-[0.3em] leading-none">أحدث القيود والعمليات المالية (Ledger)</h3>
-                            <div class="w-1.5 h-6 bg-primary rounded-full"></div>
-                        </div>
-                        <Link :href="route('accounting.invoices.index')" class="text-primary text-[10px] font-black uppercase tracking-widest hover:translate-x-[-4px] transition-transform flex items-center gap-2 flex-row-reverse">
-                             تـدقيق السجل المالي العام <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                        <Link :href="route('admin.subscriptions.index')" class="px-10 py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-admin transition-all shadow-xl italic flex items-center gap-3 group">
+                            Full Registry Oversight
+                            <ArrowUpRight class="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                         </Link>
                     </div>
-                    <div class="overflow-x-auto px-6 pb-6">
-                        <table class="w-full text-right border-separate border-spacing-0">
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right border-collapse">
                             <thead>
-                                <tr class="text-slate-400">
-                                    <th class="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em]">بروتوكول السند</th>
-                                    <th class="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em]">الطرف المستفيد</th>
-                                    <th class="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-center">القيمة الاستحقاقية</th>
-                                    <th class="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-center">حالة السداد</th>
+                                <tr class="bg-slate-900 text-white/40 text-[10px] font-black uppercase tracking-[0.3em] italic font-inter">
+                                    <th class="px-10 py-8">هوية الشريك المستفيد</th>
+                                    <th class="px-8 py-8 text-center">أفق الإصدار</th>
+                                    <th class="px-8 py-8 text-center">القيمة الاستحقاقية</th>
+                                    <th class="px-8 py-8 text-center">وضعية التسوية</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-outline-variant/5">
-                                <tr v-for="invoice in recent_invoices" :key="invoice.id" class="hover:bg-surface-container-low/50 transition-all group">
-                                    <td class="px-8 py-5 font-headline font-black text-primary tracking-widest">#{{ invoice.invoice_number }}</td>
-                                    <td class="px-8 py-5">
-                                        <div class="flex items-center gap-3 justify-end">
-                                            <span class="text-sm font-black text-slate-700">{{ invoice.tenant?.name || 'مشترك عام إداري' }}</span>
-                                            <span class="material-symbols-outlined text-[16px] text-slate-300">account_balance</span>
+                            <tbody class="divide-y divide-white/20">
+                                <tr v-for="invoice in recent_invoices" :key="invoice.id" class="group hover:bg-white/60 transition-all duration-500">
+                                    <td class="px-10 py-7">
+                                        <div class="flex items-center gap-5 justify-end">
+                                            <div class="text-right">
+                                                <h4 class="text-lg font-black text-slate-900 italic tracking-tighter group-hover:translate-x-2 transition-transform uppercase font-inter">{{ invoice.tenant?.name || 'Central Entity' }}</h4>
+                                                <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest italic font-inter opacity-60">{{ invoice.invoice_number }}</p>
+                                            </div>
+                                            <div class="w-12 h-12 rounded-xl bg-slate-900 text-admin flex items-center justify-center shadow-xl group-hover:rotate-6 transition-transform border border-white/10">
+                                                <Building2 class="w-5 h-5" />
+                                            </div>
                                         </div>
                                     </td>
-                                    <td class="px-8 py-5 text-center">
-                                        <div class="inline-flex items-center gap-2 font-headline font-black text-primary bg-slate-100 px-4 py-1.5 rounded-xl border border-slate-200">
-                                            {{ formatNumber(invoice.amount) }}
-                                            <span class="text-[8px] font-black text-slate-400 uppercase">ل.س</span>
+                                    <td class="px-8 py-7 text-center">
+                                        <div class="flex flex-col items-center">
+                                            <span class="text-[13px] font-black text-slate-700 italic font-inter">{{ new Date().toLocaleDateString() }}</span>
+                                            <span class="text-[8px] font-black text-slate-300 uppercase tracking-widest mt-1 font-inter">Fiscal Horizon</span>
                                         </div>
                                     </td>
-                                    <td class="px-8 py-5 text-center">
-                                        <div 
-                                            :class="[
-                                                'inline-flex items-center gap-2 px-4 py-1.5 rounded-xl text-[9px] font-black uppercase border-2 shadow-sm transition-all group-hover:scale-105',
-                                                invoice.status === 'paid' ? 'bg-emerald-500/5 text-emerald-600 border-emerald-500/10' : 'bg-rose-500/5 text-rose-500 border-rose-500/10'
-                                            ]"
-                                        >
-                                            <span class="w-1.5 h-1.5 rounded-full bg-current" :class="invoice.status === 'paid' ? 'animate-pulse' : ''"></span>
-                                            {{ invoice.status === 'paid' ? 'تمت التسوية' : 'قيد المطالبة' }}
+                                    <td class="px-8 py-7 text-center">
+                                        <div class="flex items-baseline justify-center gap-1.5">
+                                            <span class="text-xl font-black text-admin italic font-inter">{{ formatNumber(invoice.amount) }}</span>
+                                            <span class="text-[9px] font-black text-slate-400 uppercase italic font-inter">SAR</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-7 text-center">
+                                        <div class="flex justify-center">
+                                            <span :class="['px-5 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all shadow-sm', invoice.status === 'paid' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-slate-100 text-slate-400 border border-slate-200']">
+                                                {{ invoice.status === 'paid' ? 'Verified Settlement' : 'Awaiting Protocol' }}
+                                            </span>
                                         </div>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                 </div>
+                </div>
 
-                 <!-- Regional Network Nodes Intel -->
-                 <div class="surface-card rounded-[2.5rem] border border-outline-variant/5 shadow-2xl bg-white overflow-hidden border-t-8 border-slate-950">
-                    <div class="p-10 flex justify-between items-center flex-row-reverse border-b border-outline-variant/5">
-                        <h3 class="text-xs font-black text-primary uppercase tracking-[0.3em] leading-none">موزعي الشبكة الإقليميين</h3>
-                        <span class="material-symbols-outlined text-slate-300">corporate_fare</span>
-                    </div>
-                    <div class="divide-y divide-outline-variant/5 px-6 pb-6 h-[450px] overflow-y-auto custom-scrollbar">
-                        <div v-for="tenant in recent_tenants" :key="tenant.id" class="p-6 hover:bg-surface-container-low transition-all flex items-center justify-between flex-row-reverse rounded-2xl">
-                            <div class="flex items-center gap-5 flex-row-reverse text-right">
-                                <div class="w-12 h-12 rounded-xl bg-slate-950 text-white flex items-center justify-center text-lg font-black shadow-2xl border border-white/10 group-hover:rotate-6 transition-transform">
-                                    {{ tenant.name.substring(0,1) }}
-                                </div>
-                                <div>
-                                    <div class="text-[14px] font-black text-primary leading-none">{{ tenant.name }}</div>
-                                    <div class="text-[10px] text-slate-400 font-headline font-black mt-2 tracking-widest uppercase opacity-60">{{ tenant.domain }}</div>
-                                </div>
-                            </div>
-                            <a :href="'http://' + tenant.domain" target="_blank" class="w-10 h-10 flex items-center justify-center bg-white border border-outline-variant/10 rounded-xl transition-all text-slate-400 hover:text-primary hover:scale-110 active:scale-90 shadow-sm">
-                                <span class="material-symbols-outlined text-[20px]">exit_to_app</span>
-                            </a>
-                        </div>
-                        
-                        <div class="p-6">
-                             <button class="w-full py-5 border-2 border-dashed border-slate-200 rounded-[1.5rem] text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] hover:bg-slate-50 hover:text-primary hover:border-primary transition-all active:scale-95 group">
-                                <span class="flex items-center justify-center gap-3">
-                                    <span class="material-symbols-outlined text-[18px]">manage_accounts</span> إدارة قاعدة الموزعين الشاملة
-                                </span>
-                             </button>
-                        </div>
-                    </div>
-                 </div>
             </div>
         </div>
     </InstitutionalLayout>
 </template>
 
 <style scoped>
-.font-headline {
-    font-family: 'Manrope', sans-serif;
+.glass-card {
+    @apply border border-white/40 shadow-glass rounded-[2.5rem] transition-all duration-500;
 }
-.custom-scrollbar::-webkit-scrollbar {
-    width: 3px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 10px;
+.glass-card:hover {
+    @apply border-white/60 shadow-radiant -translate-y-1;
 }
 </style>
