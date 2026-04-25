@@ -1,7 +1,7 @@
 <script setup>
-import { ref, onMounted, Link, router } from '@inertiajs/vue3';
+import { ref, onMounted, Link, router, Head } from '@inertiajs/vue3';
 import { onUnmounted, computed } from 'vue';
-import { Head } from 'lucide-vue-next';;
+import {  } from 'lucide-vue-next';;
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 import axios from 'axios';
 

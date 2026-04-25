@@ -1,7 +1,7 @@
 <script setup>
-import { Link, useForm } from '@inertiajs/vue3';
+import { Link, useForm, Head } from '@inertiajs/vue3';
 import { onMounted } from 'vue';
-import { Head } from 'lucide-vue-next';;
+import {  } from 'lucide-vue-next';;
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 
 const props = defineProps({
