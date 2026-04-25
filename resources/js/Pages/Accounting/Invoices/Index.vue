@@ -1,31 +1,23 @@
 <script setup>
-import {
+import { ref, watch } from 'vue';
+import { Head, Link, router } from '@inertiajs/vue3';
+import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
+import { 
     AlertCircle,
-    ArrowRightLeft,
     BadgeDollarSign,
     Calendar,
     CheckCircle2,
     Clock,
     Edit3,
     Eye,
-    Filter,
-    Link,
-    Plus,
     Receipt,
-    ref,
-    router } from '@inertiajs/vue3';
-import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
-import { pickBy,
-    Search,
-    throttle } from 'lodash';
-import { 
     CreditCard,
     TrendingUp,
     UserCircle,
-    Wallet,
-    watch } from 'vue';
-import { Head
-} from 'lucide-vue-next';;
+    Search,
+    RefreshCcw
+} from 'lucide-vue-next';
+import { pickBy, throttle } from 'lodash';
 
 const props = defineProps({
     invoices: Object,
@@ -299,13 +291,16 @@ const formatCurrency = (amount) => {
 </template>
 
 <style scoped>
+/* Utility classes applied via standard CSS to avoid Tailwind 4 scoping issues with @apply */
 .glass-card {
-    @apply border border-white/40 shadow-glass rounded-[2.5rem] transition-all duration-500;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    border-radius: 2.5rem;
+    transition: all 0.5s ease;
 }
 .glass-card:hover {
-    @apply border-white/60 shadow-radiant -translate-y-1;
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    transform: translateY(-4px);
 }
 </style>
-
-
-
