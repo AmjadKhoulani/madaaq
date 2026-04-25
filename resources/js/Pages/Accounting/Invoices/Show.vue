@@ -233,24 +233,5 @@ const formatDate = (date) => {
     </InstitutionalLayout>
 </template>
 
-<style scoped>
-.font-headline {
-    font-family: 'Manrope', sans-serif;
-}
-@media print {
-    body {
-        background: white !important;
-    }
-    .print\:hidden {
-        display: none !important;
-    }
-    #invoice-artifact {
-        padding: 0 !important;
-        margin: 0 !important;
-        border: none !important;
-        box-shadow: none !important;
-        max-width: 100% !important;
-    }
-}
-</style>
+
 

@@ -96,20 +96,6 @@ const printVouchers = () => {
     </div>
 </template>
 
-<style scoped>
-.font-headline {
-    font-family: 'Manrope', sans-serif;
-}
-@media print {
-    body {
-        margin: 0;
-        padding: 0;
-        -webkit-print-color-adjust: exact;
-    }
-    .print\:hidden {
-        display: none !important;
-    }
-}
-</style>
+
 
 

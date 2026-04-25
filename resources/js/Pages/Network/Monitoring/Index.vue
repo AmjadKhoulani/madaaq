@@ -261,20 +261,6 @@ const formatTime = (timeString) => {
     </InstitutionalLayout>
 </template>
 
-<style scoped>
-.custom-scrollbar::-webkit-scrollbar {
-    width: 3px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-}
-.font-headline {
-    font-family: 'Manrope', sans-serif;
-}
-</style>
+
 
 

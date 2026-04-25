@@ -200,24 +200,6 @@ const clearHistory = () => {
     </InstitutionalLayout>
 </template>
 
-<style scoped>
-.font-headline {
-    font-family: 'Manrope', sans-serif;
-}
-.custom-scrollbar::-webkit-scrollbar {
-    height: 4px;
-    width: 6px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-    background: #020617;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #1e293b;
-    border-radius: 10px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #2563eb;
-}
-</style>
+
 
 

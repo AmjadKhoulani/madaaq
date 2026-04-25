@@ -463,11 +463,6 @@ const formatDate = (date) => {
     </InstitutionalLayout>
 </template>
 
-<style scoped>
-/* High-density grid refinements */
-.font-headline {
-    letter-spacing: -0.015em;
-}
-</style>
+
 
 

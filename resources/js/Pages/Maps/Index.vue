@@ -156,10 +156,5 @@ const selectedNode = ref(null);
     </InstitutionalLayout>
 </template>
 
-<style scoped>
-/* High-performance Map Aesthetics */
-.font-headline {
-    font-family: 'Manrope', sans-serif;
-}
-</style>
+
 

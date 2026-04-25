@@ -143,9 +143,5 @@ const deleteProfile = (id) => {
     </InstitutionalLayout>
 </template>
 
-<style scoped>
-.font-headline {
-    font-family: 'Manrope', sans-serif;
-}
-</style>
+
 

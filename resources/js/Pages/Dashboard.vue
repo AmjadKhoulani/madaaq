@@ -343,11 +343,4 @@ const formatNumber = (num) => {
     </InstitutionalLayout>
 </template>
 
-<style scoped>
-.glass-card {
-    @apply border border-white/40 shadow-glass rounded-[2.5rem] transition-all duration-500;
-}
-.glass-card:hover {
-    @apply border-white/60 shadow-radiant -translate-y-1;
-}
-</style>
+

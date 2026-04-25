@@ -140,20 +140,5 @@ const printArtifact = () => {
     </div>
 </template>
 
-<style scoped>
-.font-headline {
-    font-family: 'Manrope', sans-serif;
-}
-@media print {
-    body {
-        margin: 0 !important;
-        padding: 0 !important;
-        background: white !important;
-        -webkit-print-color-adjust: exact;
-    }
-    .print\:hidden {
-        display: none !important;
-    }
-}
-</style>
+
 

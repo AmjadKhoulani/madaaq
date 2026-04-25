@@ -205,10 +205,4 @@ const submit = () => {
     </div>
 </template>
 
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap');
 
-.font-tajawal {
-    font-family: 'Tajawal', sans-serif;
-}
-</style>
