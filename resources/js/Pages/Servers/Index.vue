@@ -16,7 +16,7 @@ import {
     RefreshCcw,
     CheckCircle2,
     XCircle,
-    Hub,
+    GitBranch,
     Zap
 } from 'lucide-vue-next';
 
@@ -76,7 +76,7 @@ const formatNumber = (num) => {
                 <div class="flex items-center gap-6">
                     <div class="glass-card px-6 py-3 bg-white/40 flex items-center gap-4">
                         <div class="w-10 h-10 rounded-xl bg-vendor/10 flex items-center justify-center text-vendor shadow-sm">
-                            <Hub class="w-5 h-5 stroke-[2.5]" />
+                            <GitBranch class="w-5 h-5 stroke-[2.5]" />
                         </div>
                         <div class="text-right">
                             <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">إجمالي العقد</p>
