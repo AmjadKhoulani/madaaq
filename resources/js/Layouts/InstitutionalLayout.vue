@@ -8,19 +8,19 @@ import {
     Activity, 
     Server, 
     TowerControl, 
-    Hub, 
+    GitBranch, 
     Network, 
-    Inventory2, 
+    Package, 
     Terminal, 
     CloudSync, 
     Wallet, 
-    Analytics, 
-    HistoryEdu, 
+    BarChart3, 
+    History, 
     Badge, 
     Settings, 
-    WebTraffic,
+    Globe,
     Bell,
-    MonitorHeart,
+    Heart,
     Search,
     LogOut
 } from 'lucide-vue-next';
@@ -62,8 +62,8 @@ const navigationGroups = [
         title: 'الحوكمة المالية والنزاهة',
         items: [
             { name: 'إدارة السيولة والتحصيل', href: route('accounting.invoices.index'), icon: 'Wallet', current: route().current('accounting.invoices.*') },
-            { name: 'استخبارات الأداء المالي', href: route('accounting.reports.index'), icon: 'Analytics', current: route().current('accounting.reports.*') },
-            { name: 'سجل تتبع النزاهة (Audit)', href: route('activity-logs.index'), icon: 'HistoryEdu', current: route().current('activity-logs.*') },
+            { name: 'استخبارات الأداء المالي', href: route('accounting.reports.index'), icon: 'BarChart3', current: route().current('accounting.reports.*') },
+            { name: 'سجل تتبع النزاهة (Audit)', href: route('activity-logs.index'), icon: 'History', current: route().current('activity-logs.*') },
         ]
     },
     {
@@ -78,7 +78,7 @@ const navigationGroups = [
 
 // Simple icon mapper for lucide
 const icons = {
-    LayoutDashboard, Users, Zap, Activity, Server, TowerControl, Network, Terminal, CloudSync, Wallet, Analytics, HistoryEdu, Badge, Settings
+    LayoutDashboard, Users, Zap, Activity, Server, TowerControl, Network, Terminal, CloudSync, Wallet, BarChart3, History, Badge, Settings
 };
 </script>
 

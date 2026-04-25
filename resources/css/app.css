@@ -1,2 +1,75 @@
 @import "tailwindcss";
-body { background: red; }
+
+/* 
+   MadaaQ DESIGN SYSTEM v4 - RADIANT MONOLITH
+   Production-Safe Build configuration
+*/
+
+@theme {
+    /* Core Brand Colors */
+    --color-vendor: #4f46e5;
+    --color-admin: #7c3aed;
+    --color-portal: #0284c7;
+    
+    /* Functional Colors */
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-error: #ef4444;
+    
+    /* Surfaces */
+    --color-surface-glass: rgba(255, 255, 255, 0.75);
+    
+    /* Shadows */
+    --shadow-glass: inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+    --shadow-radiant: 0 20px 50px -12px rgba(0, 0, 0, 0.1);
+    --shadow-vendor-glow: 0 0 25px rgba(79, 70, 229, 0.35);
+    --shadow-admin-glow: 0 0 25px rgba(124, 58, 237, 0.35);
+
+    /* Fonts */
+    --font-tajawal: "Tajawal", "sans-serif";
+    --font-rubik: "Rubik", "sans-serif";
+    --font-inter: "Inter", "sans-serif";
+}
+
+@layer base {
+    body {
+        @apply bg-slate-50 text-slate-800 font-rubik antialiased;
+        background-image: radial-gradient(at top left, #f8fafc, #f1f5f9, #e2e8f0);
+        background-attachment: fixed;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-tajawal font-bold tracking-tight text-slate-900;
+    }
+}
+
+@layer components {
+    .glass-card {
+        @apply bg-surface-glass backdrop-blur-xl border border-white/40 shadow-glass rounded-3xl transition-all duration-500;
+    }
+    
+    .input-premium {
+        @apply w-full px-5 py-3.5 bg-white/50 border border-slate-200/60 rounded-2xl focus:ring-4 focus:ring-vendor/10 focus:border-vendor transition-all outline-none;
+    }
+
+    .btn-radiant {
+        @apply px-6 py-3 rounded-2xl font-bold text-white transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] shadow-lg;
+    }
+    
+    .btn-vendor { 
+        @apply shadow-vendor-glow;
+        background-image: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+    }
+    
+    .btn-admin { 
+        @apply shadow-admin-glow;
+        background-image: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { @apply bg-slate-300/50 rounded-full hover:bg-slate-400/50 transition-colors; }
+
+/* RTL Tweaks */
+[dir="rtl"] .sidebar-icon { @apply ml-3 mr-0; }
