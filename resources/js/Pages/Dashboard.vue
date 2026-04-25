@@ -16,6 +16,13 @@ import {
     PlusCircle,
     Calendar,
     TrendingUp,
+    Building2
+} from 'lucide-vue-next';
+
+Chart.register(...registerables);
+
+const props = defineProps({
+    stats: Object,
     recent_invoices: Array,
     recent_tenants: Array,
     trial_users: Array,
@@ -289,6 +296,7 @@ const formatNumber = (num) => {
                                     <th class="px-8 py-8 text-center">أفق الإصدار</th>
                                     <th class="px-8 py-8 text-center">القيمة الاستحقاقية</th>
                                     <th class="px-8 py-8 text-center">وضعية التسوية</th>
+                                    <th class="px-10 py-8"></th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-white/20">
@@ -323,6 +331,7 @@ const formatNumber = (num) => {
                                             </span>
                                         </div>
                                     </td>
+                                    <td class="px-10 py-7"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -342,6 +351,3 @@ const formatNumber = (num) => {
     @apply border-white/60 shadow-radiant -translate-y-1;
 }
 </style>
-
-
-
