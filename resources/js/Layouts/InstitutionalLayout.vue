@@ -38,7 +38,7 @@ const navigationGroups = [
             { name: 'مركز العمليات الرئيسي', href: route('dashboard'), icon: 'LayoutDashboard', current: route().current('dashboard') },
             { name: 'حوكمة هويات المشتركين', href: route('crm.clients.index'), icon: 'Users', current: route().current('crm.clients.*') },
             { name: 'مركز المراقبة (NOC)', href: route('network.monitoring.index'), icon: 'Activity', current: route().current('network.monitoring.*') },
-        ] group items
+        ]
     },
     {
         title: 'البنية التحتية المركزية',
