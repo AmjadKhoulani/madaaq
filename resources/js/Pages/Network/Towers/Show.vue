@@ -1,6 +1,6 @@
 <script setup>
-import { ref, Link, router, Head } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { Link, router, Head } from '@inertiajs/vue3';
+import { computedref } from 'vue';
 import {  } from 'lucide-vue-next';;
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 

@@ -1,6 +1,6 @@
 <script setup>
-import { ref, Head, Link } from '@inertiajs/vue3';
-import { watch, computed } from 'vue';
+import { Head, Link } from '@inertiajs/vue3';
+import { watch, computed, ref } from 'vue';
 
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 

@@ -1,6 +1,6 @@
 <script setup>
-import { ref, Link, router, Head } from '@inertiajs/vue3';
-import { watch } from 'vue';
+import { Link, router, Head } from '@inertiajs/vue3';
+import { watchref } from 'vue';
 import {  } from 'lucide-vue-next';;
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 import { pickBy } from 'lodash';
