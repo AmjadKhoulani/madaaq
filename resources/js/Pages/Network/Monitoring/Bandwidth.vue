@@ -1,6 +1,7 @@
 <script setup>
-import { ref, watch } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { ref, Link, router } from '@inertiajs/vue3';
+import { watch } from 'vue';
+import { Head } from 'lucide-vue-next';;
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 import { pickBy } from 'lodash';
 
@@ -219,5 +220,6 @@ const stats = {
     font-family: 'Manrope', sans-serif;
 }
 </style>
+
 
 

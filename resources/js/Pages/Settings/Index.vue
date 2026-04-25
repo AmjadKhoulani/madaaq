@@ -1,30 +1,29 @@
 <script setup>
 import { ref, watch } from 'vue';
-import { useForm, Head } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 import axios from 'axios';
 import { debounce } from 'lodash';
 import { 
-    Settings, 
-    Zap, 
-    MessageSquare, 
-    CreditCard, 
-    Globe, 
-    ShieldCheck, 
-    CloudSync, 
-    Image as ImageIcon,
-    Currency,
-    TrendingUp,
-    ShieldAlert,
-    Phone,
-    Mail,
-    Lock,
-    UserCircle,
-    CheckCircle2,
     AlertCircle,
-    RefreshCcw,
+    CheckCircle2,
+    CloudSync,
+    CreditCard,
     Database,
-    Shield
+    Globe,
+    Settings,
+    Image as ImageIcon,
+    Lock,
+    Mail,
+    MessageSquare,
+    Phone,
+    RefreshCcw,
+    Shield,
+    ShieldAlert,
+    ShieldCheck,
+    TrendingUp,
+    UserCircle,
+    Zap
 } from 'lucide-vue-next';
 
 const props = defineProps({
@@ -422,11 +421,11 @@ const tabs = [
                                          </div>
 
                                          <div class="p-10 bg-slate-900 text-white rounded-[2rem] border border-white/10 flex items-start gap-8 flex-row-reverse shadow-2xl relative overflow-hidden group">
-                                              <div class="absolute inset-0 bg-vendor/5 animate-pulse opacity-20"></div>
-                                              <AlertCircle class="text-vendor w-10 h-10 mt-1 shrink-0 group-hover:rotate-12 transition-transform" />
-                                              <p class="text-[14px] font-bold leading-relaxed text-right opacity-80 italic">
-                                                  بمجرد تأكيد البروتوكول، ستكون البوابة متاحة عالمياً عبر المسار <span class="font-black text-vendor font-inter text-lg">{{ form.subdomain || 'prefix' }}.madaaq.com</span>. يرجى الانتظار لدقائق معدودة لاتمام مزامنة الـ <span class="text-vendor font-inter">DNS</span>.
-                                              </p>
+                                               <div class="absolute inset-0 bg-vendor/5 animate-pulse opacity-20"></div>
+                                               <AlertCircle class="text-vendor w-10 h-10 mt-1 shrink-0 group-hover:rotate-12 transition-transform" />
+                                               <p class="text-[14px] font-bold leading-relaxed text-right opacity-80 italic">
+                                                   بمجرد تأكيد البروتوكول، ستكون البوابة متاحة عالمياً عبر المسار <span class="font-black text-vendor font-inter text-lg">{{ form.subdomain || 'prefix' }}.madaaq.com</span>. يرجى الانتظار لدقائق معدودة لاتمام مزامنة الـ <span class="text-vendor font-inter">DNS</span>.
+                                               </p>
                                          </div>
                                      </div>
                                 </div>
@@ -516,4 +515,3 @@ const tabs = [
     @apply border-white/60 shadow-radiant -translate-y-1;
 }
 </style>
-

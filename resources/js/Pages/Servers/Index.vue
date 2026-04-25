@@ -4,19 +4,19 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 import axios from 'axios';
 import { 
-    Server, 
-    Plus, 
-    Cpu, 
-    Wifi, 
-    Activity, 
-    Terminal, 
-    Settings2, 
-    Power, 
-    MapPin, 
-    RefreshCcw,
+    Activity,
     CheckCircle2,
-    XCircle,
+    Cpu,
     GitBranch,
+    MapPin,
+    Plus,
+    Power,
+    RefreshCcw,
+    Server,
+    Settings2,
+    Terminal,
+    Wifi,
+    XCircle,
     Zap
 } from 'lucide-vue-next';
 
@@ -202,4 +202,3 @@ const formatNumber = (num) => {
     @apply border-white/60 shadow-radiant -translate-y-1;
 }
 </style>
-

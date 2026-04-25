@@ -1,6 +1,7 @@
 <script setup>
+import { router } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import { Head, router } from '@inertiajs/vue3';
+import { Head } from 'lucide-vue-next';;
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 import axios from 'axios';
 
@@ -218,4 +219,5 @@ const clearHistory = () => {
     background: #2563eb;
 }
 </style>
+
 

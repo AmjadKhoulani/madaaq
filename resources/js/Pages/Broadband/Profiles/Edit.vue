@@ -1,6 +1,7 @@
 <script setup>
+import { Head, Link } from '@inertiajs/vue3';
 import { onMounted } from 'vue';
-import { useForm, Head, Link } from '@inertiajs/vue3';
+import { useForm } from 'lucide-vue-next';;
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 
 const props = defineProps({
@@ -276,4 +277,5 @@ const isTargetSelected = (type, id) => {
         </div>
     </InstitutionalLayout>
 </template>
+
 

@@ -3,28 +3,28 @@ import { ref, watch } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 import { 
-    TowerControl as TowerIcon, 
-    MapPin, 
-    Plus, 
-    Search, 
-    Settings2, 
-    Wifi, 
-    Zap, 
-    Activity, 
-    MoreVertical,
-    Trash2,
-    Eye,
-    Edit3,
-    CheckCircle2,
+    Activity,
     AlertTriangle,
-    XCircle,
-    Building2,
-    Inbox,
-    Navigation,
-    Router as RouterIcon,
     BatteryMedium,
+    Building2,
+    CheckCircle2,
+    Edit3,
+    Eye,
+    Inbox,
+    MapPin,
+    MoreVertical,
+    Navigation,
+    Plus,
+    Power,
+    TowerControl as TowerIcon,
+    Router as RouterIcon,
+    Search,
+    Settings2,
     Sun,
-    Power
+    Trash2,
+    Wifi,
+    XCircle,
+    Zap
 } from 'lucide-vue-next';
 
 const props = defineProps({
@@ -312,4 +312,3 @@ const deleteTower = (id) => {
     @apply border-white/60 shadow-radiant -translate-y-1;
 }
 </style>
-

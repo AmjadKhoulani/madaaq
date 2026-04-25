@@ -1,6 +1,7 @@
 <script setup>
-import { ref, watch } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { ref, Link, router } from '@inertiajs/vue3';
+import { watch } from 'vue';
+import { Head } from 'lucide-vue-next';;
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 import { pickBy, throttle } from 'lodash';
 
@@ -329,4 +330,5 @@ const getStatusClass = (status) => {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(15 23 42 / 0.05)'%3E%3Cpath d='M0 .5H31.5V32'/%3E%3C/svg%3E");
 }
 </style>
+
 

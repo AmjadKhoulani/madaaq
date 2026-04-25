@@ -1,26 +1,31 @@
 <script setup>
-import { ref, watch } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
-import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
-import { pickBy, throttle } from 'lodash';
-import { 
-    CreditCard, 
-    Plus, 
-    Search, 
-    Filter, 
-    CheckCircle2, 
-    Clock, 
-    AlertCircle, 
-    Wallet, 
-    TrendingUp, 
+import {
+    AlertCircle,
     ArrowRightLeft,
-    Eye,
-    Edit3,
-    Receipt,
-    UserCircle,
+    BadgeDollarSign,
     Calendar,
-    BadgeDollarSign
-} from 'lucide-vue-next';
+    CheckCircle2,
+    Clock,
+    Edit3,
+    Eye,
+    Filter,
+    Link,
+    Plus,
+    Receipt,
+    ref,
+    router } from '@inertiajs/vue3';
+import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
+import { pickBy,
+    Search,
+    throttle } from 'lodash';
+import { 
+    CreditCard,
+    TrendingUp,
+    UserCircle,
+    Wallet,
+    watch } from 'vue';
+import { Head
+} from 'lucide-vue-next';;
 
 const props = defineProps({
     invoices: Object,
@@ -301,4 +306,6 @@ const formatCurrency = (amount) => {
     @apply border-white/60 shadow-radiant -translate-y-1;
 }
 </style>
+
+
 

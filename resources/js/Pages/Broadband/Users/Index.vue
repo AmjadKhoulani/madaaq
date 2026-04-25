@@ -1,24 +1,24 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 import { 
-    Wifi, 
-    UserPlus, 
-    Search, 
-    Fingerprint, 
-    Download, 
-    Upload, 
-    CheckCircle2, 
-    Clock, 
-    ShieldAlert, 
-    Activity, 
-    MoreVertical,
-    Eye,
+    Wifi,
+    Search,
+    ShieldAlert,
+    Upload,
+    UserPlus,
     UserX,
-    Radio,
+    Zap,
+    Activity,
+    CheckCircle2,
+    Clock,
+    Download,
+    Eye,
+    Fingerprint,
+    MoreVertical,
     Network,
-    Zap
+    Radio
 } from 'lucide-vue-next';
 
 const props = defineProps({
@@ -189,4 +189,3 @@ const getStatusDetails = (status) => {
     @apply border-white/60 shadow-radiant -translate-y-1;
 }
 </style>
-

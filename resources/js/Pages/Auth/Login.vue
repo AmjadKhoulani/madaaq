@@ -1,19 +1,19 @@
 <script setup>
-import { useForm, Head, Link } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import { 
-    ShieldCheck, 
-    Mail, 
-    Lock, 
-    Eye, 
-    EyeOff, 
-    ChevronLeft, 
+    Zap,
+    CheckCircle2,
+    Users,
+    Activity,
+    Mail,
+    Lock,
+    Eye,
+    EyeOff,
+    ChevronLeft,
     Fingerprint,
     Cpu,
-    Globe,
-    Zap,
-    Users,
-    CheckCircle2
+    Globe
 } from 'lucide-vue-next';
 
 const form = useForm({
@@ -212,4 +212,3 @@ const submit = () => {
     font-family: 'Tajawal', sans-serif;
 }
 </style>
-

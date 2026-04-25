@@ -13,7 +13,6 @@ import {
     Lock, 
     Edit3, 
     UserX,
-    UserCircle,
     ChevronLeft,
     ChevronRight,
     Search
@@ -189,4 +188,3 @@ const getRoleDetails = (roleName) => {
     @apply border-white/60 shadow-radiant -translate-y-1;
 }
 </style>
-

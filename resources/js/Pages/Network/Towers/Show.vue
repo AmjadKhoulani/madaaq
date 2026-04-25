@@ -1,6 +1,7 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { ref, Link, router } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { Head } from 'lucide-vue-next';;
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 
 const props = defineProps({
@@ -468,4 +469,5 @@ const formatDate = (date) => {
     letter-spacing: -0.015em;
 }
 </style>
+
 

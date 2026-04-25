@@ -1,6 +1,7 @@
 <script setup>
+import { Link, useForm } from '@inertiajs/vue3';
 import { onMounted } from 'vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head } from 'lucide-vue-next';;
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 
 const props = defineProps({
@@ -274,4 +275,5 @@ const submit = () => {
     font-family: 'Manrope', sans-serif;
 }
 </style>
+
 

@@ -1,19 +1,19 @@
 <script setup>
+import { onMounted, ref } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 import { 
-    Users, 
-    ArrowUpRight, 
-    Activity, 
-    CreditCard, 
-    TowerControl, 
-    Server,
-    Zap,
+    Activity,
     AlertCircle,
+    ArrowUpRight,
+    CreditCard,
+    Users,
     Monitor,
-    TrendingUp
+    Server,
+    TowerControl,
+    TrendingUp,
+    Zap
 } from 'lucide-vue-next';
-import { onMounted, ref } from 'vue';
 import Chart from 'chart.js/auto';
 
 const props = defineProps({
@@ -169,7 +169,7 @@ onMounted(() => {
             <!-- Bento Operational Workspace -->
             <div class="grid grid-cols-12 gap-10">
                 
-                <!-- Performance BarChart3 Shell -->
+                <!-- Performance Chart Shell -->
                 <div class="col-span-12 lg:col-span-8 glass-card p-10 bg-white/60">
                     <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
                         <div>
@@ -285,4 +285,3 @@ onMounted(() => {
     @apply border-white/60 shadow-radiant -translate-y-1;
 }
 </style>
-

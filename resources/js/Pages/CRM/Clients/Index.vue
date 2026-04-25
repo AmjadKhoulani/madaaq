@@ -4,22 +4,22 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 import debounce from 'lodash/debounce';
 import { 
-    Users, 
-    UserPlus, 
-    Search, 
-    Filter, 
-    CheckCircle2, 
-    XCircle, 
-    Activity, 
-    ShieldCheck, 
-    Zap, 
-    ArrowRightLeft,
-    Clock,
-    MoreVertical,
-    Eye,
-    Edit3,
+    Users,
+    Search,
+    ShieldCheck,
     UserCircle,
-    Package
+    UserPlus,
+    Activity,
+    ArrowRightLeft,
+    CheckCircle2,
+    Clock,
+    Edit3,
+    Eye,
+    Filter,
+    MoreVertical,
+    Package,
+    XCircle,
+    Zap
 } from 'lucide-vue-next';
 
 const props = defineProps({
@@ -243,4 +243,3 @@ const getStatusDetails = (status) => {
     @apply border-white/60 shadow-radiant -translate-y-1;
 }
 </style>
-

@@ -1,6 +1,7 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { useForm, Head, Link } from '@inertiajs/vue3';
+import { ref, Head, Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { useForm } from 'lucide-vue-next';;
 import InstitutionalLayout from '@/Layouts/InstitutionalLayout.vue';
 
 const props = defineProps({
@@ -324,4 +325,5 @@ const submit = () => {
         </form>
     </InstitutionalLayout>
 </template>
+
 

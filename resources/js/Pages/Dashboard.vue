@@ -16,14 +16,6 @@ import {
     PlusCircle,
     Calendar,
     TrendingUp,
-    Building2,
-    Settings
-} from 'lucide-vue-next';
-
-Chart.register(...registerables);
-
-const props = defineProps({
-    stats: Object,
     recent_invoices: Array,
     recent_tenants: Array,
     trial_users: Array,
@@ -350,4 +342,6 @@ const formatNumber = (num) => {
     @apply border-white/60 shadow-radiant -translate-y-1;
 }
 </style>
+
+
 
