@@ -16,7 +16,7 @@
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
         @inertiaHead
     </head>
-    <body class="h-full selection:bg-vendor/10 selection:text-vendor antialiased bg-mesh-gradient overflow-x-hidden font-rubik relative">
+    <body class="h-full selection:bg-vendor/10 selection:text-vendor antialiased bg-slate-50 overflow-x-hidden font-rubik relative">
         <!-- Persistent Floating Orbs for the entire Inertia App -->
         <div class="bg-orb top-[-10%] left-[-10%] w-[45%] h-[45%] bg-vendor/10"></div>
         <div class="bg-orb bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-blue-400/10"></div>
