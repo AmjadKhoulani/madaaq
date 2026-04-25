@@ -156,7 +156,7 @@ const formatDate = (date) => {
                         <!-- Uplink Gateway -->
                         <div class="space-y-8">
                             <h4 class="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-3">
-                                <span class="material-symbols-outlined text-primary text-[20px]">hub</span>
+                                <span class="material-symbols-outlined text-primary text-[20px]">GitBranch</span>
                                 بوابة الارتباط (Uplink)
                             </h4>
                             <div v-if="tower.mikrotik_server" class="p-8 bg-primary text-white rounded-lg shadow-2xl relative overflow-hidden group">
@@ -363,7 +363,7 @@ const formatDate = (date) => {
                          <div class="p-10 surface-card rounded-lg shadow-sm border border-outline-variant/10">
                              <h4 class="text-xl font-black text-primary uppercase tracking-widest mb-10 flex items-center gap-4">
                                 <div class="w-12 h-12 bg-secondary-container/20 text-on-secondary-container rounded-lg flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-[24px]">analytics</span>
+                                    <span class="material-symbols-outlined text-[24px]">BarChart3</span>
                                 </div>
                                 الاستثمار الرأسمالي (CAPEX)
                              </h4>
@@ -389,7 +389,7 @@ const formatDate = (date) => {
                             <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
                                 <div class="flex items-center gap-6">
                                     <div class="w-16 h-16 bg-white/10 rounded-lg flex items-center justify-center border border-white/10">
-                                        <span class="material-symbols-outlined text-[32px] text-white/80">hub</span>
+                                        <span class="material-symbols-outlined text-[32px] text-white/80">GitBranch</span>
                                     </div>
                                     <div>
                                         <p class="text-[10px] font-black text-white/50 uppercase tracking-widest mb-1.5">بوابة التحكم والارتباط (Master Gateway)</p>
@@ -468,3 +468,4 @@ const formatDate = (date) => {
     letter-spacing: -0.015em;
 }
 </style>
+

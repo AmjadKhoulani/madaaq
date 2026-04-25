@@ -226,7 +226,7 @@ const formatTime = (timeString) => {
 
                             <div v-if="activeAlerts.length === 0" class="flex flex-col items-center justify-center h-full text-center py-20 opacity-30">
                                 <div class="w-20 h-20 bg-emerald-500/10 rounded-[2rem] flex items-center justify-center mb-6 text-emerald-500 border border-emerald-500/10 shadow-2xl">
-                                    <span class="material-symbols-outlined text-[40px]">security</span>
+                                    <span class="material-symbols-outlined text-[40px]">Shield</span>
                                 </div>
                                 <h4 class="text-sm font-black uppercase tracking-widest text-emerald-500 mb-2 leading-none">نزاهة الشبكة 100%</h4>
                                 <p class="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] italic">لا توجد ثغرات أو أعطال في النطاق</p>
@@ -275,3 +275,4 @@ const formatTime = (timeString) => {
     font-family: 'Manrope', sans-serif;
 }
 </style>
+

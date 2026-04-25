@@ -188,3 +188,4 @@ const submit = () => {
     font-family: 'Manrope', sans-serif;
 }
 </style>
+

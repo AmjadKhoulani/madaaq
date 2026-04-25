@@ -75,7 +75,7 @@ const deleteRole = (id) => {
                                 </td>
                                 <td class="px-10 py-10 text-center border-r border-outline-variant/5">
                                     <div class="inline-flex items-center gap-4 px-8 py-4 bg-white border-2 border-slate-200 rounded-[1.5rem] shadow-xl group-hover:border-primary transition-all">
-                                        <span class="material-symbols-outlined text-primary text-[24px]">groups</span>
+                                        <span class="material-symbols-outlined text-primary text-[24px]">Users</span>
                                         <span class="text-2xl font-headline font-black text-primary leading-none">{{ role.users_count }}</span>
                                     </div>
                                 </td>
@@ -111,7 +111,7 @@ const deleteRole = (id) => {
                         <p class="text-[12px] font-black text-slate-400 uppercase tracking-[0.4em] max-w-sm leading-relaxed italic opacity-70">لم يتم تعريف أي مستويات نفاذ ضمن مصفوفة الحوكمة. ابدأ بروتوكول Inject Role الأول.</p>
                     </div>
                     <Link :href="route('roles.create')" class="px-16 py-8 bg-primary text-white rounded-3xl font-black text-xs uppercase tracking-[0.4em] shadow-[0_30px_60px_rgba(37,99,235,0.25)] hover:bg-emerald-600 hover:-translate-y-2 transition-all active:scale-95 border border-white/10 flex items-center gap-6">
-                        <span class="material-symbols-outlined text-[32px]">security</span> تعريف أول دور
+                        <span class="material-symbols-outlined text-[32px]">Shield</span> تعريف أول دور
                     </Link>
                 </div>
 
@@ -146,3 +146,4 @@ const deleteRole = (id) => {
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
+

@@ -10,7 +10,7 @@ const props = defineProps({
 const form = useForm({
     domain: '',
     type: 'domain',
-    reason: 'Restricted from Top Analytics'
+    reason: 'Restricted from Top BarChart3'
 });
 
 const blockDomain = (domain) => {
@@ -47,12 +47,12 @@ const formatNumber = (num) => {
                 </div>
                 
                 <div class="flex items-center gap-3 p-2 bg-white rounded-2xl border border-outline-variant/10 shadow-2xl">
-                    <Link :href="route('network.website.analytics', { period: '7d' })" 
+                    <Link :href="route('network.website.BarChart3', { period: '7d' })" 
                           class="px-8 py-3 rounded-xl text-[10px] font-black transition-all text-center uppercase tracking-[0.2em]"
                           :class="period === '7d' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'text-slate-400 hover:text-primary hover:bg-slate-50'">
                         دورة 07 أيام
                     </Link>
-                    <Link :href="route('network.website.analytics', { period: '30d' })" 
+                    <Link :href="route('network.website.BarChart3', { period: '30d' })" 
                           class="px-8 py-3 rounded-xl text-[10px] font-black transition-all text-center uppercase tracking-[0.2em]"
                           :class="period === '30d' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'text-slate-400 hover:text-primary hover:bg-slate-50'">
                         دورة 30 يوماً
@@ -60,7 +60,7 @@ const formatNumber = (num) => {
                 </div>
             </div>
 
-            <!-- Resolution Analytics Ledger -->
+            <!-- Resolution BarChart3 Ledger -->
             <div class="surface-card rounded-[2.5rem] overflow-hidden shadow-2xl border border-outline-variant/5 bg-white">
                 <div class="p-10 border-b border-slate-50 bg-slate-50/50 flex items-center justify-between flex-row-reverse">
                     <div class="flex items-center gap-4 justify-end">
@@ -165,3 +165,4 @@ const formatNumber = (num) => {
     font-family: 'Manrope', sans-serif;
 }
 </style>
+

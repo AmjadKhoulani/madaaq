@@ -6,7 +6,7 @@ import {
     ShieldCheck, 
     ShieldAlert, 
     UserCog, 
-    SupportAgent, 
+    UserCircle, 
     Mail, 
     Phone, 
     CheckCircle2, 
@@ -36,7 +36,7 @@ const getRoleDetails = (roleName) => {
         'super-admin': { label: 'المدير السيادي المطلق', class: 'text-vendor bg-vendor/10 border-vendor/20 shadow-vendor/10', icon: ShieldCheck },
         'admin': { label: 'مدير العمليات المركزية', class: 'text-indigo-600 bg-indigo-500/10 border-indigo-500/20 shadow-indigo-500/10', icon: UserCog },
         'operator': { label: 'مشغل المصفوفة الفنية', class: 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20 shadow-emerald-500/10', icon: ShieldCheck },
-        'support': { label: 'وحدة الدعم اللوجستي', class: 'text-amber-600 bg-amber-500/10 border-amber-500/20 shadow-amber-500/10', icon: SupportAgent },
+        'support': { label: 'وحدة الدعم اللوجستي', class: 'text-amber-600 bg-amber-500/10 border-amber-500/20 shadow-amber-500/10', icon: UserCircle },
     };
     return roles[roleName.toLowerCase()] || { label: roleName, class: 'text-slate-500 bg-slate-500/10 border-slate-500/20', icon: UserCircle };
 };
@@ -189,3 +189,4 @@ const getRoleDetails = (roleName) => {
     @apply border-white/60 shadow-radiant -translate-y-1;
 }
 </style>
+

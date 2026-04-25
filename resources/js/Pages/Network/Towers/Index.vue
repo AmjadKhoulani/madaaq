@@ -312,3 +312,4 @@ const deleteTower = (id) => {
     @apply border-white/60 shadow-radiant -translate-y-1;
 }
 </style>
+

@@ -81,7 +81,7 @@ const submit = () => {
             </div>
 
             <form @submit.prevent="submit" class="space-y-8">
-                <!-- 1. Hub Identity Matrix -->
+                <!-- 1. GitBranch Identity Matrix -->
                 <div class="surface-card p-10 rounded-lg">
                     <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] mb-10 flex items-center gap-3">
                         <span class="material-symbols-outlined text-primary text-[20px]">id_card</span>
@@ -251,7 +251,7 @@ const submit = () => {
                 <!-- 4. Network Uplink Topology -->
                 <div class="surface-card p-10 rounded-lg">
                     <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] mb-10 flex items-center gap-3">
-                        <span class="material-symbols-outlined text-primary text-[20px]">hub</span>
+                        <span class="material-symbols-outlined text-primary text-[20px]">GitBranch</span>
                         طوبوغرافيا الارتباط الشبكي (Uplink)
                     </h3>
 
@@ -351,3 +351,4 @@ const submit = () => {
         </div>
     </InstitutionalLayout>
 </template>
+

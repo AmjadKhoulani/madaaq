@@ -33,14 +33,14 @@ const isPermissionSelected = (id) => {
 
 // Group permissions by category (assuming naming convention like 'clients.index' or similar)
 const groupedPermissions = computed(() => {
-    const groups = {};
+    const Users = {};
     props.permissions.forEach(p => {
         const parts = p.name.split('.');
         const category = parts.length > 1 ? parts[0] : 'general';
-        if (!groups[category]) groups[category] = [];
-        groups[category].push(p);
+        if (!Users[category]) Users[category] = [];
+        Users[category].push(p);
     });
-    return groups;
+    return Users;
 });
 
 import { computed } from 'vue';
@@ -163,3 +163,4 @@ import { computed } from 'vue';
         </div>
     </InstitutionalLayout>
 </template>
+

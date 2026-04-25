@@ -147,3 +147,4 @@ const getStatusDetails = (status) => {
     font-family: 'Manrope', sans-serif;
 }
 </style>
+

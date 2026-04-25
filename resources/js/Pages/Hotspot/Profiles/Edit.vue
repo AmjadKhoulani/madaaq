@@ -28,7 +28,7 @@ onMounted(() => {
 const techTypes = [
     { value: 'fiber', label: 'وصلة ضوئية (Fiber)', icon: 'settings_input_fiber' },
     { value: 'wireless', label: 'ربط لاسلكي (Microwave)', icon: 'cell_tower' },
-    { value: 'dsl', label: 'خط سلكي DSL', icon: 'hub' },
+    { value: 'dsl', label: 'خط سلكي DSL', icon: 'GitBranch' },
     { value: 'cable', label: 'ربط سلكي (Gigabit)', icon: 'settings_ethernet' },
 ];
 
@@ -170,7 +170,7 @@ const submit = () => {
                 <div class="surface-card p-12 rounded-2xl border border-outline-variant/5 shadow-sm">
                     <div class="flex items-center gap-3 mb-12 justify-end">
                         <h3 class="text-xs font-black text-primary uppercase tracking-[0.2em]">طوبوغرافيا النشر (Static Distribution)</h3>
-                        <span class="material-symbols-outlined text-primary">hub</span>
+                        <span class="material-symbols-outlined text-primary">GitBranch</span>
                     </div>
 
                     <div class="space-y-16 text-right">
@@ -274,3 +274,4 @@ const submit = () => {
     font-family: 'Manrope', sans-serif;
 }
 </style>
+

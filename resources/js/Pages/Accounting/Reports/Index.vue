@@ -326,7 +326,7 @@ const formatNumber = (num) => {
                                         <div class="absolute inset-y-0 right-0 w-2 bg-primary transform translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
                                         <div class="flex items-center gap-10 flex-row-reverse text-right relative">
                                              <div class="w-20 h-20 rounded-[1.8rem] bg-slate-950 shadow-[0_20px_40px_rgba(0,0,0,0.3)] flex items-center justify-center text-white shrink-0 group-hover:scale-110 group-hover:rotate-12 transition-all duration-700 border border-white/10 uppercase font-headline">
-                                                <span class="material-symbols-outlined text-[40px]" style="font-variation-settings: 'FILL' 1; font-weight: 200;">hub</span>
+                                                <span class="material-symbols-outlined text-[40px]" style="font-variation-settings: 'FILL' 1; font-weight: 200;">GitBranch</span>
                                              </div>
                                              <div>
                                                  <p class="text-2xl font-black text-primary tracking-tighter uppercase leading-none mb-4 group-hover:translate-x-[-10px] transition-transform font-headline">{{ tower.name }}</p>
@@ -375,3 +375,4 @@ const formatNumber = (num) => {
     transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
 }
 </style>
+

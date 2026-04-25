@@ -148,3 +148,4 @@ const deleteProfile = (id) => {
     font-family: 'Manrope', sans-serif;
 }
 </style>
+

@@ -169,7 +169,7 @@ onMounted(() => {
             <!-- Bento Operational Workspace -->
             <div class="grid grid-cols-12 gap-10">
                 
-                <!-- Performance Analytics Shell -->
+                <!-- Performance BarChart3 Shell -->
                 <div class="col-span-12 lg:col-span-8 glass-card p-10 bg-white/60">
                     <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
                         <div>
@@ -285,3 +285,4 @@ onMounted(() => {
     @apply border-white/60 shadow-radiant -translate-y-1;
 }
 </style>
+

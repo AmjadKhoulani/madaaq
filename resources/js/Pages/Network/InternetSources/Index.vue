@@ -112,7 +112,7 @@ const getStatusClass = (status) => {
                             </div>
 
                             <div class="space-y-4 text-right">
-                                <label class="text-[10px] font-black text-primary uppercase tracking-[0.3em] block mr-3 italic">بوابة العبور (IP Gateway Hub)</label>
+                                <label class="text-[10px] font-black text-primary uppercase tracking-[0.3em] block mr-3 italic">بوابة العبور (IP Gateway GitBranch)</label>
                                 <div class="relative group">
                                      <input v-model="form.ip_gateway" type="text" class="form-input-monolith h-18 font-headline font-black text-lg pr-16 tracking-[0.2em]" placeholder="10.0.0.1">
                                      <span class="material-symbols-outlined absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors text-[28px]">router</span>
@@ -180,7 +180,7 @@ const getStatusClass = (status) => {
                                 <div class="w-20 h-20 rounded-[2rem] bg-slate-950 text-white flex items-center justify-center shadow-2xl group-hover:bg-primary group-hover:rotate-12 transition-all duration-700 border border-white/10 relative overflow-hidden">
                                      <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/20 to-transparent"></div>
                                     <span class="material-symbols-outlined text-[40px] relative z-10" style="font-variation-settings: 'wght' 200">
-                                        {{ techTypes.find(t => t.value === source.type)?.icon || 'hub' }}
+                                        {{ techTypes.find(t => t.value === source.type)?.icon || 'GitBranch' }}
                                     </span>
                                 </div>
                                 <div 
@@ -248,3 +248,4 @@ const getStatusClass = (status) => {
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
+

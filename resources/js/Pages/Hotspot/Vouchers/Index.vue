@@ -215,7 +215,7 @@ const getStatusClass = (status) => {
                                     <input type="checkbox" @change="toggleSelectAll" class="w-6 h-6 rounded-lg border-white/10 bg-white/5 text-primary focus:ring-primary/20 transition-all cursor-pointer">
                                 </th>
                                 <th class="px-10 py-8 text-[11px] font-black uppercase tracking-[0.3em] text-white/30">كود المصادقة (Auth Token)</th>
-                                <th class="px-10 py-8 text-[11px] font-black uppercase tracking-[0.3em] text-white/30 text-center">مركز التدفق (Gateway Hub)</th>
+                                <th class="px-10 py-8 text-[11px] font-black uppercase tracking-[0.3em] text-white/30 text-center">مركز التدفق (Gateway GitBranch)</th>
                                 <th class="px-10 py-8 text-[11px] font-black uppercase tracking-[0.3em] text-center text-white/30 border-r border-white/5">التسعير والسرعة المخصصة</th>
                                 <th class="px-10 py-8 text-[11px] font-black uppercase tracking-[0.3em] text-center text-white/30">وضعية الرمز الراهنة</th>
                                 <th class="px-10 py-8 w-48"></th>
@@ -329,3 +329,4 @@ const getStatusClass = (status) => {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(15 23 42 / 0.05)'%3E%3Cpath d='M0 .5H31.5V32'/%3E%3C/svg%3E");
 }
 </style>
+

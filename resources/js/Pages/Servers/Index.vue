@@ -202,3 +202,4 @@ const formatNumber = (num) => {
     @apply border-white/60 shadow-radiant -translate-y-1;
 }
 </style>
+

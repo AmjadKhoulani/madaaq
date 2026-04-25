@@ -22,7 +22,7 @@ const form = useForm({
 const techTypes = [
     { value: 'fiber', label: 'ألياف ضوئية (Fiber)', icon: 'fiber_smart_record' },
     { value: 'wireless', label: 'لاسلكي (Wireless)', icon: 'settings_input_antenna' },
-    { value: 'dsl', label: 'خط سلكي DSL', icon: 'hub' },
+    { value: 'dsl', label: 'خط سلكي DSL', icon: 'GitBranch' },
     { value: 'cable', label: 'كابل Gigabit', icon: 'settings_ethernet' },
 ];
 
@@ -278,3 +278,4 @@ const isTargetSelected = (type, id) => {
         </div>
     </InstitutionalLayout>
 </template>
+

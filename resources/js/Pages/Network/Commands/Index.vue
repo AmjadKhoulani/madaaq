@@ -141,7 +141,7 @@ const clearHistory = () => {
                         <div class="absolute -top-16 -left-16 w-64 h-64 bg-primary/10 rounded-full blur-3xl group-hover:scale-150 transition-all duration-1000"></div>
                         <div class="relative z-10 flex flex-col gap-8 text-right">
                             <div class="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 shadow-inner">
-                                <span class="material-symbols-outlined text-[32px] text-amber-500" style="font-variation-settings: 'FILL' 1">security</span>
+                                <span class="material-symbols-outlined text-[32px] text-amber-500" style="font-variation-settings: 'FILL' 1">Shield</span>
                             </div>
                             <div>
                                 <h4 class="text-lg font-black uppercase tracking-tight leading-none mb-3">نزاهة الـ API القطبية</h4>
@@ -218,3 +218,4 @@ const clearHistory = () => {
     background: #2563eb;
 }
 </style>
+

@@ -31,7 +31,7 @@ const getStatusColor = (status) => {
                      <h1 class="text-4xl font-black text-primary tracking-tight mb-2 uppercase">مخطط التموضع المنطقي (Network Topology Matrix)</h1>
                      <div class="flex items-center gap-4 justify-end">
                         <p class="text-slate-500 font-bold text-sm uppercase tracking-wider">مزامنة مسارات تدفق البيانات، رصد العقد متعددة المستويات، وحوكمة الارتباطات البنيوية</p>
-                        <span class="material-symbols-outlined text-primary text-[24px]">hub</span>
+                        <span class="material-symbols-outlined text-primary text-[24px]">GitBranch</span>
                      </div>
                 </div>
             </div>
@@ -87,11 +87,11 @@ const getStatusColor = (status) => {
                     </div>
                 </div>
 
-                <!-- Tier 2: Extraction Hubs (Servers) -->
+                <!-- Tier 2: Extraction GitBranchs (Servers) -->
                 <section class="relative z-10">
                     <div class="flex items-center gap-6 mb-12 flex-row-reverse text-right">
                         <div class="w-1.5 h-10 bg-primary rounded-full shadow-2xl"></div>
-                        <div class="px-8 py-3 bg-primary text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl border border-white/10">المستوى 02: عقد المعالجة والتحكم (Extraction Hubs)</div>
+                        <div class="px-8 py-3 bg-primary text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl border border-white/10">المستوى 02: عقد المعالجة والتحكم (Extraction GitBranchs)</div>
                         <div class="flex-1 h-px bg-slate-200"></div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
@@ -215,3 +215,4 @@ const getStatusColor = (status) => {
     font-family: 'Manrope', sans-serif;
 }
 </style>
+

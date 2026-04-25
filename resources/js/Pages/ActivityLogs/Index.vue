@@ -199,3 +199,4 @@ const getEventIcon = (description) => {
     font-family: 'Manrope', sans-serif;
 }
 </style>
+

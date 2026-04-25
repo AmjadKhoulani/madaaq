@@ -271,7 +271,7 @@ const submit = () => {
                     <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
                     <div class="relative z-10 flex items-center gap-8 text-right w-full">
                         <div class="w-20 h-20 bg-white/10 rounded-lg flex items-center justify-center border border-white/20 shrink-0">
-                            <span class="material-symbols-outlined text-white/80 text-[40px]">security</span>
+                            <span class="material-symbols-outlined text-white/80 text-[40px]">Shield</span>
                         </div>
                         <div>
                              <h4 class="text-xl font-black uppercase tracking-tight">التزام الصيانة السحابية</h4>
@@ -301,3 +301,4 @@ const submit = () => {
         </div>
     </InstitutionalLayout>
 </template>
+

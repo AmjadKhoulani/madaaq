@@ -109,7 +109,7 @@ const generatePassword = () => {
                 <div class="surface-card p-12 rounded-2xl border border-outline-variant/5 shadow-sm border-r-8 border-primary">
                     <div class="flex items-center gap-4 mb-10 justify-end">
                         <h3 class="text-xs font-black text-primary uppercase tracking-widest">بروتوكول الربط (Infrastructure Allocation)</h3>
-                        <span class="material-symbols-outlined text-secondary">hub</span>
+                        <span class="material-symbols-outlined text-secondary">GitBranch</span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -214,7 +214,7 @@ const generatePassword = () => {
                                  </p>
                             </div>
                             <div class="w-20 h-20 bg-white/10 rounded-[2rem] flex items-center justify-center border border-white/10 shadow-inner group-hover/final:scale-110 transition-transform duration-700">
-                                <span class="material-symbols-outlined text-amber-500 text-[40px]">security_update_good</span>
+                                <span class="material-symbols-outlined text-amber-500 text-[40px]">Shield_update_good</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-6 relative z-10 flex-row-reverse">
@@ -245,3 +245,4 @@ const generatePassword = () => {
     font-family: 'Manrope', sans-serif;
 }
 </style>
+

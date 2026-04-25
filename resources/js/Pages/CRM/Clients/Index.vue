@@ -243,3 +243,4 @@ const getStatusDetails = (status) => {
     @apply border-white/60 shadow-radiant -translate-y-1;
 }
 </style>
+

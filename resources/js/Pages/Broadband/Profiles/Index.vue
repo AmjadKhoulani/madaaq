@@ -18,7 +18,7 @@ const getTechDetails = (type) => {
     switch (type) {
         case 'fiber': return { label: 'ألياف ضوئية (Fiber)', icon: 'fiber_smart_record', color: 'text-emerald-500 bg-emerald-500/5' };
         case 'wireless': return { label: 'ربط لاسلكي (Wireless)', icon: 'settings_input_antenna', color: 'text-indigo-500 bg-indigo-500/5' };
-        case 'dsl': return { label: 'خط سلكي (DSL)', icon: 'hub', color: 'text-amber-500 bg-amber-500/5' };
+        case 'dsl': return { label: 'خط سلكي (DSL)', icon: 'GitBranch', color: 'text-amber-500 bg-amber-500/5' };
         default: return { label: 'بروتوكول افتراضي', icon: 'router', color: 'text-slate-500 bg-slate-500/5' };
     }
 };
@@ -125,7 +125,7 @@ const getTechDetails = (type) => {
                                             :href="route('broadband.users.index', { package_id: profile.id })"
                                             class="px-6 py-2.5 bg-white shadow-xl border border-outline-variant/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-primary transition-all flex items-center gap-3 hover:scale-110 active:scale-90"
                                          >
-                                            <span class="material-symbols-outlined text-[20px]">groups</span> سجل المشتركين
+                                            <span class="material-symbols-outlined text-[20px]">Users</span> سجل المشتركين
                                          </Link>
                                          <Link 
                                             :href="route('broadband.profiles.edit', profile.id)"
@@ -169,3 +169,4 @@ const getTechDetails = (type) => {
     font-family: 'Manrope', sans-serif;
 }
 </style>
+

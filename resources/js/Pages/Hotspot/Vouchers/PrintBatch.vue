@@ -83,7 +83,7 @@ const printVouchers = () => {
                         </div>
                     </div>
 
-                    <!-- Subtle Security Mark -->
+                    <!-- Subtle Shield Mark -->
                     <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-primary/5 rounded-full blur-3xl opacity-50"></div>
                 </div>
             </div>
@@ -111,4 +111,5 @@ const printVouchers = () => {
     }
 }
 </style>
+
 

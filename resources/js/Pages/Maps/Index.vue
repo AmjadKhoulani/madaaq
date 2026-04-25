@@ -99,7 +99,7 @@ const selectedNode = ref(null);
                       <!-- Node Identity Reveal - Top Right -->
                       <div class="absolute top-8 right-8 w-80 bg-slate-900/90 backdrop-blur-3xl border border-white/5 p-8 rounded-xl shadow-2xl animate-in slide-in-from-right duration-500">
                            <h3 class="text-xs font-black text-white uppercase tracking-widest mb-6 flex items-center gap-3 justify-end">
-                                <span class="text-emerald-500 material-symbols-outlined text-[20px]">analytics</span> بيانات العقدة
+                                <span class="text-emerald-500 material-symbols-outlined text-[20px]">BarChart3</span> بيانات العقدة
                            </h3>
                            <div class="flex flex-col items-center text-center py-10 opacity-20 grayscale">
                                 <span class="material-symbols-outlined text-[64px] text-white" style="font-variation-settings: 'wght' 100">sensors</span>
@@ -116,7 +116,7 @@ const selectedNode = ref(null);
                  <div class="absolute inset-0 pointer-events-none group-hover/map:bg-white/[0.02] transition-all duration-700"></div>
             </div>
 
-            <!-- Secondary Analytics Matrix -->
+            <!-- Secondary BarChart3 Matrix -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
                  <div class="surface-card p-8 flex items-center gap-6 group hover:scale-[1.02] transition-all rounded-xl">
                       <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center transition-all group-hover:scale-110 shadow-inner border border-indigo-100/50">
@@ -142,7 +142,7 @@ const selectedNode = ref(null);
                       <div class="absolute -right-8 -top-8 w-24 h-24 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
                       <div class="flex items-center gap-6 relative z-10">
                            <div class="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center border border-white/10 shadow-inner">
-                                <span class="material-symbols-outlined text-[32px]">groups</span>
+                                <span class="material-symbols-outlined text-[32px]">Users</span>
                            </div>
                            <div class="text-right">
                                 <p class="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1.5 leading-none">تغطية المشتركين</p>
@@ -162,3 +162,4 @@ const selectedNode = ref(null);
     font-family: 'Manrope', sans-serif;
 }
 </style>
+

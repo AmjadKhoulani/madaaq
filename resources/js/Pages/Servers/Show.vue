@@ -127,7 +127,7 @@ const getMemPercent = computed(() => {
         <Head :title="server.name" />
 
         <div class="max-w-7xl mx-auto pb-24 text-right px-4" dir="rtl">
-            <!-- Institutional Command Hub Header -->
+            <!-- Institutional Command GitBranch Header -->
             <div class="surface-card p-12 mb-10 overflow-hidden relative rounded-[2.5rem] shadow-2xl border border-outline-variant/10 bg-white">
                 <div class="absolute inset-0 bg-grid-slate-50 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] pointer-events-none opacity-20"></div>
                 
@@ -257,18 +257,18 @@ const getMemPercent = computed(() => {
                             <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 leading-none">مشتركي الهوت سبوت</p>
                             <h3 class="text-5xl font-black font-headline text-amber-600 tracking-tighter">{{ statusData.active_hotspot }}</h3>
                             <p class="text-[9px] font-black text-amber-400 uppercase mt-4 tracking-[0.3em] flex items-center gap-2 justify-end italic">
-                                VIRTUAL_HUB_SYNC <span class="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse"></span>
+                                VIRTUAL_GitBranch_SYNC <span class="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse"></span>
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Global Command Hub Terminal Container -->
+            <!-- Global Command GitBranch Terminal Container -->
             <div class="surface-card rounded-[3rem] overflow-hidden shadow-2xl border border-outline-variant/10 min-h-[700px] bg-white relative">
                 <div class="absolute inset-0 bg-grid-slate-50 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] pointer-events-none opacity-10"></div>
                 
-                <!-- Tactical Hub Navigator -->
+                <!-- Tactical GitBranch Navigator -->
                 <div class="border-b border-outline-variant/10 bg-slate-950 p-6 relative z-10">
                     <nav class="flex overflow-x-auto no-scrollbar gap-4 flex-row-reverse">
                         <button 
@@ -322,13 +322,13 @@ const getMemPercent = computed(() => {
                                 </div>
                             </div>
 
-                            <!-- DNS Oversight Analytics -->
+                            <!-- DNS Oversight BarChart3 -->
                             <div v-if="statusData?.top_sites?.length > 0" class="space-y-12">
                                 <div class="flex items-center gap-6 justify-end">
                                     <h4 class="text-sm font-black text-primary uppercase tracking-[0.3em]">تحليلات الاختراق الطيفي (DNS Oversight)</h4>
                                     <div class="w-2 h-8 bg-primary rounded-full"></div>
                                 </div>
-                                <div class="p-12 bg-slate-900 rounded-[2.5rem] shadow-2xl space-y-8 relative overflow-hidden group/analytics">
+                                <div class="p-12 bg-slate-900 rounded-[2.5rem] shadow-2xl space-y-8 relative overflow-hidden group/BarChart3">
                                      <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-secondary/5 rounded-full blur-3xl"></div>
                                      <div v-for="site in statusData.top_sites.slice(0, 5)" :key="site.domain" class="space-y-4">
                                         <div class="flex justify-between items-center text-[11px] font-black uppercase tracking-[0.2em] flex-row-reverse">
@@ -604,3 +604,4 @@ const getMemPercent = computed(() => {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(15 23 42 / 0.04)'%3E%3Cpath d='M0 .5H31.5V32'/%3E%3C/svg%3E");
 }
 </style>
+

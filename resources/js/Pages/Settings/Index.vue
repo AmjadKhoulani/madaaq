@@ -123,7 +123,7 @@ const tabs = [
     { id: 'reach', icon: MessageSquare, label: 'خوارزميات التواصل' },
     { id: 'payments', icon: CreditCard, label: 'بوابات السيولة' },
     { id: 'domain', icon: Globe, label: 'بنية النطاقات' },
-    { id: 'security', icon: ShieldCheck, label: 'أمن المشغل' },
+    { id: 'Shield', icon: ShieldCheck, label: 'أمن المشغل' },
 ];
 
 </script>
@@ -343,7 +343,7 @@ const tabs = [
                                          <div class="flex items-center justify-between flex-row-reverse">
                                              <div class="flex items-center gap-4 flex-row-reverse text-right">
                                                  <div class="w-10 h-10 rounded-lg bg-[#0070ba] text-white flex items-center justify-center italic font-black text-xl">P</div>
-                                                 <p class="text-[11px] font-black uppercase tracking-widest text-[#003087] font-inter italic leading-none">PayPal Hub Integration</p>
+                                                 <p class="text-[11px] font-black uppercase tracking-widest text-[#003087] font-inter italic leading-none">PayPal GitBranch Integration</p>
                                              </div>
                                              <input v-model="form.paypal_active" type="checkbox" class="w-6 h-6 rounded-lg border-white/60 bg-white text-[#0070ba] focus:ring-[#0070ba] shadow-sm cursor-pointer">
                                          </div>
@@ -434,7 +434,7 @@ const tabs = [
                         </div>
 
                         <!-- 6. OPERATOR AUTHORITY -->
-                        <div v-if="activeTab === 'security'" class="animate-in fade-in slide-in-from-top-4 duration-500">
+                        <div v-if="activeTab === 'Shield'" class="animate-in fade-in slide-in-from-top-4 duration-500">
                              <div class="glass-card p-12 space-y-12 bg-white/40 border-white/60">
                                 <div class="flex items-center gap-4 justify-end">
                                     <h3 class="text-xs font-black text-vendor uppercase tracking-[0.3em] font-inter italic">هوية المشغل السيادية (Admin Identity)</h3>
@@ -458,7 +458,7 @@ const tabs = [
                                     </div>
                                     <div class="md:col-span-2 pt-12 border-t border-white/20">
                                          <div class="flex items-center gap-4 justify-end mb-10">
-                                            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] italic">تدوير شيفرة الدخول السيادية (Security Protocol Rotation)</h4>
+                                            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] italic">تدوير شيفرة الدخول السيادية (Shield Protocol Rotation)</h4>
                                             <Shield class="w-4 h-4 text-rose-500" />
                                        </div>
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -516,3 +516,4 @@ const tabs = [
     @apply border-white/60 shadow-radiant -translate-y-1;
 }
 </style>
+
