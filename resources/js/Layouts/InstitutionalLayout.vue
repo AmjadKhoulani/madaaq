@@ -8,9 +8,7 @@ import {
     Activity, 
     Server, 
     TowerControl, 
-    GitBranch, 
     Network, 
-    Package, 
     Terminal, 
     CloudSync, 
     Wallet, 
@@ -22,7 +20,8 @@ import {
     Bell,
     Heart,
     Search,
-    LogOut
+    LogOut,
+    Building2
 } from 'lucide-vue-next';
 
 defineProps({
@@ -39,7 +38,7 @@ const navigationGroups = [
             { name: 'مركز العمليات الرئيسي', href: route('dashboard'), icon: 'LayoutDashboard', current: route().current('dashboard') },
             { name: 'حوكمة هويات المشتركين', href: route('crm.clients.index'), icon: 'Users', current: route().current('crm.clients.*') },
             { name: 'مركز المراقبة (NOC)', href: route('network.monitoring.index'), icon: 'Activity', current: route().current('network.monitoring.*') },
-        ]
+        ] group items
     },
     {
         title: 'البنية التحتية المركزية',
@@ -78,7 +77,7 @@ const navigationGroups = [
 
 // Simple icon mapper for lucide
 const icons = {
-    LayoutDashboard, Users, Zap, Activity, Server, TowerControl, Network, Terminal, CloudSync, Wallet, BarChart3, History, Badge, Settings
+    LayoutDashboard, Users, Zap, Activity, Server, TowerControl, Network, Terminal, CloudSync, Wallet, BarChart3, History, Badge, Settings, Building2
 };
 </script>
 
@@ -191,6 +190,10 @@ const icons = {
     background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-slate-300/40 rounded-full hover:bg-slate-400/60;
+    background: rgba(148, 163, 184, 0.4);
+    border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.6);
 }
 </style>
