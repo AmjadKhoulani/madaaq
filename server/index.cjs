@@ -60,32 +60,58 @@ async function initDB() {
 
 // API Routes
 app.get('/api/clients', async (req, res) => {
-  const [rows] = await db.execute('SELECT * FROM clients ORDER BY id DESC');
-  res.json(rows);
+  try {
+    if (!db) throw new Error('Database not initialized');
+    const [rows] = await db.execute('SELECT * FROM clients ORDER BY id DESC');
+    console.log(`GET /api/clients - Found ${rows.length} records`);
+    res.json(rows);
+  } catch (err) {
+    console.error('API Error (GET /clients):', err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/api/clients', async (req, res) => {
-  const { name, phone, address, lat, lng, connType, linkedTower, bbUser, bbPass, portalUser, portalPass, package: packagePlan } = req.body;
-  const [result] = await db.execute(
-    `INSERT INTO clients (name, phone, address, lat, lng, connType, linkedTower, bbUser, bbPass, portalUser, portalPass, package) 
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [name, phone, address, lat, lng, connType, linkedTower, bbUser, bbPass, portalUser, portalPass, packagePlan]
-  );
-  res.json({ id: result.insertId, success: true });
+  try {
+    if (!db) throw new Error('Database not initialized');
+    const { name, phone, address, lat, lng, connType, linkedTower, bbUser, bbPass, portalUser, portalPass, package: packagePlan } = req.body;
+    console.log(`POST /api/clients - Adding client: ${name}`);
+    const [result] = await db.execute(
+      `INSERT INTO clients (name, phone, address, lat, lng, connType, linkedTower, bbUser, bbPass, portalUser, portalPass, package) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [name, phone, address, lat, lng, connType, linkedTower, bbUser, bbPass, portalUser, portalPass, packagePlan]
+    );
+    res.json({ id: result.insertId, success: true });
+  } catch (err) {
+    console.error('API Error (POST /clients):', err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.get('/api/towers', async (req, res) => {
-  const [rows] = await db.execute('SELECT * FROM towers ORDER BY id DESC');
-  res.json(rows);
+  try {
+    if (!db) throw new Error('Database not initialized');
+    const [rows] = await db.execute('SELECT * FROM towers ORDER BY id DESC');
+    res.json(rows);
+  } catch (err) {
+    console.error('API Error (GET /towers):', err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/api/towers', async (req, res) => {
-  const { name, type, location, powerSystem } = req.body;
-  const [result] = await db.execute(
-    `INSERT INTO towers (name, type, location, powerSystem) VALUES (?, ?, ?, ?)`,
-    [name, type, location, powerSystem]
-  );
-  res.json({ id: result.insertId, success: true });
+  try {
+    if (!db) throw new Error('Database not initialized');
+    const { name, type, location, powerSystem } = req.body;
+    const [result] = await db.execute(
+      `INSERT INTO towers (name, type, location, powerSystem) VALUES (?, ?, ?, ?)`,
+      [name, type, location, powerSystem]
+    );
+    res.json({ id: result.insertId, success: true });
+  } catch (err) {
+    console.error('API Error (POST /towers):', err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // MikroTik API Routes
