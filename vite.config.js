@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue';
 import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
-  base: '/',
+  base: '/cp/',
   plugins: [vue()],
   resolve: {
     alias: {
@@ -11,8 +11,8 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: './',
-    emptyOutDir: false
+    outDir: 'dist',
+    emptyOutDir: true
   },
   server: {
     proxy: {

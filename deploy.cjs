@@ -2,17 +2,13 @@ const { Client } = require('ssh2');
 
 const conn = new Client();
 const commands = [
-  'cd /home/madaaq/public_html && ls -la',
-  'cd /home/madaaq/public_html && rm -rf .git',
-  'cd /home/madaaq/public_html && git init',
-  'cd /home/madaaq/public_html && git remote add origin https://github.com/AmjadKhoulani/madaaq.git',
   'cd /home/madaaq/public_html && git fetch --all',
   'cd /home/madaaq/public_html && git reset --hard origin/master',
-  'cd /home/madaaq/public_html && rm -rf node_modules package-lock.json',
   'cd /home/madaaq/public_html && npm install --unsafe-perm',
-  'cd /home/madaaq/public_html && chmod +x node_modules/.bin/*',
   'cd /home/madaaq/public_html && npm run build',
-  'cd /home/madaaq/public_html && ls -la'
+  'cd /home/madaaq/public_html && rm -rf cp',
+  'cd /home/madaaq/public_html && mv dist cp',
+  'cd /home/madaaq/public_html && ls -la cp'
 ];
 
 let cmdIndex = 0;
