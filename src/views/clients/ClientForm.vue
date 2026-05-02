@@ -236,10 +236,13 @@ const saveClient = async () => {
         });
       }
       alert('تم حفظ المشترك وتفعيل حسابه في المايكروتك بنجاح ✅');
+      router.push('/cp/clients');
     }
   } catch (error) {
-    console.error(error);
-    alert('حدث خطأ أثناء الحفظ، تأكد من تشغيل السيرفر.');
+    console.error('Submission Error:', error);
+    alert('حدث خطأ أثناء حفظ البيانات');
+  } finally {
+    loading.value = false;
   }
 };
 </script>

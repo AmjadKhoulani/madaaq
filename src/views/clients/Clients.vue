@@ -118,9 +118,13 @@ const fetchClients = async () => {
 
 const filteredClients = computed(() => {
   return clients.value.filter(c => {
-    const matchesSearch = c.name.includes(searchQuery.value) || 
-                        c.phone.includes(searchQuery.value) || 
-                        (c.bbUser && c.bbUser.includes(searchQuery.value));
+    const name = c.name || '';
+    const phone = c.phone || '';
+    const bbUser = c.bbUser || '';
+    
+    const matchesSearch = name.includes(searchQuery.value) || 
+                        phone.includes(searchQuery.value) || 
+                        bbUser.includes(searchQuery.value);
     const matchesType = !filterType.value || c.connType === filterType.value;
     return matchesSearch && matchesType;
   });
