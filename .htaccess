@@ -3,16 +3,11 @@
   RewriteEngine On
   RewriteBase /
 
-  # 1. API - Forward directly to PHP bridge
+  # Route API requests to PHP Bridge
   RewriteRule ^api/(.*)$ api/index.php [L]
 
-  # 2. Redirect /cp to /cp/ (ensure trailing slash for assets)
-  RewriteRule ^cp$ /cp/ [R=301,L]
-
-  # 3. ROOT - Landing Page (Pure Static)
-  # If it's not the API and not CP, and not a real file
+  # Direct all other traffic to index.html for SPA handling
   RewriteCond %{REQUEST_URI} !^/api [NC]
-  RewriteCond %{REQUEST_URI} !^/cp [NC]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
