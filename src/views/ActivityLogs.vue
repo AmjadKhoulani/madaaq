@@ -1,53 +1,52 @@
-<script setup>
-import { ref } from 'vue'
-
-const logs = ref([
-  { id: 101, user: 'Admin', action: 'Updated router credentials', target: 'Router "Core-SW"', ip: '192.168.1.100', date: '2026-04-30 14:22' },
-  { id: 102, user: 'System', action: 'Auto-suspended client', target: 'Client C-1004', ip: 'Server', date: '2026-04-30 12:00' },
-  { id: 103, user: 'Support Team', action: 'Reset password', target: 'Client C-1001', ip: '10.0.0.55', date: '2026-04-29 18:45' },
-  { id: 104, user: 'Ahmad Tech', action: 'Rebooted AP', target: 'Tower North-B', ip: '10.0.0.21', date: '2026-04-29 10:15' },
-])
-</script>
-
 <template>
-  <div class="activity-logs">
-    <div class="header">
-      <h1 class="heading-lg">Activity Logs</h1>
-      <p class="text-muted">Audit trail of all administrative and system actions.</p>
-    </div>
-
-    <!-- Filters Area -->
-    <div class="glass-card filters-section">
-      <div class="form-group" style="margin: 0; flex: 1;">
-        <input type="text" class="form-control" placeholder="Search logs..." />
+  <div class="activity-page">
+    <div class="final-header">
+      <div>
+        <h1>سجلات النشاط (Activity Logs)</h1>
+        <p>تتبع كافة العمليات، التعديلات، والتحركات التي تتم في النظام من قبل الموظفين</p>
       </div>
-      <input type="date" class="form-control" style="width: auto;" />
-      <button class="btn btn-secondary">Export to CSV</button>
+      <div class="header-actions">
+        <button class="btn-pro-outline">تفريغ السجلات 🗑️</button>
+        <button class="btn-pro-primary">تصدير تقرير أمني 🛡️</button>
+      </div>
     </div>
 
-    <!-- Log Table -->
-    <div class="glass-card table-wrapper">
-      <table class="data-table">
+    <!-- Activity Log Table -->
+    <div class="card no-padding overflow-hidden mt-30">
+      <div class="table-filters-pro">
+        <div class="search-wrap">
+          <span class="icon">🔍</span>
+          <input type="text" placeholder="البحث بالموظف، الإجراء، أو التاريخ..." />
+        </div>
+      </div>
+      
+      <table class="final-table">
         <thead>
           <tr>
-            <th>Date & Time</th>
-            <th>User / Agent</th>
-            <th>Action</th>
-            <th>Target Resource</th>
-            <th>IP Address</th>
+            <th>الوقت والتاريخ</th>
+            <th>الموظف</th>
+            <th>العملية (Action)</th>
+            <th>التفاصيل</th>
+            <th>IP العنوان</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="log in logs" :key="log.id">
-            <td class="text-muted" style="white-space: nowrap;">{{ log.date }}</td>
-            <td style="font-weight: 500">
-              <span class="user-badge" :class="log.user === 'System' ? 'system' : 'human'">
-                {{ log.user }}
-              </span>
+          <tr v-for="i in 6" :key="i">
+            <td>
+              <div class="time-cell">
+                <strong>2024/05/01</strong>
+                <span>12:45:{{ i }}0 م</span>
+              </div>
             </td>
-            <td>{{ log.action }}</td>
-            <td class="text-muted">{{ log.target }}</td>
-            <td style="font-family: monospace;">{{ log.ip }}</td>
+            <td>
+              <div class="staff-mini">
+                <div class="avatar-xs">{{ i % 2 === 0 ? 'A' : 'M' }}</div>
+                <span>{{ i % 2 === 0 ? 'أمجــد خولانـي' : 'محمد أحمد' }}</span>
+              </div>
+            </td>
+            <td><span class="action-badge" :class="i % 2 === 0 ? 'update' : 'create'">{{ i % 2 === 0 ? 'تحديث' : 'إضافة' }}</span></td>
+            <td>تعديل بيانات المشترك #CUST-992{{ i }}</td>
+            <td><code class="ip-text">192.168.1.{{ i }}0</code></td>
           </tr>
         </tbody>
       </table>
@@ -56,62 +55,37 @@ const logs = ref([
 </template>
 
 <style scoped>
-.activity-logs {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
+.activity-page { padding: 0; width: 100%; }
+.final-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 35px; }
+.final-header h1 { font-size: 24px; font-weight: 900; color: #1e293b; }
+.final-header p { font-size: 14px; color: #64748b; }
 
-.filters-section {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem 1.5rem;
-  align-items: center;
-}
+.table-filters-pro { padding: 20px 25px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
+.search-wrap { position: relative; max-width: 400px; }
+.search-wrap .icon { position: absolute; right: 15px; top: 12px; opacity: 0.5; }
+.search-wrap input { width: 100%; padding: 10px 45px 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; outline: none; }
 
-.table-wrapper {
-  padding: 0;
-  overflow-x: auto;
-}
+.final-table { width: 100%; border-collapse: collapse; }
+.final-table th { text-align: right; padding: 15px 25px; font-size: 12px; color: #64748b; background: #f8fafc; }
+.final-table td { padding: 15px 25px; border-bottom: 1px solid #f1f5f9; font-size: 13.5px; }
 
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
+.time-cell { display: flex; flex-direction: column; }
+.time-cell strong { font-size: 13px; color: #1e293b; }
+.time-cell span { font-size: 10px; color: #94a3b8; }
 
-.data-table th {
-  padding: 1rem 1.5rem;
-  font-family: var(--font-display);
-  font-weight: 600;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border-light);
-  background: rgba(15, 23, 42, 0.4);
-}
+.staff-mini { display: flex; align-items: center; gap: 10px; }
+.avatar-xs { width: 24px; height: 24px; background: #e2e8f0; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; }
 
-.data-table td {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
+.action-badge { padding: 3px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; }
+.action-badge.update { background: #fff7ed; color: #c2410c; }
+.action-badge.create { background: #f0fdf4; color: #16a34a; }
 
-.data-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.02);
-}
+.ip-text { font-family: monospace; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 11px; color: #475569; }
 
-.user-badge {
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
+.mt-30 { margin-top: 30px; }
+.no-padding { padding: 0 !important; }
+.overflow-hidden { overflow: hidden; }
 
-.user-badge.system {
-  background: rgba(176, 38, 255, 0.15);
-  color: #b026ff;
-}
-
-.user-badge.human {
-  background: rgba(0, 210, 255, 0.15);
-  color: #00d2ff;
-}
+.btn-pro-primary { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 10px; font-weight: 800; cursor: pointer; }
+.btn-pro-outline { background: white; border: 1px solid #e2e8f0; padding: 12px 25px; border-radius: 10px; font-weight: 700; cursor: pointer; }
 </style>

@@ -1,7 +1,7 @@
 {
-  "name": "frontend_temp",
+  "name": "madaaq-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,11 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.5.32",
-    "vue-router": "^5.0.6"
+    "axios": "^1.6.8",
+    "pinia": "^2.1.7",
+    "vue": "^3.4.21",
+    "vue-i18n": "^9.14.5",
+    "vue-router": "^4.3.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.6",
-    "vite": "^8.0.10"
+    "@vitejs/plugin-vue": "^5.0.4",
+    "vite": "^5.2.0"
   }
 }
