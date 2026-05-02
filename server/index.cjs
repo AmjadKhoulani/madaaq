@@ -52,6 +52,36 @@ async function initDB() {
       )
     `);
     
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS packages (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        type VARCHAR(20) NOT NULL DEFAULT 'broadband',
+        name VARCHAR(100) NOT NULL,
+        price DECIMAL(10,2) DEFAULT 0,
+        download INT DEFAULT 0,
+        upload INT DEFAULT 0,
+        duration INT DEFAULT 30,
+        mikrotik_profile VARCHAR(100),
+        notes TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS invoices (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        client_id INT,
+        client_name VARCHAR(255),
+        package_name VARCHAR(100),
+        amount DECIMAL(10,2),
+        status VARCHAR(20) DEFAULT 'pending',
+        due_date DATE,
+        paid_date DATE,
+        notes TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
     console.log('MySQL Database connected and initialized 🚀');
   } catch (err) {
     console.error('Database connection failed:', err.message);
@@ -114,7 +144,92 @@ app.post('/api/towers', async (req, res) => {
   }
 });
 
-// MikroTik API Routes
+// ─── Packages Routes ────────────────────────────────
+app.get('/api/packages', async (req, res) => {
+  try {
+    const type = req.query.type || null;
+    const query = type
+      ? 'SELECT * FROM packages WHERE type = ? ORDER BY price ASC'
+      : 'SELECT * FROM packages ORDER BY type, price ASC';
+    const params = type ? [type] : [];
+    const [rows] = await db.execute(query, params);
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/packages', async (req, res) => {
+  try {
+    const { type, name, price, download, upload, duration, mikrotik_profile, notes } = req.body;
+    const [result] = await db.execute(
+      `INSERT INTO packages (type, name, price, download, upload, duration, mikrotik_profile, notes) VALUES (?,?,?,?,?,?,?,?)`,
+      [type || 'broadband', name, price, download, upload, duration || 30, mikrotik_profile, notes]
+    );
+    res.json({ id: result.insertId, success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put('/api/packages/:id', async (req, res) => {
+  try {
+    const { name, price, download, upload, duration, mikrotik_profile, notes } = req.body;
+    await db.execute(
+      `UPDATE packages SET name=?, price=?, download=?, upload=?, duration=?, mikrotik_profile=?, notes=? WHERE id=?`,
+      [name, price, download, upload, duration, mikrotik_profile, notes, req.params.id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/packages/:id', async (req, res) => {
+  try {
+    await db.execute('DELETE FROM packages WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── Invoices Routes ────────────────────────────────
+app.get('/api/invoices', async (req, res) => {
+  try {
+    const [rows] = await db.execute('SELECT * FROM invoices ORDER BY id DESC');
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/invoices', async (req, res) => {
+  try {
+    const { client_id, client_name, package_name, amount, status, due_date, notes } = req.body;
+    const [result] = await db.execute(
+      `INSERT INTO invoices (client_id, client_name, package_name, amount, status, due_date, notes) VALUES (?,?,?,?,?,?,?)`,
+      [client_id, client_name, package_name, amount, status || 'pending', due_date, notes]
+    );
+    res.json({ id: result.insertId, success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put('/api/invoices/:id/pay', async (req, res) => {
+  try {
+    await db.execute(
+      `UPDATE invoices SET status='paid', paid_date=CURDATE() WHERE id=?`,
+      [req.params.id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── MikroTik Routes ────────────────────────────────
 app.post('/api/mikrotik/connect', async (req, res) => {
   const { host, user, pass } = req.body;
   mt = new MikroTikManager(host, user, pass);
