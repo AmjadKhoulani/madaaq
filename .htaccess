@@ -6,8 +6,9 @@
 
   RewriteBase /
   RewriteRule ^index\.html$ - [L]
+  
+  # Ensure /vendor and other routes always go to index.html
   RewriteCond %{REQUEST_URI} !^/api [NC]
   RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
 </IfModule>
