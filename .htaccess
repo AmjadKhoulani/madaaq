@@ -1,8 +1,8 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # Proxy API requests to Node.js server
-  RewriteRule ^api/(.*) http://localhost:3000/api/$1 [P,L]
+  # Route API requests to PHP Bridge
+  RewriteRule ^api/(.*)$ api/index.php [L]
 
   RewriteBase /
   RewriteRule ^index\.html$ - [L]

@@ -225,7 +225,7 @@ import axios from 'axios';
 
 const saveClient = async () => {
   try {
-    const response = await axios.post('https://madaaq.com:3000/api/clients', form);
+    const response = await axios.post('/api/clients', form);
     
     if (response.data.success) {
       if (form.connType === 'wired' || form.connType === 'wireless') {
