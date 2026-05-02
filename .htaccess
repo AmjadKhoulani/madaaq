@@ -1,7 +1,12 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # Proxy API requests to Node.js server
+  RewriteRule ^api/(.*) http://localhost:3000/api/$1 [P,L]
+
   RewriteBase /
   RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_URI} !^/api [NC]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
