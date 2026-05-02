@@ -24,7 +24,7 @@ const routes = [
       { path: '', name: 'VendorDashboard', component: () => import('@/views/Dashboard.vue') },
 
       // المشتركين
-      { path: 'clients', name: 'VendorClients', component: () => import('@/views/Clients.vue') },
+      { path: 'clients', name: 'VendorClients', component: () => import('@/views/clients/Clients.vue') },
       { path: 'clients/add', name: 'VendorClientsAdd', component: () => import('@/views/clients/ClientForm.vue') },
 
       // باقات الخدمة
