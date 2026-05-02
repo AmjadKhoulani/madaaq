@@ -51,6 +51,7 @@ const routes = [
 
       // النظام
       { path: 'support', name: 'VendorSupport', component: () => import('@/views/support/Tickets.vue') },
+      { path: 'support/tickets', name: 'VendorSupportTickets', component: () => import('@/views/support/Tickets.vue') },
       { path: 'staff', name: 'VendorStaff', component: () => import('@/views/Staff.vue') },
       { path: 'roles', name: 'VendorRoles', component: () => import('@/views/vendor/Roles.vue') },
       { path: 'activity', name: 'VendorActivity', component: () => import('@/views/ActivityLogs.vue') },
