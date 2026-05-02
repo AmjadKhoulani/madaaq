@@ -1,18 +1,22 @@
 <IfModule mod_rewrite.c>
   Options -Indexes
   RewriteEngine On
+  RewriteBase /
 
-  # 1. API Bridge
+  # 1. API Requests
   RewriteRule ^api/(.*)$ api/index.php [L]
 
-  # 2. CP Dashboard (SPA Routing)
-  # If the request starts with /cp and isn't a real file, serve cp/index.html
+  # 2. Control Panel (Sub-directory SPA)
+  # If request starts with /cp
   RewriteCond %{REQUEST_URI} ^/cp [NC]
+  # If it's not a real file (like a .js or .css file inside cp/assets)
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^cp/.*$ /cp/index.html [L]
+  # Rewrite everything under /cp/ to /cp/index.html
+  RewriteRule ^cp/(.*)$ /cp/index.html [L]
 
-  # 3. Landing Page (Root Routing)
+  # 3. Root Landing Page
+  # If it's not the API and not the CP, and not a real file
   RewriteCond %{REQUEST_URI} !^/api [NC]
   RewriteCond %{REQUEST_URI} !^/cp [NC]
   RewriteCond %{REQUEST_FILENAME} !-f
