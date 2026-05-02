@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MadaaQ | منصة إدارة شبكات الـ ISP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #0061ff; --text: #1e293b; --muted: #64748b; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Cairo', sans-serif; background: #fdfdfd; color: var(--text); overflow-x: hidden; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Nav */
+        nav { height: 80px; display: flex; align-items: center; position: fixed; top: 0; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); z-index: 1000; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        nav .container { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .brand { font-size: 22px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+        .dot { width: 10px; height: 10px; background: var(--primary); border-radius: 3px; transform: rotate(45deg); }
+        .nav-links { display: flex; align-items: center; gap: 25px; }
+        .nav-links a { text-decoration: none; color: var(--muted); font-weight: 700; font-size: 14px; }
+        .btn-login { border: 1px solid #e2e8f0; padding: 8px 18px; border-radius: 10px; color: var(--text); text-decoration: none; font-weight: 700; transition: 0.2s; }
+        .btn-login:hover { background: #f8fafc; }
+
+        /* Hero */
+        .hero { padding: 150px 0 100px; background: linear-gradient(135deg, #f8faff 0%, #fff 100%); text-align: center; }
+        .hero h1 { font-size: 48px; font-weight: 900; margin-bottom: 20px; color: var(--text); }
+        .hero p { font-size: 18px; color: var(--muted); max-width: 700px; margin: 0 auto 40px; }
+        .btn-primary { background: var(--primary); color: white; border: none; padding: 15px 35px; border-radius: 12px; font-weight: 800; font-size: 16px; cursor: pointer; text-decoration: none; box-shadow: 0 10px 20px rgba(0,97,255,0.2); }
+        
+        /* Mockup */
+        .mockup { margin-top: 60px; position: relative; }
+        .mockup img { width: 100%; max-width: 900px; border-radius: 15px; box-shadow: 0 40px 80px rgba(0,0,0,0.1); border: 1px solid #f1f5f9; }
+
+        /* Features */
+        .features { padding: 80px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        .f-card { padding: 30px; background: white; border-radius: 20px; border: 1px solid #f1f5f9; transition: 0.3s; }
+        .f-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .f-card h3 { margin: 15px 0 10px; font-size: 18px; font-weight: 800; }
+        .f-card p { font-size: 14px; color: var(--muted); }
+
+        /* Footer */
+        footer { padding: 50px 0; background: #1e293b; color: white; text-align: center; }
+        footer p { opacity: 0.6; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="brand"><span class="dot"></span> MadaaQ</div>
+            <div class="nav-links">
+                <a href="#features">المميزات</a>
+                <a href="/cp" class="btn-login">دخول الموردين</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <h1>إدارة شبكتك أصبحت أسهل مع MadaaQ</h1>
+            <p>النظام المتكامل لإدارة المشتركين، الأبراج، والحسابات المالية لشبكات الـ ISP والـ MikroTik.</p>
+            <a href="/cp" class="btn-primary">ابدأ الآن مجاناً</a>
+            <div class="mockup">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80" alt="Dashboard View">
+            </div>
+        </div>
+    </header>
+
+    <section id="features" class="container">
+        <div class="features">
+            <div class="f-card">
+                <h3>🗼 إدارة الأبراج</h3>
+                <p>مراقبة حية لحالة الأبراج، نظام الطاقة، والربط الجغرافي.</p>
+            </div>
+            <div class="f-card">
+                <h3>👥 نظام المشتركين</h3>
+                <p>قاعدة بيانات متكاملة للمشتركين مع دعم لربط الميكروتيك الآلي.</p>
+            </div>
+            <div class="f-card">
+                <h3>💰 الفواتير والتحصيل</h3>
+                <p>توليد فواتير تلقائية، تتبع الديون، وإحصائيات الأرباح.</p>
+            </div>
+            <div class="f-card">
+                <h3>🎫 كروت الهوتسبوت</h3>
+                <p>توليد وتصدير كروت الهوتسبوت بضغطة زر واحدة.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>جميع الحقوق محفوظة © 2024 - فريق MadaaQ</p>
+        </div>
+    </footer>
+</body>
+</html>
