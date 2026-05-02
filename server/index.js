@@ -3,12 +3,14 @@ const cors = require('cors');
 const { open } = require('sqlite');
 const sqlite3 = require('sqlite3');
 const path = require('path');
+const MikroTikManager = require('./mikrotik');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 let db;
+let mt; // MikroTik Instance
 
 // Initialize Database
 async function initDB() {
@@ -63,6 +65,33 @@ app.post('/api/clients', async (req, res) => {
     [name, phone, address, lat, lng, connType, linkedTower, bbUser, bbPass, portalUser, portalPass, package]
   );
   res.json({ id: result.lastID, success: true });
+});
+
+// MikroTik API Routes
+app.post('/api/mikrotik/connect', async (req, res) => {
+  const { host, user, pass } = req.body;
+  mt = new MikroTikManager(host, user, pass);
+  res.json({ success: true, message: 'Configured' });
+});
+
+app.get('/api/mikrotik/active', async (req, res) => {
+  if (!mt) return res.status(400).json({ error: 'MT not configured' });
+  const active = await mt.getActiveSessions();
+  res.json(active);
+});
+
+// إضافة مشترك دائم (Broadband)
+app.post('/api/mikrotik/add-pppoe', async (req, res) => {
+  const { username, password, profile } = req.body;
+  const result = await mt.addPPPoEUser(username, password, profile);
+  res.json(result);
+});
+
+// إضافة كرت هوتسبوت (Voucher)
+app.post('/api/mikrotik/add-voucher', async (req, res) => {
+  const { code, profile } = req.body;
+  const result = await mt.addHotspotVoucher(code, profile);
+  res.json(result);
 });
 
 const PORT = 3000;

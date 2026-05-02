@@ -98,21 +98,38 @@ const settings = reactive({
 
 const generatedCards = ref([]);
 
-const generateCards = () => {
+import axios from 'axios';
+
+const generateCards = async () => {
   const newCards = [];
   const prices = { '1h': '1,000 ل.س', '1d': '5,000 ل.س', '1w': '25,000 ل.س', '1m': '80,000 ل.س', '5gb': '15,000 ل.س' };
   const labels = { '1h': 'ساعة واحدة', '1d': 'يوم كامل', '1w': 'أسبوع كامل', '1m': 'شهر كامل', '5gb': 'باقة 5 جيجا' };
   
   for (let i = 0; i < settings.count; i++) {
+    const cardCode = Math.random().toString(36).substring(2, 2 + settings.length).toUpperCase();
+    
+    // 1. توليد الكرت محلياً للمعاينة
     newCards.push({
       id: i,
-      code: Math.random().toString(36).substring(2, 2 + settings.length).toUpperCase(),
+      code: cardCode,
       price: prices[settings.package],
       duration: labels[settings.package],
       limit: settings.package === '5gb' ? '5 GB' : 'Unlimited'
     });
+
+    // 2. إرسال الكرت للسيرفر ليتم رفعه للمايكروتك
+    try {
+      await axios.post('http://localhost:3000/api/mikrotik/add-voucher', {
+        code: cardCode,
+        profile: settings.package // نستخدم اسم الباقة كـ Profile
+      });
+    } catch (e) {
+      console.error('Error uploading card:', cardCode);
+    }
   }
+  
   generatedCards.value = newCards;
+  alert(`تم توليد ورفع ${settings.count} كرت إلى المايكروتك بنجاح ✅`);
 };
 
 const printCards = () => {

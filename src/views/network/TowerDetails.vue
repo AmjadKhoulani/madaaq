@@ -48,7 +48,7 @@
     </div>
 
     <div class="details-main-grid">
-      <!-- 2. Equipment & Port Mapping (The Core Logic) -->
+      <!-- 2. Equipment & Port Mapping -->
       <div class="card no-padding overflow-hidden">
         <div class="table-header-pro">
           <h3>خارطة توزيع المنافذ والتوصيل (Port Mapping)</h3>
@@ -113,7 +113,9 @@
             <label>ملاحظات الوصول:</label>
             <p>بناء البركة، المدخل الخلفي، المفتاح مع الفني المسؤول.</p>
           </div>
-    </div>
+        </div>
+      </div> <!-- Close side-panel -->
+    </div> <!-- Close details-main-grid -->
 
     <!-- 4. Site Expenses Section (NEW from OLD Style) -->
     <div class="card mt-30 no-padding overflow-hidden">
@@ -152,12 +154,15 @@
   </div>
 </template>
 
+<script setup>
+// No script needed for now, using mock data
+</script>
+
 <style scoped>
 .tower-details-pro { width: 100%; }
 .final-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 35px; }
 .site-tag { font-size: 11px; font-weight: 900; color: var(--primary); background: rgba(37, 99, 235, 0.1); padding: 4px 12px; border-radius: 50px; display: inline-block; margin-bottom: 8px; }
 
-/* Topology Banner */
 .network-topology-banner { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
 .topo-card { background: white; border: 1px solid #e2e8f0; padding: 20px; border-radius: 15px; position: relative; }
 .topo-card.active { border-color: var(--primary); box-shadow: 0 10px 25px rgba(37, 99, 235, 0.05); }
@@ -168,8 +173,6 @@
 .topo-val span { font-size: 11px; color: #64748b; }
 
 .details-main-grid { display: grid; grid-template-columns: 1fr 380px; gap: 30px; }
-
-/* Logic Table (Engineering Focus) */
 .logic-table { width: 100%; border-collapse: collapse; }
 .logic-table th { text-align: right; padding: 15px 20px; background: #f8fafc; color: #64748b; font-size: 12px; border-bottom: 2px solid #e2e8f0; }
 .logic-table td { padding: 15px 20px; border-bottom: 1px solid #f1f5f9; font-size: 13.5px; }
@@ -184,7 +187,6 @@
 .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-left: 5px; }
 .status-dot.online { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
 
-/* Side Panel */
 .power-monitor-side h3 { font-size: 15px; font-weight: 800; color: #1e293b; }
 .p-item { margin-bottom: 15px; }
 .p-item label { font-size: 11px; font-weight: 800; color: #64748b; display: block; margin-bottom: 5px; }
@@ -197,14 +199,29 @@
 .location-box label { font-size: 11px; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 5px; }
 .location-box p { font-size: 12px; color: #475569; margin: 0; line-height: 1.6; }
 
+.table-header-pro { padding: 20px; border-bottom: 1px solid #f1f5f9; background: #fff; }
+.table-header-pro h3 { font-size: 15px; font-weight: 800; color: #1e293b; margin: 0; }
+.flex-header { display: flex; justify-content: space-between; align-items: center; }
+
+.category-pill { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; }
+.category-pill.blue { background: #eff6ff; color: #3b82f6; }
+.category-pill.orange { background: #fff7ed; color: #f59e0b; }
+.status-pill-small { padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; }
+.status-pill-small.success { background: #f0fdf4; color: #16a34a; }
+.price-text { font-weight: 900; color: #1e293b; }
+
 .mb-30 { margin-bottom: 30px; }
 .mb-20 { margin-bottom: 20px; }
+.mt-30 { margin-top: 30px; }
+.mt-15 { margin-top: 15px; }
+.mt-20 { margin-top: 20px; }
 .no-padding { padding: 0 !important; }
 .overflow-hidden { overflow: hidden; }
 
 .btn-pro-primary { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 10px; font-weight: 800; cursor: pointer; text-decoration: none; font-size: 13px; }
 .btn-pro-primary-alt { background: white; color: var(--primary); border: 1px solid var(--primary); padding: 12px 25px; border-radius: 10px; font-weight: 800; cursor: pointer; text-decoration: none; font-size: 13px; }
 .btn-pro-outline { background: white; border: 1px solid #e2e8f0; padding: 12px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; }
+.btn-pro-outline-small { background: white; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; }
 
 @media (max-width: 1200px) {
   .details-main-grid { grid-template-columns: 1fr; }

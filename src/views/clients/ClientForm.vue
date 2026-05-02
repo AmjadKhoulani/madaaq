@@ -221,8 +221,29 @@ const sendToWhatsapp = () => {
   window.open(`https://wa.me/${form.phone}?text=${msg}`, '_blank');
 };
 
-const saveClient = () => {
-  alert('تم حفظ بيانات المشترك ومسار التوصيل بنجاح ✅');
+import axios from 'axios';
+
+const saveClient = async () => {
+  try {
+    // 1. حفظ البيانات في قاعدة البيانات
+    const response = await axios.post('http://localhost:3000/api/clients', form);
+    
+    if (response.data.success) {
+      // 2. إذا كان برودباند، ننشئ الحساب في المايكروتك
+      if (form.connType === 'wired' || form.connType === 'wireless') {
+        await axios.post('http://localhost:3000/api/mikrotik/add-pppoe', {
+          username: form.bbUser,
+          password: form.bbPass,
+          profile: form.package // نستخدم الباقة كـ Profile
+        });
+      }
+      
+      alert('تم حفظ المشترك وتفعيل حسابه في المايكروتك بنجاح ✅');
+    }
+  } catch (error) {
+    console.error(error);
+    alert('حدث خطأ أثناء الحفظ، تأكد من تشغيل السيرفر.');
+  }
 };
 </script>
 
