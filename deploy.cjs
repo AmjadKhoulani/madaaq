@@ -7,15 +7,14 @@ const commands = [
   'cd /home/madaaq/public_html && npm install --unsafe-perm',
   'cd /home/madaaq/public_html && chmod -R 755 node_modules',
   'cd /home/madaaq/public_html && npm run build',
-  // Clean CP folder
+  // Setup CP folder
   'cd /home/madaaq/public_html && rm -rf cp && mkdir cp',
-  // Move build to CP
   'cd /home/madaaq/public_html && cp -r dist/* cp/',
-  // Set the Landing Page (Static) in Root
+  'cd /home/madaaq/public_html && mv cp_htaccess cp/.htaccess',
+  // Setup Root
   'cd /home/madaaq/public_html && mv landing.html index.html',
-  // Clean up
   'cd /home/madaaq/public_html && rm -rf dist',
-  'cd /home/madaaq/public_html && ls -la'
+  'cd /home/madaaq/public_html && ls -la cp'
 ];
 
 let cmdIndex = 0;

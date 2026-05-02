@@ -6,15 +6,10 @@
   # 1. API - Forward directly to PHP bridge
   RewriteRule ^api/(.*)$ api/index.php [L]
 
-  # 2. CP (Sub-folder SPA)
-  # Any request to /cp/... that is not a real file or directory
-  RewriteCond %{REQUEST_URI} ^/cp [NC]
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  # Send it to /cp/index.html
-  RewriteRule ^cp/.*$ /cp/index.html [L]
+  # 2. Redirect /cp to /cp/ (ensure trailing slash for assets)
+  RewriteRule ^cp$ /cp/ [R=301,L]
 
-  # 3. ROOT (Landing Page)
+  # 3. ROOT - Landing Page (Pure Static)
   # If it's not the API and not CP, and not a real file
   RewriteCond %{REQUEST_URI} !^/api [NC]
   RewriteCond %{REQUEST_URI} !^/cp [NC]
