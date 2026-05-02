@@ -117,7 +117,10 @@ const fetchClients = async () => {
 };
 
 const filteredClients = computed(() => {
+  if (!Array.isArray(clients.value)) return [];
+  
   return clients.value.filter(c => {
+    if (!c) return false;
     const name = c.name || '';
     const phone = c.phone || '';
     const bbUser = c.bbUser || '';
