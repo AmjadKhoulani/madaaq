@@ -1,152 +1,128 @@
 <template>
-  <div class="live-map-page">
-    <!-- Map Sidebar -->
-    <div class="map-controls-sidebar card">
-      <div class="sidebar-head">
-        <h3>رادار الشبكة الحية 🛰️</h3>
-        <p>مراقبة جغرافية للحالة التقنية</p>
+  <div class="map-page">
+    <div class="final-header">
+      <div>
+        <h1>خريطة الشبكة التفاعلية</h1>
+        <p>عرض جغرافي حي لكافة الأبراج، المشتركين، ومسارات الربط</p>
       </div>
-      
-      <div class="map-stats-mini mt-20">
-        <div class="m-stat green">
-          <strong>12</strong>
-          <span>أبراج نشطة</span>
-        </div>
-        <div class="m-stat red pulse">
-          <strong>2</strong>
-          <span>أعطال حالية</span>
-        </div>
-      </div>
-
-      <div class="divider-pro"></div>
-
-      <div class="map-layers mt-20">
-        <label class="section-label">طبقات العرض</label>
-        <div class="layer-item">
-          <input type="checkbox" checked /> <span>إظهار مسارات الربط</span>
-        </div>
-        <div class="layer-item">
-          <input type="checkbox" checked /> <span>إظهار المشتركين</span>
-        </div>
-        <div class="layer-item">
-          <input type="checkbox" /> <span>خريطة حرارية (Heatmap)</span>
-        </div>
-      </div>
-
-      <div class="incident-list mt-30">
-        <label class="section-label">تنبيهات نشطة ⚠️</label>
-        <div class="incident-card danger">
-          <strong>برج حي الجلاء</strong>
-          <p>انقطاع التيار الكهربائي - منذ 15 دقيقة</p>
+      <div class="header-actions">
+        <div class="legend glass">
+          <div class="l-item"><span class="dot tower"></span> أبراج</div>
+          <div class="l-item"><span class="dot client"></span> مشتركين</div>
+          <div class="l-item"><span class="dot issue"></span> أعطال</div>
         </div>
       </div>
     </div>
 
-    <!-- Main Map Container -->
-    <div class="main-map-container card">
-      <div class="map-visual-area">
-        <!-- Mockup of a Map with SVG Links & Markers -->
-        <svg class="network-map-svg" viewBox="0 0 800 600">
-          <!-- Connection Links -->
-          <line x1="400" y1="300" x2="200" y2="150" class="link-line ok" />
-          <line x1="400" y1="300" x2="600" y2="200" class="link-line ok" />
-          <line x1="400" y1="300" x2="500" y2="450" class="link-line broken" />
-          
-          <!-- Tower Markers -->
-          <g class="tower-marker main" transform="translate(400, 300)">
-            <circle r="12" class="outer-ring pulse-green" />
-            <circle r="6" fill="#10b981" />
-            <text y="-20" text-anchor="middle" class="t-name">المركز الرئيسي</text>
-          </g>
+    <div class="map-container glass">
+      <!-- هذه حاوية الخريطة - سنستخدم Leaflet أو Google Maps لاحقاً -->
+      <div class="map-placeholder">
+        <div class="grid-overlay"></div>
+        
+        <!-- الأبراج الحقيقية -->
+        <div v-for="tower in towers" 
+             :key="'t'+tower.id" 
+             class="map-node tower" 
+             :style="{ top: tower.lat + '%', left: tower.lng + '%' }"
+             @click="selectedNode = tower">
+          <div class="node-pulse"></div>
+          <span class="node-icon">📡</span>
+          <div class="node-label">{{ tower.name }}</div>
+        </div>
 
-          <g class="tower-marker" transform="translate(200, 150)">
-            <circle r="8" fill="#10b981" />
-            <text y="-15" text-anchor="middle" class="t-name">برج الشمال</text>
-          </g>
+        <!-- المشتركين الحقيقيين -->
+        <div v-for="client in clients" 
+             :key="'c'+client.id" 
+             class="map-node client" 
+             :style="{ top: client.lat + '%', left: client.lng + '%' }"
+             @click="selectedNode = client">
+          <span class="node-icon">🏠</span>
+          <div class="node-label">{{ client.name }}</div>
+        </div>
 
-          <g class="tower-marker" transform="translate(600, 200)">
-            <circle r="8" fill="#10b981" />
-            <text y="-15" text-anchor="middle" class="t-name">كابينة الجلاء</text>
-          </g>
-
-          <g class="tower-marker error" transform="translate(500, 450)">
-            <circle r="12" class="outer-ring pulse-red" />
-            <circle r="8" fill="#ef4444" />
-            <text y="-20" text-anchor="middle" class="t-name">نقطة البركة (Offline)</text>
-          </g>
-
-          <!-- Subscribers Dots -->
-          <circle cx="220" cy="130" r="3" fill="#3b82f6" opacity="0.6" />
-          <circle cx="190" cy="170" r="3" fill="#3b82f6" opacity="0.6" />
-          <circle cx="240" cy="160" r="3" fill="#3b82f6" opacity="0.6" />
-        </svg>
-
-        <div class="map-overlay-tools">
-          <button class="map-btn">卫星 (Satellite)</button>
-          <button class="map-btn">2D Map</button>
+        <!-- معلومات العقدة المختارة -->
+        <div v-if="selectedNode" class="node-details glass animate-fade">
+          <button class="close-btn" @click="selectedNode = null">×</button>
+          <h3>{{ selectedNode.name }}</h3>
+          <p>{{ selectedNode.package ? 'باقة: ' + selectedNode.package : 'برج رئيسي' }}</p>
+          <hr />
+          <div class="d-meta">
+            <span>الحالة: <b class="text-success">متصل</b></span>
+            <span>القوة: <b>-65 dBm</b></span>
+          </div>
+          <button class="btn-action">فتح التفاصيل الكاملة</button>
         </div>
       </div>
     </div>
   </div>
 </template>
 
+<script setup>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+
+const towers = ref([]);
+const clients = ref([]);
+const selectedNode = ref(null);
+
+const fetchMapData = async () => {
+  try {
+    const towersRes = await axios.get('/api/towers');
+    const clientsRes = await axios.get('/api/clients');
+    
+    // سنقوم بتوليد إحداثيات تجريبية إذا كانت فارغة للعرض فقط
+    towers.value = towersRes.data.map(t => ({
+      ...t,
+      lat: t.lat || Math.random() * 80 + 10,
+      lng: t.lng || Math.random() * 80 + 10
+    }));
+    
+    clients.value = clientsRes.data.map(c => ({
+      ...c,
+      lat: c.lat || Math.random() * 80 + 10,
+      lng: c.lng || Math.random() * 80 + 10
+    }));
+  } catch (error) {
+    console.error('Error fetching map data:', error);
+  }
+};
+
+onMounted(fetchMapData);
+</script>
+
 <style scoped>
-.live-map-page { display: grid; grid-template-columns: 320px 1fr; gap: 20px; height: calc(100vh - 120px); }
+.map-page { width: 100%; height: 100%; }
+.final-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; }
 
-.map-controls-sidebar { display: flex; flex-direction: column; overflow-y: auto; }
-.sidebar-head h3 { font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 5px; }
-.sidebar-head p { font-size: 11px; color: #64748b; font-weight: 700; }
+.legend { display: flex; gap: 20px; padding: 10px 20px; border-radius: 12px; font-size: 12px; font-weight: 800; }
+.l-item { display: flex; align-items: center; gap: 8px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot.tower { background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+.dot.client { background: #10b981; box-shadow: 0 0 10px #10b981; }
+.dot.issue { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
 
-.map-stats-mini { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-.m-stat { padding: 15px; border-radius: 12px; text-align: center; }
-.m-stat.green { background: #f0fdf4; color: #16a34a; }
-.m-stat.red { background: #fef2f2; color: #ef4444; }
-.m-stat strong { font-size: 22px; display: block; }
-.m-stat span { font-size: 10px; font-weight: 800; }
+.map-container { height: calc(100vh - 250px); border-radius: 25px; overflow: hidden; position: relative; }
+.map-placeholder { width: 100%; height: 100%; background: #f8fafc; position: relative; background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 30px 30px; }
 
-.pulse { animation: pulseAnim 2s infinite; }
-@keyframes pulseAnim {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
+.grid-overlay { position: absolute; width: 100%; height: 100%; pointer-events: none; opacity: 0.1; background: linear-gradient(90deg, #cbd5e1 1px, transparent 1px), linear-gradient(#cbd5e1 1px, transparent 1px); background-size: 100px 100px; }
 
-.section-label { font-size: 11px; font-weight: 900; color: #94a3b8; display: block; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+.map-node { position: absolute; cursor: pointer; transition: 0.3s; z-index: 5; transform: translate(-50%, -50%); }
+.map-node:hover { transform: translate(-50%, -50%) scale(1.2); z-index: 10; }
 
-.layer-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 13px; font-weight: 700; color: #475569; }
-.layer-item input { width: 16px; height: 16px; cursor: pointer; }
+.node-icon { font-size: 24px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+.node-label { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: white; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; white-space: nowrap; margin-top: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
-.incident-card { padding: 12px; border-radius: 10px; border-right: 4px solid; margin-bottom: 10px; }
-.incident-card.danger { background: #fff1f2; border-color: #ef4444; }
-.incident-card strong { font-size: 13px; color: #1e293b; display: block; }
-.incident-card p { font-size: 11px; color: #64748b; margin-top: 4px; }
+.node-pulse { position: absolute; width: 40px; height: 40px; background: rgba(37, 99, 235, 0.2); border-radius: 50%; animation: pulse 2s infinite; pointer-events: none; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+@keyframes pulse { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; } }
 
-/* Map Canvas Area */
-.main-map-container { padding: 0 !important; overflow: hidden; position: relative; background: #e2e8f0; }
-.map-visual-area { width: 100%; height: 100%; position: relative; background: #f1f5f9; background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 30px 30px; }
+.node-details { position: absolute; bottom: 30px; right: 30px; width: 300px; padding: 25px; z-index: 20; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
+.close-btn { position: absolute; top: 15px; left: 15px; border: none; background: none; font-size: 24px; cursor: pointer; color: #94a3b8; }
 
-.network-map-svg { width: 100%; height: 100%; }
+.d-meta { display: flex; justify-content: space-between; font-size: 12px; margin: 15px 0; }
+.btn-action { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer; }
 
-.link-line { stroke-width: 2; stroke-dasharray: 5,5; animation: dashMove 10s linear infinite; }
-@keyframes dashMove { to { stroke-dashoffset: -50; } }
-
-.link-line.ok { stroke: #10b981; opacity: 0.6; }
-.link-line.broken { stroke: #ef4444; opacity: 0.8; stroke-dasharray: none; }
-
-.tower-marker .t-name { font-size: 12px; font-weight: 800; fill: #334155; pointer-events: none; }
-.tower-marker.error .t-name { fill: #ef4444; }
-
-.outer-ring { opacity: 0.3; }
-.pulse-green { fill: #10b981; animation: grow 2s infinite; }
-.pulse-red { fill: #ef4444; animation: grow 1.5s infinite; }
-
-@keyframes grow {
-  0% { transform: scale(0.8); opacity: 0.5; }
-  100% { transform: scale(2); opacity: 0; }
-}
-
-.map-overlay-tools { position: absolute; bottom: 20px; right: 20px; display: flex; gap: 10px; }
-.map-btn { background: white; border: none; padding: 8px 15px; border-radius: 8px; font-size: 12px; font-weight: 800; box-shadow: 0 5px 15px rgba(0,0,0,0.1); cursor: pointer; }
-
-.divider-pro { height: 1px; background: #f1f5f9; margin: 15px 0; }
+.text-success { color: #10b981; }
+.glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.5); }
+.animate-fade { animation: fadeIn 0.3s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
