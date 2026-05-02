@@ -65,11 +65,11 @@ app.get('/api/clients', async (req, res) => {
 });
 
 app.post('/api/clients', async (req, res) => {
-  const { name, phone, address, lat, lng, connType, linkedTower, bbUser, bbPass, portalUser, portalPass, package } = req.body;
+  const { name, phone, address, lat, lng, connType, linkedTower, bbUser, bbPass, portalUser, portalPass, package: packagePlan } = req.body;
   const [result] = await db.execute(
     `INSERT INTO clients (name, phone, address, lat, lng, connType, linkedTower, bbUser, bbPass, portalUser, portalPass, package) 
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [name, phone, address, lat, lng, connType, linkedTower, bbUser, bbPass, portalUser, portalPass, package]
+    [name, phone, address, lat, lng, connType, linkedTower, bbUser, bbPass, portalUser, portalPass, packagePlan]
   );
   res.json({ id: result.insertId, success: true });
 });
