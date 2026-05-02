@@ -225,19 +225,16 @@ import axios from 'axios';
 
 const saveClient = async () => {
   try {
-    // 1. حفظ البيانات في قاعدة البيانات
-    const response = await axios.post('http://localhost:3000/api/clients', form);
+    const response = await axios.post('/api/clients', form);
     
     if (response.data.success) {
-      // 2. إذا كان برودباند، ننشئ الحساب في المايكروتك
       if (form.connType === 'wired' || form.connType === 'wireless') {
-        await axios.post('http://localhost:3000/api/mikrotik/add-pppoe', {
+        await axios.post('/api/mikrotik/add-pppoe', {
           username: form.bbUser,
           password: form.bbPass,
-          profile: form.package // نستخدم الباقة كـ Profile
+          profile: form.package
         });
       }
-      
       alert('تم حفظ المشترك وتفعيل حسابه في المايكروتك بنجاح ✅');
     }
   } catch (error) {

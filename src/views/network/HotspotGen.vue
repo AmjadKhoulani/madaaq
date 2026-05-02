@@ -119,7 +119,7 @@ const generateCards = async () => {
 
     // 2. إرسال الكرت للسيرفر ليتم رفعه للمايكروتك
     try {
-      await axios.post('http://localhost:3000/api/mikrotik/add-voucher', {
+      await axios.post('/api/mikrotik/add-voucher', {
         code: cardCode,
         profile: settings.package // نستخدم اسم الباقة كـ Profile
       });
