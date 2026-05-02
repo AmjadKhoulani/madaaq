@@ -2,17 +2,20 @@
   Options -Indexes
   RewriteEngine On
 
-  # Route API requests to PHP Bridge
+  # 1. API Bridge
   RewriteRule ^api/(.*)$ api/index.php [L]
 
-  # Route CP (Dashboard) requests to cp/index.html
+  # 2. CP Dashboard (SPA Routing)
+  # If the request starts with /cp and isn't a real file, serve cp/index.html
   RewriteCond %{REQUEST_URI} ^/cp [NC]
   RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^cp/.*$ /cp/index.html [L]
 
-  # Route everything else to root index.html (Landing page)
+  # 3. Landing Page (Root Routing)
   RewriteCond %{REQUEST_URI} !^/api [NC]
   RewriteCond %{REQUEST_URI} !^/cp [NC]
   RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
 </IfModule>
