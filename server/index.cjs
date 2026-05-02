@@ -45,13 +45,42 @@ async function initDB() {
       CREATE TABLE IF NOT EXISTS towers (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(255),
-        type VARCHAR(100),
+        type VARCHAR(100) DEFAULT 'tower',
         location TEXT,
         powerSystem TEXT,
+        lat VARCHAR(50),
+        lng VARCHAR(50),
+        notes TEXT,
         status VARCHAR(50) DEFAULT 'online'
       )
     `);
     
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS staff (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255),
+        phone VARCHAR(50),
+        role VARCHAR(50) DEFAULT 'technician',
+        area VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS settings (
+        id INT PRIMARY KEY DEFAULT 1,
+        brandName VARCHAR(255),
+        currency VARCHAR(10) DEFAULT 'USD',
+        supportPhone VARCHAR(50),
+        stripePublicKey TEXT,
+        stripeSecretKey TEXT,
+        whatsappToken TEXT,
+        whatsappBusinessId VARCHAR(100),
+        whatsappPhoneId VARCHAR(100),
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      )
+    `);
+
     await db.execute(`
       CREATE TABLE IF NOT EXISTS packages (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -144,7 +173,70 @@ app.post('/api/towers', async (req, res) => {
   }
 });
 
-// ─── Packages Routes ────────────────────────────────
+app.get('/api/towers/:id', async (req, res) => {
+  try {
+    const [rows] = await db.execute('SELECT * FROM towers WHERE id = ?', [req.params.id]);
+    if (rows.length === 0) return res.status(404).json({ error: 'Tower not found' });
+    res.json(rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put('/api/towers/:id', async (req, res) => {
+  try {
+    const { name, type, location, powerSystem, status, notes } = req.body;
+    await db.execute(
+      `UPDATE towers SET name=?, type=?, location=?, powerSystem=?, status=?, notes=? WHERE id=?`,
+      [name, type, location, powerSystem, status || 'online', notes, req.params.id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/towers/:id', async (req, res) => {
+  try {
+    await db.execute('DELETE FROM towers WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── Clients by ID ────────────────────────────────
+app.get('/api/clients/:id', async (req, res) => {
+  try {
+    const [rows] = await db.execute('SELECT * FROM clients WHERE id = ?', [req.params.id]);
+    if (rows.length === 0) return res.status(404).json({ error: 'Client not found' });
+    res.json(rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put('/api/clients/:id', async (req, res) => {
+  try {
+    const { name, phone, address, lat, lng, connType, linkedTower, bbUser, bbPass, portalUser, portalPass, package: packagePlan } = req.body;
+    await db.execute(
+      `UPDATE clients SET name=?, phone=?, address=?, lat=?, lng=?, connType=?, linkedTower=?, bbUser=?, bbPass=?, portalUser=?, portalPass=?, package=? WHERE id=?`,
+      [name, phone, address, lat, lng, connType, linkedTower, bbUser, bbPass, portalUser, portalPass, packagePlan, req.params.id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/clients/:id', async (req, res) => {
+  try {
+    await db.execute('DELETE FROM clients WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 app.get('/api/packages', async (req, res) => {
   try {
     const type = req.query.type || null;
@@ -222,6 +314,78 @@ app.put('/api/invoices/:id/pay', async (req, res) => {
     await db.execute(
       `UPDATE invoices SET status='paid', paid_date=CURDATE() WHERE id=?`,
       [req.params.id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── Staff Routes ───────────────────────────────────
+app.get('/api/staff', async (req, res) => {
+  try {
+    const [rows] = await db.execute('SELECT * FROM staff ORDER BY id DESC');
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/staff', async (req, res) => {
+  try {
+    const { name, phone, role, area } = req.body;
+    const [result] = await db.execute(
+      `INSERT INTO staff (name, phone, role, area) VALUES (?, ?, ?, ?)`,
+      [name, phone, role, area]
+    );
+    res.json({ id: result.insertId, success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put('/api/staff/:id', async (req, res) => {
+  try {
+    const { name, phone, role, area } = req.body;
+    await db.execute(
+      `UPDATE staff SET name=?, phone=?, role=?, area=? WHERE id=?`,
+      [name, phone, role, area, req.params.id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/staff/:id', async (req, res) => {
+  try {
+    await db.execute('DELETE FROM staff WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── Settings Routes ────────────────────────────────
+app.get('/api/settings', async (req, res) => {
+  try {
+    const [rows] = await db.execute('SELECT * FROM settings WHERE id = 1');
+    res.json(rows[0] || {});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/settings', async (req, res) => {
+  try {
+    const s = req.body;
+    await db.execute(
+      `INSERT INTO settings (id, brandName, currency, supportPhone, stripePublicKey, stripeSecretKey, whatsappToken, whatsappBusinessId, whatsappPhoneId) 
+       VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE 
+       brandName=?, currency=?, supportPhone=?, stripePublicKey=?, stripeSecretKey=?, whatsappToken=?, whatsappBusinessId=?, whatsappPhoneId=?`,
+      [s.brandName, s.currency, s.supportPhone, s.stripePublicKey, s.stripeSecretKey, s.whatsappToken, s.whatsappBusinessId, s.whatsappPhoneId,
+       s.brandName, s.currency, s.supportPhone, s.stripePublicKey, s.stripeSecretKey, s.whatsappToken, s.whatsappBusinessId, s.whatsappPhoneId]
     );
     res.json({ success: true });
   } catch (err) {

@@ -38,11 +38,11 @@
             <div class="pro-grid-2 mt-20">
               <div class="pro-field">
                 <label>Stripe Public Key</label>
-                <input type="text" class="pro-input" placeholder="pk_live_..." />
+                <input v-model="settings.stripePublicKey" type="text" class="pro-input" placeholder="pk_live_..." />
               </div>
               <div class="pro-field">
                 <label>Stripe Secret Key</label>
-                <input type="password" class="pro-input" placeholder="sk_live_..." />
+                <input v-model="settings.stripeSecretKey" type="password" class="pro-input" placeholder="sk_live_..." />
               </div>
             </div>
           </div>
@@ -76,11 +76,11 @@
             </div>
             <div class="pro-field mt-20 full-width">
               <label>System Access Token</label>
-              <textarea class="pro-input h-100" placeholder="EAA..."></textarea>
+              <textarea v-model="settings.whatsappToken" class="pro-input h-100" placeholder="EAA..."></textarea>
             </div>
             <div class="pro-grid-2 mt-20">
-              <div class="pro-field"><label>Business Account ID</label><input type="text" class="pro-input" /></div>
-              <div class="pro-field"><label>Phone Number ID</label><input type="text" class="pro-input" /></div>
+              <div class="pro-field"><label>Business Account ID</label><input v-model="settings.whatsappBusinessId" type="text" class="pro-input" /></div>
+              <div class="pro-field"><label>Phone Number ID</label><input v-model="settings.whatsappPhoneId" type="text" class="pro-input" /></div>
             </div>
             <div class="mt-20">
               <button class="btn-pro-outline">اختبار الاتصال ⚡</button>
@@ -153,13 +153,20 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
+import axios from 'axios';
 
 const activeTab = ref('general');
+const loading = ref(false);
 const settings = reactive({
   brandName: 'MadaaQ Network',
-  currency: 'SYP',
-  supportPhone: '0930000000'
+  currency: 'USD',
+  supportPhone: '',
+  stripePublicKey: '',
+  stripeSecretKey: '',
+  whatsappToken: '',
+  whatsappBusinessId: '',
+  whatsappPhoneId: ''
 });
 
 const tabs = [
@@ -169,9 +176,30 @@ const tabs = [
   { id: 'portal', name: 'بوابة المشتركين', desc: 'الرابط، التطبيق، الهوية', icon: '🌐' }
 ];
 
-const saveSettings = () => {
-  alert('تم حفظ كافة الإعدادات بنجاح ✅');
+const fetchSettings = async () => {
+  try {
+    const res = await axios.get('/api/settings');
+    if (res.data) {
+      Object.assign(settings, res.data);
+    }
+  } catch (err) {
+    console.error('Error fetching settings:', err);
+  }
 };
+
+const saveSettings = async () => {
+  loading.value = true;
+  try {
+    await axios.post('/api/settings', settings);
+    alert('تم حفظ كافة الإعدادات بنجاح ✅');
+  } catch (err) {
+    alert('حدث خطأ أثناء الحفظ: ' + err.message);
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(fetchSettings);
 </script>
 
 <style scoped>

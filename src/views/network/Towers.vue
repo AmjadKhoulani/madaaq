@@ -79,6 +79,7 @@
               <div class="table-actions">
                 <router-link :to="'/cp/network/towers/view/' + tower.id" class="btn-icon">👁️</router-link>
                 <router-link :to="'/cp/network/towers/edit/' + tower.id" class="btn-icon">✏️</router-link>
+                <button class="btn-icon danger" @click="deleteTower(tower.id)">🗑️</button>
               </div>
             </td>
           </tr>
@@ -104,10 +105,21 @@ const fetchTowers = async () => {
   }
 };
 
+const deleteTower = async (id) => {
+  if (!confirm('هل أنت متأكد من حذف هذا البرج؟')) return;
+  try {
+    await axios.delete(`/api/towers/${id}`);
+    fetchTowers();
+  } catch (error) {
+    console.error('Error deleting tower:', error);
+  }
+};
+
 const filteredTowers = computed(() => {
+  if (!Array.isArray(towers.value)) return [];
   return towers.value.filter(t => 
-    t.name.includes(searchQuery.value) || 
-    t.location.includes(searchQuery.value)
+    (t.name || '').includes(searchQuery.value) || 
+    (t.location || '').includes(searchQuery.value)
   );
 });
 
@@ -115,6 +127,8 @@ onMounted(fetchTowers);
 </script>
 
 <style scoped>
+/* إضافة نمط لزر الحذف */
+.btn-icon.danger:hover { background: #fef2f2; border-color: #ef4444; color: #ef4444; }
 .towers-page { width: 100%; }
 .final-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 35px; }
 

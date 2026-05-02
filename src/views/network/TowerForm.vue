@@ -3,137 +3,121 @@
     <div class="final-header">
       <div>
         <h1>{{ isEdit ? 'تعديل بيانات الموقع' : 'إضافة موقع جديد للشبكة' }}</h1>
-        <p>قم بتحديد نوع الموقع (برج، كابينة، أو نقطة) وتوثيق البيانات التقنية والجغرافية</p>
+        <p>توثيق البيانات التقنية والجغرافية للبرج أو الكابينة</p>
       </div>
       <div class="header-actions">
-        <button class="btn-pro-outline" @click="$router.back()">إلغاء</button>
-        <button class="btn-pro-primary">حفظ بيانات الموقع ✅</button>
+        <router-link to="/cp/network/towers" class="btn-pro-outline">إلغاء</router-link>
+        <button class="btn-pro-primary" @click="saveTower" :disabled="loading">
+          {{ loading ? 'جاري الحفظ...' : 'حفظ بيانات الموقع ✅' }}
+        </button>
       </div>
     </div>
 
-    <!-- Section 1: Basic Info & Type -->
-    <div class="card mb-30">
-      <div class="card-head-pro"><h3>1. تصنيف ومعلومات الموقع</h3></div>
-      <div class="form-body-pro">
-        <div class="input-row-pro">
-          <div class="input-group">
-            <label>نوع الموقع</label>
-            <select v-model="form.siteType">
-              <option value="tower">برج رئيسي 🗼</option>
-              <option value="cabinet">كابينة توزيع 📦</option>
-              <option value="node">نقطة وصول (Node) 📍</option>
-            </select>
-          </div>
-          <div class="input-group span-2">
-            <label>اسم الموقع</label>
-            <input v-model="form.name" type="text" :placeholder="sitePlaceholder" />
-          </div>
-        </div>
-        
-        <div class="input-row-pro mt-10">
-          <div class="input-group">
-            <label>خط العرض (Lat)</label>
-            <input v-model="form.lat" type="text" placeholder="33.5138" />
-          </div>
-          <div class="input-group">
-            <label>خط الطول (Lng)</label>
-            <input v-model="form.lng" type="text" placeholder="36.2765" />
-          </div>
-          <div class="input-group">
-            <label>المنطقة / الحي</label>
-            <input v-model="form.area" type="text" placeholder="مثلاً: المزة - دمشق" />
-          </div>
+    <!-- Section 1: Site Type & Name -->
+    <div class="card mb-20">
+      <div class="card-section-title">🗼 نوع الموقع والمعلومات الأساسية</div>
+      <div class="site-type-selector">
+        <div
+          v-for="t in siteTypes" :key="t.value"
+          :class="['site-type-card', { active: form.type === t.value }]"
+          @click="form.type = t.value"
+        >
+          <span>{{ t.icon }}</span>
+          <strong>{{ t.label }}</strong>
+          <small>{{ t.desc }}</small>
         </div>
       </div>
-    </div>
-
-    <!-- Section 2: Smart Power System -->
-    <div class="card mb-30 shadow-highlight">
-      <div class="card-head-pro"><h3>2. نظام الطاقة والتغذية ⚡</h3></div>
-      <div class="form-body-pro">
-        <div class="input-row-pro">
-          <div class="input-group">
-            <label>نظام الطاقة</label>
-            <select v-model="form.powerType">
-              <option value="solar">طاقة شمسية كاملة ☀️</option>
-              <option value="grid">كهرباء عامة + UPS 🔌</option>
-              <option value="generator">مولد خاص ⛽</option>
-              <option value="none">بدون نظام طاقة (تغذية مباشرة)</option>
-            </select>
-          </div>
-          
-          <template v-if="form.powerType === 'solar'">
-            <div class="input-group animate-fade">
-              <label>عدد الألواح</label>
-              <input v-model="form.solarPanels" type="number" placeholder="4" />
-            </div>
-            <div class="input-group animate-fade">
-              <label>قدرة المنظم</label>
-              <input v-model="form.mpptPower" type="text" placeholder="60A" />
-            </div>
-          </template>
-
-          <template v-if="form.powerType === 'grid'">
-            <div class="input-group animate-fade">
-              <label>موديل الـ UPS</label>
-              <input v-model="form.upsModel" type="text" placeholder="Mercury 2KVA" />
-            </div>
-            <div class="input-group animate-fade">
-              <label>سعة البطاريات (Ah)</label>
-              <input v-model="form.batteryCap" type="number" placeholder="200" />
-            </div>
-          </template>
-
-          <template v-if="form.powerType === 'generator'">
-            <div class="input-group animate-fade">
-              <label>سعة الخزان (لتر)</label>
-              <input v-model="form.fuelTank" type="number" placeholder="50" />
-            </div>
-            <div class="input-group animate-fade">
-              <label>معدل الاستهلاك</label>
-              <input v-model="form.fuelConsum" type="text" placeholder="0.5 L/H" />
-            </div>
-          </template>
+      <div class="input-row mt-20">
+        <div class="input-group span2">
+          <label>اسم الموقع *</label>
+          <input v-model="form.name" type="text" :placeholder="namePlaceholder" />
         </div>
-
-        <div class="divider-pro"></div>
-
-        <div class="input-row-pro">
-          <div class="input-group">
-            <label>نوع التغذية (Uplink)</label>
-            <select v-model="form.uplinkType">
-              <option value="fiber">Fiber Optic (GPON)</option>
-              <option value="wireless">Wireless (AirFiber)</option>
-              <option value="cat6">Ethernet (Cat6)</option>
-            </select>
-          </div>
-          <div v-if="form.siteType === 'tower'" class="input-group animate-fade">
-            <label>ارتفاع البرج (متر)</label>
-            <input v-model="form.height" type="number" placeholder="30" />
-          </div>
-          <div v-else class="input-group animate-fade">
-            <label>ملاحظات الموقع</label>
-            <input type="text" placeholder="مثلاً: داخل خزانة الدرج" />
-          </div>
+        <div class="input-group">
+          <label>المنطقة / الحي</label>
+          <input v-model="form.location" type="text" placeholder="مثلاً: المزة - دمشق" />
+        </div>
+      </div>
+      <div class="input-row mt-15">
+        <div class="input-group">
+          <label>خط العرض (Lat)</label>
+          <input v-model="form.lat" type="text" placeholder="33.5138" />
+        </div>
+        <div class="input-group">
+          <label>خط الطول (Lng)</label>
+          <input v-model="form.lng" type="text" placeholder="36.2765" />
+        </div>
+        <div class="input-group">
+          <label>ارتفاع البرج (متر)</label>
+          <input v-model="form.height" type="number" placeholder="30" />
         </div>
       </div>
     </div>
 
-    <!-- Section 3: Map Preview -->
-    <div class="card no-padding overflow-hidden mb-30">
-      <div class="card-head-pro-padded"><h3>3. الخريطة الميدانية للموقع 📍</h3></div>
-      <div class="map-container-form">
-        <iframe 
-          src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3325.215!2d36.2765!3d33.5138!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2s!4v1700000000000" 
-          width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy">
-        </iframe>
+    <!-- Section 2: Power System -->
+    <div class="card mb-20 card-highlight">
+      <div class="card-section-title">⚡ نظام الطاقة والتغذية</div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>نوع الطاقة</label>
+          <select v-model="form.powerSystem">
+            <option value="solar">طاقة شمسية ☀️</option>
+            <option value="grid">كهرباء عامة + UPS 🔌</option>
+            <option value="generator">مولد كهربائي ⛽</option>
+            <option value="direct">تغذية مباشرة</option>
+          </select>
+        </div>
+        <div class="input-group" v-if="form.powerSystem === 'solar'">
+          <label>عدد الألواح الشمسية</label>
+          <input v-model="form.solarPanels" type="number" placeholder="4" />
+        </div>
+        <div class="input-group" v-if="form.powerSystem === 'grid'">
+          <label>موديل الـ UPS</label>
+          <input v-model="form.upsModel" type="text" placeholder="Mercury 2KVA" />
+        </div>
+        <div class="input-group" v-if="form.powerSystem === 'generator'">
+          <label>سعة الخزان (لتر)</label>
+          <input v-model="form.fuelTank" type="number" placeholder="50" />
+        </div>
+        <div class="input-group">
+          <label>نوع الاتصال الرئيسي (Uplink)</label>
+          <select v-model="form.uplinkType">
+            <option value="fiber">Fiber Optic (GPON)</option>
+            <option value="wireless">Wireless (AirFiber)</option>
+            <option value="cat6">Ethernet (Cat6)</option>
+          </select>
+        </div>
       </div>
+    </div>
+
+    <!-- Section 3: MikroTik Config -->
+    <div class="card mb-20">
+      <div class="card-section-title">⚙️ إعدادات الـ MikroTik</div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>IP الـ Router</label>
+          <input v-model="form.routerIp" type="text" placeholder="192.168.88.1" />
+        </div>
+        <div class="input-group">
+          <label>اسم المستخدم</label>
+          <input v-model="form.routerUser" type="text" placeholder="admin" />
+        </div>
+        <div class="input-group">
+          <label>كلمة المرور</label>
+          <input v-model="form.routerPass" type="password" placeholder="••••••" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Notes -->
+    <div class="card mb-20">
+      <div class="card-section-title">📝 ملاحظات إضافية</div>
+      <textarea v-model="form.notes" placeholder="أي ملاحظات تقنية حول الموقع، الأعطال السابقة، أو خصوصية الموقع..." rows="4"></textarea>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, reactive, ref, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 
@@ -142,45 +126,43 @@ const router = useRouter();
 const isEdit = computed(() => !!route.params.id);
 const loading = ref(false);
 
+const siteTypes = [
+  { value: 'tower', icon: '🗼', label: 'برج رئيسي', desc: 'Site with antenna mast' },
+  { value: 'cabinet', icon: '📦', label: 'كابينة توزيع', desc: 'Distribution cabinet' },
+  { value: 'node', icon: '📍', label: 'نقطة وصول', desc: 'Access point' }
+];
+
 const form = reactive({
-  siteType: 'tower',
-  name: '',
-  lat: '',
-  lng: '',
-  area: '',
-  powerType: 'solar',
-  solarPanels: '',
-  mpptPower: '',
-  upsModel: '',
-  batteryCap: '',
-  fuelTank: '',
-  fuelConsum: '',
-  uplinkType: 'wireless',
-  height: ''
+  name: '', type: 'tower', location: '', lat: '', lng: '', height: '',
+  powerSystem: 'solar', solarPanels: '', upsModel: '', fuelTank: '',
+  uplinkType: 'wireless', routerIp: '', routerUser: 'admin', routerPass: '',
+  notes: '', status: 'online'
+});
+
+const namePlaceholder = computed(() => {
+  if (form.type === 'tower') return 'برج الشمال الرئيسي';
+  if (form.type === 'cabinet') return 'كابينة حي الجلاء - C15';
+  return 'نقطة توزيع بناء البركة';
 });
 
 const saveTower = async () => {
+  if (!form.name) return alert('اسم الموقع مطلوب');
   loading.value = true;
   try {
     const payload = {
-      name: form.name,
-      location: form.area,
-      powerSystem: form.powerType,
-      lat: form.lat,
-      lng: form.lng
+      name: form.name, type: form.type, location: form.location,
+      powerSystem: form.powerSystem, lat: form.lat, lng: form.lng,
+      status: 'online', notes: form.notes
     };
-
     if (isEdit.value) {
       await axios.put(`/api/towers/${route.params.id}`, payload);
     } else {
       await axios.post('/api/towers', payload);
     }
-    
-    alert('تم حفظ بيانات الموقع بنجاح! 🎉');
+    alert('✅ تم حفظ بيانات الموقع بنجاح!');
     router.push('/cp/network/towers');
-  } catch (error) {
-    console.error('Error saving tower:', error);
-    alert('حدث خطأ أثناء الحفظ. يرجى المحاولة مرة أخرى.');
+  } catch (err) {
+    alert('حدث خطأ: ' + (err.response?.data?.error || err.message));
   } finally {
     loading.value = false;
   }
@@ -191,61 +173,50 @@ const fetchTower = async () => {
   try {
     const res = await axios.get(`/api/towers/${route.params.id}`);
     const t = res.data;
-    form.name = t.name;
-    form.area = t.location;
-    form.powerType = t.powerSystem;
-    form.lat = t.lat;
-    form.lng = t.lng;
-  } catch (error) {
-    console.error('Error fetching tower for edit:', error);
-  }
+    Object.assign(form, {
+      name: t.name, type: t.type || 'tower', location: t.location,
+      powerSystem: t.powerSystem, lat: t.lat, lng: t.lng, notes: t.notes
+    });
+  } catch (err) { console.error(err); }
 };
 
 onMounted(fetchTower);
-
-const sitePlaceholder = computed(() => {
-  if (form.siteType === 'tower') return 'مثلاً: برج الشمال الرئيسي';
-  if (form.siteType === 'cabinet') return 'مثلاً: كابينة حي الجلاء - C15';
-  return 'مثلاً: نقطة توزيع بناء البركة';
-});
 </script>
 
 <style scoped>
-.tower-form-page { width: 100%; max-width: 1200px; margin: 0 auto; }
-.final-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 35px; }
+.tower-form-page { width: 100%; max-width: 1100px; }
+.final-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
+.final-header h1 { font-size: 24px; font-weight: 900; color: #1e293b; margin: 0 0 5px; }
+.final-header p { font-size: 14px; color: #64748b; margin: 0; }
+.header-actions { display: flex; gap: 12px; align-items: center; }
 
-.card-head-pro { padding-bottom: 20px; border-bottom: 1px solid #f1f5f9; margin-bottom: 25px; }
-.card-head-pro-padded { padding: 25px 25px 15px; border-bottom: 1px solid #f1f5f9; }
-.card-head-pro h3, .card-head-pro-padded h3 { font-size: 16px; font-weight: 800; color: #1e293b; }
+.card-section-title { font-size: 15px; font-weight: 900; color: #1e293b; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; }
+.card-highlight { border-top: 4px solid #10b981; }
 
-.shadow-highlight { border-top: 5px solid var(--primary); box-shadow: 0 15px 35px rgba(37, 99, 235, 0.05); }
+.site-type-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.site-type-card { padding: 20px; border: 2px solid #e2e8f0; border-radius: 14px; cursor: pointer; text-align: center; transition: 0.2s; display: flex; flex-direction: column; gap: 5px; }
+.site-type-card span { font-size: 30px; }
+.site-type-card strong { font-size: 14px; font-weight: 800; color: #1e293b; }
+.site-type-card small { font-size: 11px; color: #94a3b8; }
+.site-type-card:hover, .site-type-card.active { border-color: #3b82f6; background: #eff6ff; }
 
-.input-group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
-.input-group.span-2 { grid-column: span 2; }
+.input-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.input-row.mt-15 { margin-top: 15px; }
+.input-row.mt-20 { margin-top: 20px; }
+.input-group { display: flex; flex-direction: column; gap: 7px; }
+.input-group.span2 { grid-column: span 2; }
 .input-group label { font-size: 12px; font-weight: 800; color: #64748b; }
-.input-group input, .input-group select { padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; outline: none; font-size: 14px; background: #f8fafc; transition: 0.2s; }
-.input-group input:focus { border-color: var(--primary); background: white; }
+.input-group input, .input-group select { padding: 11px 14px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; background: #f8fafc; }
+.input-group input:focus, .input-group select:focus { border-color: #3b82f6; background: white; }
 
-.input-row-pro { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+textarea { width: 100%; padding: 12px 14px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; resize: vertical; background: #f8fafc; font-family: inherit; }
+textarea:focus { border-color: #3b82f6; background: white; }
 
-.divider-pro { height: 1px; background: #f1f5f9; margin: 10px 0 25px; }
+.mb-20 { margin-bottom: 20px; }
+.mt-15 { margin-top: 15px; }
+.mt-20 { margin-top: 20px; }
 
-.animate-fade { animation: fadeIn 0.3s ease-in-out; }
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.mt-10 { margin-top: 10px; }
-.mb-30 { margin-bottom: 30px; }
-.no-padding { padding: 0 !important; }
-.overflow-hidden { overflow: hidden; }
-
-.btn-pro-primary { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 10px; font-weight: 800; cursor: pointer; text-decoration: none; }
-.btn-pro-outline { background: white; border: 1px solid #e2e8f0; padding: 12px 25px; border-radius: 10px; font-weight: 700; cursor: pointer; }
-
-@media (max-width: 900px) {
-  .input-row-pro { grid-template-columns: 1fr; }
-  .input-group.span-2 { grid-column: span 1; }
-}
+.btn-pro-primary { background: #10b981; color: white; border: none; padding: 12px 28px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 14px; }
+.btn-pro-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-pro-outline { background: white; border: 1px solid #e2e8f0; padding: 12px 22px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 14px; color: #475569; text-decoration: none; display: inline-block; }
 </style>
