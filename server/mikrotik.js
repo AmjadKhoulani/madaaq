@@ -22,7 +22,8 @@ class MikroTikManager {
         `=name=${username}`,
         `=password=${password}`,
         `=profile=${profile}`,
-        `=service=${service}`
+        `=service=${service}`,
+        `=comment=Created by MadaaQ System - ${new Date().toLocaleDateString()}`
       ]);
       return { success: true, data: result };
     } catch (err) {
