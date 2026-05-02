@@ -3,20 +3,19 @@
   RewriteEngine On
   RewriteBase /
 
-  # 1. API Requests
+  # 1. API - Forward directly to PHP bridge
   RewriteRule ^api/(.*)$ api/index.php [L]
 
-  # 2. Control Panel (Sub-directory SPA)
-  # If request starts with /cp
+  # 2. CP (Sub-folder SPA)
+  # Any request to /cp/... that is not a real file or directory
   RewriteCond %{REQUEST_URI} ^/cp [NC]
-  # If it's not a real file (like a .js or .css file inside cp/assets)
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  # Rewrite everything under /cp/ to /cp/index.html
-  RewriteRule ^cp/(.*)$ /cp/index.html [L]
+  # Send it to /cp/index.html
+  RewriteRule ^cp/.*$ /cp/index.html [L]
 
-  # 3. Root Landing Page
-  # If it's not the API and not the CP, and not a real file
+  # 3. ROOT (Landing Page)
+  # If it's not the API and not CP, and not a real file
   RewriteCond %{REQUEST_URI} !^/api [NC]
   RewriteCond %{REQUEST_URI} !^/cp [NC]
   RewriteCond %{REQUEST_FILENAME} !-f
