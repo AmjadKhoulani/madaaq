@@ -5,6 +5,7 @@ const commands = [
   'cd /home/madaaq/public_html && git fetch --all',
   'cd /home/madaaq/public_html && git reset --hard origin/master',
   'cd /home/madaaq/public_html && npm install --unsafe-perm',
+  'cd /home/madaaq/public_html && chmod -R 755 node_modules',
   'cd /home/madaaq/public_html && npm run build',
   'cd /home/madaaq/public_html && rm -rf cp',
   'cd /home/madaaq/public_html && mv dist cp',

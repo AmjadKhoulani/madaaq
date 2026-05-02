@@ -5,11 +5,14 @@
   # Route API requests to PHP Bridge
   RewriteRule ^api/(.*)$ api/index.php [L]
 
-  RewriteBase /
-  RewriteRule ^index\.html$ - [L]
-  
-  # Ensure /vendor and other routes always go to index.html
+  # Route CP (Dashboard) requests to cp/index.html
+  RewriteCond %{REQUEST_URI} ^/cp [NC]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^cp/.*$ /cp/index.html [L]
+
+  # Route everything else to root index.html (Landing page)
   RewriteCond %{REQUEST_URI} !^/api [NC]
+  RewriteCond %{REQUEST_URI} !^/cp [NC]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule . /index.html [L]
 </IfModule>
