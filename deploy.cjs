@@ -7,9 +7,15 @@ const commands = [
   'cd /home/madaaq/public_html && npm install --unsafe-perm',
   'cd /home/madaaq/public_html && chmod -R 755 node_modules',
   'cd /home/madaaq/public_html && npm run build',
-  'cd /home/madaaq/public_html && rm -rf cp',
-  'cd /home/madaaq/public_html && mv dist cp',
-  'cd /home/madaaq/public_html && ls -la cp'
+  // Clean up existing build locations
+  'cd /home/madaaq/public_html && rm -rf cp && mkdir cp',
+  // Move dist contents to CP
+  'cd /home/madaaq/public_html && cp -r dist/* cp/',
+  // IMPORTANT: Remove the development index.html and src folder from public_html to prevent confusion
+  'cd /home/madaaq/public_html && rm -f index.html',
+  // Copy build to root as well (for landing page)
+  'cd /home/madaaq/public_html && cp -r dist/* .',
+  'cd /home/madaaq/public_html && ls -la'
 ];
 
 let cmdIndex = 0;
