@@ -16,9 +16,9 @@ const routes = [
     component: () => import('@/views/Login.vue'),
     meta: { guest: true }
   },
-  // Vendor (Tenant) Routes
+  // Control Panel Routes
   {
-    path: '/vendor',
+    path: '/cp',
     component: () => import('@/components/CommandCenterLayout.vue'),
     children: [
       { path: '', name: 'VendorDashboard', component: () => import('@/views/Dashboard.vue') },

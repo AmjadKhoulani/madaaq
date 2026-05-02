@@ -77,36 +77,36 @@ const menuGroups = [
   {
     title: 'الأساسية',
     items: [
-      { path: '/vendor', label: 'الداشبورد', icon: '📊' },
-      { path: '/vendor/clients', label: 'المشتركين (CRM)', icon: '👥' }
+      { path: '/cp', label: 'الداشبورد', icon: '📊' },
+      { path: '/cp/clients', label: 'المشتركين (CRM)', icon: '👥' }
     ]
   },
   {
     title: 'المالية',
     items: [
-      { path: '/vendor/finance/broadband-packages', label: 'باقات Broadband', icon: '🏠' },
-      { path: '/vendor/finance/hotspot-packages', label: 'باقات Hotspot', icon: '🎫' },
-      { path: '/vendor/finance/invoices', label: 'الفواتير والتحصيل', icon: '🧾' },
-      { path: '/vendor/finance/reports', label: 'التقارير والـ ROI', icon: '📈' },
-      { path: '/vendor/finance/tower-costs', label: 'تكاليف الأبراج', icon: '💸' }
+      { path: '/cp/finance/broadband-packages', label: 'باقات Broadband', icon: '🏠' },
+      { path: '/cp/finance/hotspot-packages', label: 'باقات Hotspot', icon: '🎫' },
+      { path: '/cp/finance/invoices', label: 'الفواتير والتحصيل', icon: '🧾' },
+      { path: '/cp/finance/reports', label: 'التقارير والـ ROI', icon: '📈' },
+      { path: '/cp/finance/tower-costs', label: 'تكاليف الأبراج', icon: '💸' }
     ]
   },
   {
     title: 'الشبكة',
     items: [
-      { path: '/vendor/network/towers', label: 'الأبراج والكبائن', icon: '🗼' },
-      { path: '/vendor/network/map', label: 'خريطة الشبكة', icon: '🗺️' },
-      { path: '/vendor/network/inventory', label: 'التجهيزات والمخزن', icon: '📦' },
-      { path: '/vendor/network/hotspot-gen', label: 'مولد الكروت', icon: '⚡' }
+      { path: '/cp/network/towers', label: 'الأبراج والكبائن', icon: '🗼' },
+      { path: '/cp/network/map', label: 'خريطة الشبكة', icon: '🗺️' },
+      { path: '/cp/network/inventory', label: 'التجهيزات والمخزن', icon: '📦' },
+      { path: '/cp/network/hotspot-gen', label: 'مولد الكروت', icon: '⚡' }
     ]
   },
   {
     title: 'الإدارة',
     items: [
-      { path: '/vendor/marketing/whatsapp', label: 'واتساب الأعمال', icon: '💬' },
-      { path: '/vendor/staff', label: 'فريق العمل', icon: '👔' },
-      { path: '/vendor/activity', label: 'سجلات النشاط', icon: '📜' },
-      { path: '/vendor/settings', label: 'إعدادات النظام', icon: '⚙️' }
+      { path: '/cp/marketing/whatsapp', label: 'واتساب الأعمال', icon: '💬' },
+      { path: '/cp/staff', label: 'فريق العمل', icon: '👔' },
+      { path: '/cp/activity', label: 'سجلات النشاط', icon: '📜' },
+      { path: '/cp/settings', label: 'إعدادات النظام', icon: '⚙️' }
     ]
   }
 ];

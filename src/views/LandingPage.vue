@@ -8,7 +8,7 @@
           <a href="#features">المميزات</a>
           <a href="#pricing">الأسعار</a>
           <a href="#contact">تواصل معنا</a>
-          <router-link to="/vendor" class="btn-login-outline">دخول الموردين</router-link>
+          <router-link to="/cp" class="btn-login-outline">دخول الموردين</router-link>
           <button class="btn-cta-nav">احصل على نسخة</button>
         </div>
       </div>
