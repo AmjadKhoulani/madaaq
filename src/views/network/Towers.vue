@@ -6,7 +6,7 @@
         <p>مراقبة حية للمواقع الجغرافية، حالة الأبراج، وجودة الإشارة الميدانية</p>
       </div>
       <div class="header-actions">
-        <router-link to="/vendor/network/towers/add" class="btn-pro-primary">إضافة برج جديد 🗼</router-link>
+        <router-link to="/cp/network/towers/add" class="btn-pro-primary">إضافة برج جديد 🗼</router-link>
       </div>
     </div>
 
@@ -17,8 +17,8 @@
         width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy">
       </iframe>
       <div class="map-overlay-stats">
-        <div class="m-pill">🟢 22 برج متصل</div>
-        <div class="m-pill">🔴 02 صيانة</div>
+        <div class="m-pill">🟢 {{ towers.length }} برج متصل</div>
+        <div class="m-pill">🔴 0 صيانة</div>
       </div>
     </div>
 
@@ -28,24 +28,16 @@
         <div class="stat-icon blue">🗼</div>
         <div class="stat-meta">
           <label>إجمالي المواقع</label>
-          <h2>24</h2>
-          <span class="trend">تغطي 5 مناطق</span>
+          <h2>{{ towers.length }}</h2>
+          <span class="trend">تغطية شاملة</span>
         </div>
       </div>
       <div class="stat-card-glass">
         <div class="stat-icon green">✅</div>
         <div class="stat-meta">
           <label>أبراج نشطة</label>
-          <h2>22</h2>
-          <span class="trend success">استقرار 95%</span>
-        </div>
-      </div>
-      <div class="stat-card-glass">
-        <div class="stat-icon yellow">☀️</div>
-        <div class="stat-meta">
-          <label>مواقع طاقة شمسية</label>
-          <h2>18</h2>
-          <span class="trend">توفير 40% طاقة</span>
+          <h2>{{ towers.length }}</h2>
+          <span class="trend success">استقرار 100%</span>
         </div>
       </div>
     </div>
@@ -55,7 +47,7 @@
       <div class="table-filters-pro">
         <div class="search-wrap">
           <span class="icon">🔍</span>
-          <input type="text" placeholder="البحث باسم البرج أو المنطقة..." />
+          <input type="text" v-model="searchQuery" placeholder="البحث باسم البرج أو المنطقة..." />
         </div>
       </div>
       
@@ -64,38 +56,29 @@
           <tr>
             <th>اسم البرج / الموقع</th>
             <th>المنطقة</th>
-            <th>المشتركين</th>
-            <th>الحمل الحقيقي</th>
+            <th>نوع الطاقة</th>
             <th>الحالة</th>
             <th>العمليات</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="i in 5" :key="i">
+          <tr v-for="tower in filteredTowers" :key="tower.id">
             <td>
               <div class="tower-mini">
-                <div class="site-type-icon">
-                  {{ i % 3 === 0 ? '📦' : (i % 2 === 0 ? '📍' : '🗼') }}
-                </div>
+                <div class="site-type-icon">🗼</div>
                 <div>
-                  <strong>{{ i % 3 === 0 ? 'كابينة حي الجلاء' : (i % 2 === 0 ? 'نقطة توزيع البركة' : 'برج الشمال الرئيسي') }} - {{ i }}</strong>
-                  <span>ID: SITE-00{{ i }}</span>
+                  <strong>{{ tower.name }}</strong>
+                  <span>ID: SITE-00{{ tower.id }}</span>
                 </div>
               </div>
             </td>
-            <td>حي الروضة</td>
-            <td><strong>145</strong> مشترك</td>
-            <td>
-              <div class="load-mini">
-                <div class="load-bar"><div class="fill" :style="{ width: (40 + i * 10) + '%' }"></div></div>
-                <span>{{ 40 + i * 10 }}%</span>
-              </div>
-            </td>
-            <td><span class="status-pill" :class="i === 4 ? 'danger' : 'success'">{{ i === 4 ? 'Offline' : 'Online' }}</span></td>
+            <td>{{ tower.location }}</td>
+            <td>{{ tower.powerSystem }}</td>
+            <td><span class="status-pill success">Online</span></td>
             <td>
               <div class="table-actions">
-                <router-link :to="'/vendor/network/towers/view/' + i" class="btn-icon">👁️</router-link>
-                <router-link :to="'/vendor/network/towers/edit/' + i" class="btn-icon">✏️</router-link>
+                <router-link :to="'/cp/network/towers/view/' + tower.id" class="btn-icon">👁️</router-link>
+                <router-link :to="'/cp/network/towers/edit/' + tower.id" class="btn-icon">✏️</router-link>
               </div>
             </td>
           </tr>
@@ -104,6 +87,32 @@
     </div>
   </div>
 </template>
+
+<script setup>
+import { ref, onMounted, computed } from 'vue';
+import axios from 'axios';
+
+const towers = ref([]);
+const searchQuery = ref('');
+
+const fetchTowers = async () => {
+  try {
+    const response = await axios.get('/api/towers');
+    towers.value = response.data;
+  } catch (error) {
+    console.error('Error fetching towers:', error);
+  }
+};
+
+const filteredTowers = computed(() => {
+  return towers.value.filter(t => 
+    t.name.includes(searchQuery.value) || 
+    t.location.includes(searchQuery.value)
+  );
+});
+
+onMounted(fetchTowers);
+</script>
 
 <style scoped>
 .towers-page { width: 100%; }

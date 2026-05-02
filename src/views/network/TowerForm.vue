@@ -133,11 +133,14 @@
 </template>
 
 <script setup>
-import { computed, reactive } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed, reactive, ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import axios from 'axios';
 
 const route = useRoute();
+const router = useRouter();
 const isEdit = computed(() => !!route.params.id);
+const loading = ref(false);
 
 const form = reactive({
   siteType: 'tower',
@@ -155,6 +158,50 @@ const form = reactive({
   uplinkType: 'wireless',
   height: ''
 });
+
+const saveTower = async () => {
+  loading.value = true;
+  try {
+    const payload = {
+      name: form.name,
+      location: form.area,
+      powerSystem: form.powerType,
+      lat: form.lat,
+      lng: form.lng
+    };
+
+    if (isEdit.value) {
+      await axios.put(`/api/towers/${route.params.id}`, payload);
+    } else {
+      await axios.post('/api/towers', payload);
+    }
+    
+    alert('تم حفظ بيانات الموقع بنجاح! 🎉');
+    router.push('/cp/network/towers');
+  } catch (error) {
+    console.error('Error saving tower:', error);
+    alert('حدث خطأ أثناء الحفظ. يرجى المحاولة مرة أخرى.');
+  } finally {
+    loading.value = false;
+  }
+};
+
+const fetchTower = async () => {
+  if (!isEdit.value) return;
+  try {
+    const res = await axios.get(`/api/towers/${route.params.id}`);
+    const t = res.data;
+    form.name = t.name;
+    form.area = t.location;
+    form.powerType = t.powerSystem;
+    form.lat = t.lat;
+    form.lng = t.lng;
+  } catch (error) {
+    console.error('Error fetching tower for edit:', error);
+  }
+};
+
+onMounted(fetchTower);
 
 const sitePlaceholder = computed(() => {
   if (form.siteType === 'tower') return 'مثلاً: برج الشمال الرئيسي';
